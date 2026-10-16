@@ -18,5 +18,8 @@
     "ACCESS_AUD": "f319b7b9e584270a62a62fcc39d843ab1e24b858465b173adb6a116c1298fca7"
   },
   "observability": { "enabled": true },
-  "workers_dev": false
+  "workers_dev": false,
+  "routes": [
+    { "pattern": "rpg.nephei.org", "custom_domain": true }
+  ]
 }
