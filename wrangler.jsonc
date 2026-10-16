@@ -15,7 +15,10 @@
   "vars": {
     // Cloudflare Access: el worker verifica la firma de su token antes de servir nada privado.
     "ACCESS_TEAM": "nephei.cloudflareaccess.com",
-    "ACCESS_AUD": "f319b7b9e584270a62a62fcc39d843ab1e24b858465b173adb6a116c1298fca7"
+    "ACCESS_AUD": "f319b7b9e584270a62a62fcc39d843ab1e24b858465b173adb6a116c1298fca7",
+    // "si" abre el área del Guardián al público (leer sin sesión; guardar sigue pidiéndola).
+    // Ver «Abrir el área del Guardián» en el README antes de cambiarlo.
+    "GUARDIAN_PUBLICO": "no"
   },
   "observability": { "enabled": true },
   "workers_dev": false,

@@ -25,6 +25,17 @@ Necesita, en *Settings → Variables and Secrets* del worker:
 - `GITHUB_PAT` (secreto): token *fine-grained* con **Contents: Read and write** sobre `ttrpg-resources-private`.
 - `EDITORES` (opcional): correos que pueden guardar el libro, separados por comas. Por defecto, solo el del autor.
 
+## Abrir el área del Guardián
+
+Cuando La Marca del Estrecho esté lista para publicarse, el área del Guardián se puede abrir igual que la de Linares sin mover nada de sitio: las páginas siguen leyéndose del repo privado y el libro se sigue guardando desde la web.
+
+1. En `wrangler.jsonc`, `"GUARDIAN_PUBLICO": "si"`. Leer deja de pedir sesión; guardar la sigue pidiendo (token de Access válido y correo en la lista de editores), y las páginas dejan de llevar `noindex`.
+2. En Cloudflare Access, la aplicación «La Marca del Estrecho Keepers Section» pasa a cubrir solo `rpg.nephei.org/la-marca-del-estrecho/keepers/_guardar` y `…/keepers/_entrar`, en vez de todo `/keepers`.
+3. En `public/robots.txt`, quitar la línea `Disallow`.
+4. Quitar el candado del botón «Keeper's area» de la portada.
+
+Con el área abierta, para editar el libro se entra primero por `/la-marca-del-estrecho/keepers/_entrar`: pide la sesión de Access y vuelve al libro con ella iniciada, de modo que «Guardar» funciona como siempre.
+
 ## Despliegue
 
 El repositorio está conectado al Worker `nephei-rpg` con Workers Builds: cada push a `main` lo despliega.

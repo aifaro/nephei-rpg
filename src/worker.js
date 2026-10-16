@@ -10,15 +10,21 @@
 //   /la-marca-del-estrecho/keepers/<ruta>      -> la misma ruta (+ .html si no lleva extensión)
 //   POST /la-marca-del-estrecho/keepers/_guardar -> commit del Libro del Guardián
 //
+//   GET  /la-marca-del-estrecho/keepers/_entrar  -> pasa por Access y vuelve al libro
+//
 // Doble cerrojo: Cloudflare Access protege esas rutas y, además, este worker
 // comprueba la firma del token de Access. Sin un token válido no sirve nada
 // privado, aunque Access se desconfigure o el worker se publique en otro dominio.
+//
+// Abrir el área al público: GUARDIAN_PUBLICO = "si" en wrangler.jsonc. Entonces
+// leer ya no pide sesión, pero guardar sigue pidiéndola (el README explica cómo
+// dejar Access solo en _guardar y _entrar).
 //
 // Configuración (Settings -> Variables and Secrets del worker):
 //   GITHUB_PAT  secreto. Token fine-grained con Contents: Read and write en
 //               ttrpg-resources-private (leer las páginas y guardar el libro).
 //   EDITORES    opcional. Correos que pueden guardar el libro, separados por comas.
-// ACCESS_TEAM y ACCESS_AUD están en wrangler.jsonc.
+// ACCESS_TEAM, ACCESS_AUD y GUARDIAN_PUBLICO están en wrangler.jsonc.
 
 const GITHUB_USER = 'aifaro';
 const PRIVATE_REPO = 'ttrpg-resources-private';
@@ -30,10 +36,13 @@ const PORTADA = PREFIJO + '/keepers.html';
 // El único fichero que se puede escribir desde la web, y la ruta que lo guarda.
 const LIBRO = PREFIJO + '/la-marca-del-estrecho.html';
 const RUTA_GUARDAR = PREFIJO + '/_guardar';
+// Con el área abierta al público, leer no pasa por Access: esta ruta sí, y deja
+// la sesión iniciada para que el modo edición pueda guardar.
+const RUTA_ENTRAR = PREFIJO + '/_entrar';
 
 // Versión de /style.css que enlaza la cáscara de las páginas del Guardián.
 // Súbela junto con la de las páginas de public/ cuando cambie la hoja.
-const HOJA = '20261016';
+const HOJA = '20261016b';
 
 const EDITORES_POR_DEFECTO = 'jesuspalfaro@gmail.com';
 
@@ -56,8 +65,9 @@ export default {
     }
 
     const quien = await identidadAccess(request, env);
-    if (!quien) {
-      return pagina(403, 'Solo para el Guardián',
+    const pideSesion = url.pathname === RUTA_GUARDAR || url.pathname === RUTA_ENTRAR;
+    if (!quien && (pideSesion || !abierto(env))) {
+      return pagina(env, 403, 'Solo para el Guardián',
         '<main class="perdido"><p class="numero">403</p><h1>Solo para el Guardián</h1>'
         + '<p>Esta parte del sitio necesita iniciar sesión.</p>'
         + '<p><a href="/la-marca-del-estrecho/players">&laquo; Recursos de los jugadores</a></p></main>');
@@ -65,6 +75,9 @@ export default {
 
     if (url.pathname === RUTA_GUARDAR) {
       return guardar(request, env, url, quien);
+    }
+    if (url.pathname === RUTA_ENTRAR) {
+      return new Response(null, { status: 302, headers: { Location: LIBRO.replace(/\.html$/, '') } });
     }
     if (request.method !== 'GET' && request.method !== 'HEAD') {
       return new Response('Method not allowed', { status: 405, headers: { Allow: 'GET, HEAD' } });
@@ -83,6 +96,10 @@ export default {
 
 function esPrivado(path) {
   return path === PREFIJO || path.startsWith(PREFIJO + '/');
+}
+
+function abierto(env) {
+  return String(env.GUARDIAN_PUBLICO || '').toLowerCase() === 'si';
 }
 
 // ---------------------------------------------------------------- Access
@@ -190,13 +207,13 @@ async function servirPagina(path, env) {
     { headers: cabecerasGitHub(env, { 'Accept': 'application/vnd.github.raw' }) });
 
   if (r.status === 404) {
-    return pagina(404, 'Página no encontrada',
+    return pagina(env, 404, 'Página no encontrada',
       '<main class="perdido"><p class="numero">404</p><h1>Aquí no hay nada</h1>'
       + '<p>Esa página no existe en el área del Guardián.</p>'
       + `<p><a href="${PREFIJO}/">&laquo; Área del Guardián</a></p></main>`);
   }
   if (!r.ok) {
-    return pagina(502, 'Error', `<main><h1>Error</h1><p>No se pudo leer la página de GitHub (estado ${r.status}).</p></main>`);
+    return pagina(env, 502, 'Error', `<main><h1>Error</h1><p>No se pudo leer la página de GitHub (estado ${r.status}).</p></main>`);
   }
 
   const bytes = new Uint8Array(await r.arrayBuffer());
@@ -221,18 +238,17 @@ async function servirPagina(path, env) {
   // cáscara del sitio, la misma que llevan escrita las páginas de public/.
   const h1 = html.match(/<h1[^>]*>([\s\S]*?)<\/h1>/i);
   const titulo = h1 ? h1[1].replace(/<[^>]+>/g, '').trim() : 'Área del Guardián';
-  return pagina(200, titulo, html);
+  return pagina(env, 200, titulo, html);
 }
 
-function pagina(status, titulo, contenido) {
+function pagina(env, status, titulo, contenido) {
   const html = `<!doctype html>
 <html lang="es">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>${titulo} · La Marca del Estrecho</title>
-<meta name="robots" content="noindex, nofollow">
-<meta name="theme-color" content="#16130f">
+${abierto(env) ? '' : '<meta name="robots" content="noindex, nofollow">\n'}<meta name="theme-color" content="#16130f">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>

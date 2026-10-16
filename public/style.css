@@ -732,22 +732,29 @@ body.sitio > .container{flex:1;width:100%}
 .container main > p{max-width:46rem}
 .container main > p.entradilla{font-family:var(--f-titulo);font-style:italic;font-size:1.2rem;color:var(--tinta-2);line-height:1.45}
 
-/* Portada de sección (recursos, Guardián) */
+/* Portada de sección (recursos, Guardián): la misma franja oscura a todo el ancho
+   que la portada del sitio. Sale del .container con márgenes negativos; el relleno
+   lateral (50vw - 50%) devuelve el contenido a la columna del container. */
+body.sitio{overflow-x:clip}
 .header{
-  position:relative;text-align:center;margin:0 0 2.5rem;padding:4.8rem clamp(1.2rem,5vw,3rem) 4.2rem;overflow:hidden;
+  position:relative;text-align:center;overflow:hidden;
+  margin:-2.2rem calc(50% - 50vw) 2.8rem;
+  padding:clamp(3rem,7vw,4.6rem) calc(50vw - 50%) clamp(3rem,7vw,4.4rem);
   background:
-    radial-gradient(ellipse at 50% 20%, rgba(216,176,42,.24), rgba(216,176,42,0) 50%),
+    radial-gradient(ellipse at 50% 0%, rgba(216,176,42,.26), rgba(216,176,42,0) 55%),
     linear-gradient(180deg,#1b1712,#0e0c09);
-  color:#e8dcc0;border:1px solid #000;box-shadow:var(--sombra);
+  color:#e8dcc0;border-bottom:1px solid #000;
 }
-.header::before{content:"";position:absolute;inset:.8rem;border:1px solid rgba(201,151,28,.45);outline:1px solid rgba(201,151,28,.22);outline-offset:5px;pointer-events:none}
-.header .sello{font-family:var(--f-rotulo);font-size:.78rem;letter-spacing:.42em;text-transform:uppercase;color:var(--ocre-vivo);margin:0 0 1.3rem}
-.header h1{font-family:var(--f-deco);font-weight:700;font-size:clamp(2.2rem,6vw,4rem);line-height:1.02;margin:0 0 1.2rem;color:#f1e3bd;text-shadow:0 0 30px rgba(216,176,42,.25),0 2px 0 #000}
-.header p{font-family:var(--f-titulo);font-style:italic;font-size:1.22rem;line-height:1.45;color:#d8c9a4;max-width:36rem;margin:0 auto}
+.header .sello{font-family:var(--f-rotulo);font-size:.8rem;letter-spacing:.42em;text-transform:uppercase;color:var(--ocre-vivo);margin:0 0 1.3rem}
+.header h1{font-family:var(--f-deco);font-weight:700;font-size:clamp(2.4rem,6.5vw,4.4rem);line-height:1.02;margin:0 0 1.2rem;color:#f1e3bd;text-shadow:0 0 40px rgba(216,176,42,.28),0 2px 0 #000}
+.header p{font-family:var(--f-titulo);font-style:italic;font-size:clamp(1.15rem,2.2vw,1.35rem);line-height:1.45;color:#d8c9a4;max-width:38rem;margin:0 auto}
 .header p a{color:var(--amarillo);border-bottom-color:rgba(216,176,42,.4)}
 .header .sello{max-width:none;font-style:normal}
-.header .breadcrumb{position:relative;z-index:1;margin:-2.7rem 0 2.2rem;text-align:left;max-width:none;font-family:var(--f-caja-sc);font-style:normal;font-size:.86rem}
+.header .breadcrumb{position:relative;z-index:1;margin:0 0 2.4rem;text-align:left;max-width:none;font-family:var(--f-caja-sc);font-style:normal;font-size:.86rem}
 .header .breadcrumb,.header .breadcrumb a{color:var(--ocre-vivo)}
+.header .silueta{display:block;width:min(560px,100%);height:auto;margin:2.2rem auto -0.5rem;-webkit-mask-image:radial-gradient(ellipse 62% 90% at 50% 45%,#000 62%,transparent 100%);mask-image:radial-gradient(ellipse 62% 90% at 50% 45%,#000 62%,transparent 100%)}
+.header p strong{color:#f1e3bd}
+@media print{.header{margin:0 0 1.5rem;padding:1.5rem}}
 
 /* Miga de pan */
 .breadcrumb{font-family:var(--f-caja-sc);font-weight:500;font-size:.86rem;letter-spacing:.06em;color:var(--tinta-suave);margin:.4rem 0 1rem}
@@ -829,7 +836,7 @@ body.sitio > .container{flex:1;width:100%}
 .aventura::before{content:"";position:absolute;inset:.7rem;border:1px solid rgba(201,151,28,.38);outline:1px solid rgba(201,151,28,.18);outline-offset:4px;pointer-events:none;z-index:1}
 .aventura:hover{transform:translateY(-4px);box-shadow:0 40px 70px -30px rgba(30,18,4,.85)}
 .aventura .arte{display:block;padding:2.2rem 1.5rem 0;border:0}
-.aventura .arte svg{display:block;width:100%;height:auto;-webkit-mask-image:radial-gradient(ellipse 62% 75% at 50% 60%,#000 50%,transparent 100%);mask-image:radial-gradient(ellipse 62% 75% at 50% 60%,#000 50%,transparent 100%)}
+.aventura .arte svg{display:block;width:100%;height:auto;-webkit-mask-image:radial-gradient(ellipse 62% 90% at 50% 45%,#000 62%,transparent 100%);mask-image:radial-gradient(ellipse 62% 90% at 50% 45%,#000 62%,transparent 100%)}
 .aventura-texto{display:flex;flex-direction:column;flex:1;padding:.6rem clamp(1.6rem,4vw,2.6rem) 2.4rem;text-align:center}
 .aventura .sello{font-family:var(--f-rotulo);font-size:.72rem;letter-spacing:.32em;text-transform:uppercase;color:var(--ocre-vivo);margin:0 0 .9rem}
 .aventura h2{font-family:var(--f-deco);font-weight:700;font-size:clamp(1.8rem,3.6vw,2.4rem);line-height:1.08;margin:0;color:#f1e3bd;text-shadow:0 2px 0 #000}
@@ -898,8 +905,8 @@ body.sitio > .container{flex:1;width:100%}
 
 @media (max-width:700px){
   .container{padding:1rem 1rem 4rem}
-  .header{padding:3.4rem 1rem 3rem}
-  .header .breadcrumb{margin:-1.8rem 0 1.4rem}
+  .header{margin-top:-1rem;padding:2.6rem 1rem 3rem}
+  .header .breadcrumb{margin:0 0 1.8rem}
   .hoja.sinopsis{padding:0 1rem 4rem}
   .sinopsis .cuerpo > p{text-align:left}
   .portada .volver{left:1.3rem;top:1.3rem}
