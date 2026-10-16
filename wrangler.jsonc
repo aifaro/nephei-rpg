@@ -1,0 +1,22 @@
+// rpg.nephei.org: lo público son assets estáticos de public/; el área del Guardián
+// (/la-marca-del-estrecho/keepers) la sirve src/worker.js desde el repo privado.
+// El "name" debe coincidir con el nombre del Worker conectado al repositorio en el panel de Cloudflare.
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "nephei-rpg",
+  "main": "src/worker.js",
+  "compatibility_date": "2026-10-01",
+  "assets": {
+    "directory": "./public",
+    "binding": "ASSETS",
+    "not_found_handling": "404-page",
+    "run_worker_first": ["/la-marca-del-estrecho/keepers", "/la-marca-del-estrecho/keepers/*"]
+  },
+  "vars": {
+    // Cloudflare Access: el worker verifica la firma de su token antes de servir nada privado.
+    "ACCESS_TEAM": "nephei.cloudflareaccess.com",
+    "ACCESS_AUD": "f319b7b9e584270a62a62fcc39d843ab1e24b858465b173adb6a116c1298fca7"
+  },
+  "observability": { "enabled": true },
+  "workers_dev": false
+}
