@@ -14,6 +14,20 @@
 | `src/worker.js` | Solo atiende `/la-marca-del-estrecho/keepers/…`: lee las páginas del repo privado, verifica el token de Cloudflare Access y guarda el libro desde su modo edición. |
 | `wrangler.jsonc` | Configuración del Worker `nephei-rpg`. |
 
+## Las fichas de La Marca del Estrecho
+
+`/la-marca-del-estrecho/fichas` muestra los seis investigadores pregenerados (ficha de Pulp Cthulhu y trasfondo, dos hojas A4 cada uno) y `/la-marca-del-estrecho/investigadores/` guarda sus PDF: uno por personaje, `todos.pdf` y `ficha-en-blanco.pdf`.
+
+No se editan a mano. Los datos están en `herramientas/fichas-marca/personajes.py` y lo derivado (½ y ⅕, puntos de vida de Pulp, movimiento, bonificación al daño, puntos de magia, Cordura) lo calcula el generador:
+
+```
+cd herramientas/fichas-marca
+python generar.py            # página y PDF (imprime con Google Chrome)
+python generar.py --sin-pdf  # solo la página
+```
+
+Si cambia un pregenerado, cámbialo también en el Libro del Guardián (capítulo 7, «Investigadores de ejemplo») y en las dos sinopsis. `herramientas/` no se sirve: el worker solo publica `public/`.
+
 ## El área del Guardián
 
 `/la-marca-del-estrecho/keepers/…` está detrás de Cloudflare Access y, además, el worker comprueba la firma del token de Access: sin él no sirve nada privado.
