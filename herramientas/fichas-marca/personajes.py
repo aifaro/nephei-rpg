@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Los investigadores pregenerados de La Marca del Estrecho (Pulp Cthulhu).
 
-Aquí van solo los datos. Lo derivado (½ y ⅕, puntos de vida, movimiento, bonificación al
+Aquí van solo los datos; generar.py los pone sobre la ficha oficial de Pulp Cthulhu. Lo derivado (½ y ⅕, puntos de vida, movimiento, bonificación al
 daño, corpulencia, puntos de magia, Cordura inicial, Esquivar y Lengua propia de base) lo
 calcula generar.py. Las habilidades que no aparecen en «hab» salen con su valor de base.
 
@@ -26,7 +26,7 @@ PERSONAJES = [
     },
     'talentos': ['Vista aguda', 'Memoria fotográfica'],
     'armas': [('Navaja', 'Combatir (Pelea)', '1D4+BD', '—', '1', '—', '—')],
-    'posesiones': 'Cámara de placas alemana y trípode, una caja de placas, magnesio, un rollo de negativos que todavía no ha revelado. Pasaporte de súbdito del Jalifa y una carta de recomendación de un periódico de Tetuán.',
+    'equipo': ['Cámara de placas alemana', 'Trípode', 'Una caja de placas', 'Magnesio', 'Un rollo de negativos sin revelar', 'Navaja', 'Pasaporte de súbdito del Jalifa', 'Carta de un periódico de Tetuán'],
     'dinero': 'Acomodado. Lleva 200 pesetas y algunos duros hassaníes.',
     'quien': [
         'Hijo y nieto de fotógrafos. El estudio familiar está en una calle que baja del Feddán, en Tetuán, y por él ha pasado media ciudad: novias, notables, oficiales españoles recién llegados que quieren mandar a casa un retrato con chilaba prestada. Ahmed se aburrió pronto de los retratos y empezó a salir con la cámara: mercados, caravanas, obras del ferrocarril, la guerra cuando se dejaba fotografiar.',
@@ -63,7 +63,7 @@ PERSONAJES = [
     },
     'talentos': ['Templada', 'Resistente'],
     'armas': [],
-    'posesiones': 'Maletín de médico (fonendoscopio, bisturí, vendas, láudano, ampollas de morfina y jeringa), un cuaderno de notas clínicas, la colegiación de Barcelona y una carta de presentación del decano.',
+    'equipo': ['Maletín de médico', 'Fonendoscopio', 'Bisturí y vendas', 'Láudano', 'Ampollas de morfina y jeringa', 'Cuaderno de notas clínicas', 'Colegiación de Barcelona', 'Carta del decano'],
     'dinero': 'Holgado. Lleva 400 pesetas.',
     'quien': [
         'Una de las pocas mujeres con consulta propia en Barcelona, y la única que conoce la mitad de su gremio: ha tenido que demostrar el doble para que le pasaran la mitad de los casos. Trabaja en el hospital por las mañanas y por las tardes atiende en su consulta del Ensanche a señoras que prefieren contarle a otra mujer lo que no le cuentan al médico de la familia.',
@@ -101,7 +101,7 @@ PERSONAJES = [
     },
     'talentos': ['Lingüista', 'Mente aguda'],
     'armas': [('Escopeta del calibre 12', 'Armas de fuego (Fusil/Escopeta)', '4D6/2D6/1D6', '10/20/50 m', '1 o 2', '2', '100')],
-    'posesiones': 'La escopeta, en su funda de caza; una brújula, una lupa, metro plegable, cuadernos de campo y lápices; cartas de presentación de la Real Academia de la Historia y de la Universidad de Sevilla.',
+    'equipo': ['Escopeta, en su funda de caza', 'Brújula', 'Lupa', 'Metro plegable', 'Cuadernos de campo y lápices', 'Carta de la R. Academia de la Historia', 'Carta de la Universidad de Sevilla'],
     'dinero': 'Rico. Lleva 600 pesetas y un talonario.',
     'quien': [
         'Catedrático de Arqueología en Sevilla desde hace veinte años, ha excavado en Itálica, ha discutido con medio claustro y ha publicado lo justo para que no se pueda prescindir de él. Viaja con una escopeta porque los yacimientos están lejos de todo, y porque los domingos caza perdices en la vega del Guadalquivir.',
@@ -142,7 +142,7 @@ PERSONAJES = [
         ('Revólver del .38', 'Armas de fuego (Arma corta)', '1D10', '15 m', '1 (3)', '6', '100'),
         ('Porra', 'Combatir (Pelea)', '1D6+BD', '—', '1', '—', '—'),
     ],
-    'posesiones': 'Placa y carné de la Dirección General de Seguridad, esposas, una linterna eléctrica, un cuaderno de tapas negras y una caja de cincuenta cartuchos.',
+    'equipo': ['Revólver del .38', 'Caja de cincuenta cartuchos', 'Porra', 'Placa y carné de la DGS', 'Esposas', 'Linterna eléctrica', 'Cuaderno de tapas negras'],
     'dinero': 'Normal. Lleva 250 pesetas.',
     'quien': [
         'Inspector de la Brigada de Investigación Criminal de Madrid. En la casa lo llaman «el de los casos raros», y no es un cumplido: le mandan lo que nadie quiere firmar, los suicidios que no cuadran, los locos que dicen lo mismo, los muertos que aparecen donde no pueden estar. Los resuelve casi todos. Los que no, los guarda en un cajón con llave.',
@@ -179,7 +179,7 @@ PERSONAJES = [
     },
     'talentos': ['Embaucadora', 'Voluntad férrea'],
     'armas': [('Pistola de bolsillo 6,35 mm', 'Armas de fuego (Arma corta)', '1D6', '10 m', '1 (3)', '6', '100')],
-    'posesiones': 'Una baraja de tarot muy usada, velas, un fular de seda negra, un frasco de sales, un velador plegable para las sesiones y la pistola, en el bolso.',
+    'equipo': ['Pistola de bolsillo, en el bolso', 'Baraja de tarot muy usada', 'Velas', 'Fular de seda negra', 'Frasco de sales', 'Velador plegable para las sesiones'],
     'dinero': 'Acomodada, según la temporada. Lleva 300 francos y 150 pesetas.',
     'quien': [
         'Llegó a Tánger hace ocho años con un apellido de casada que ya no usa y un don que nadie le había pedido. En una ciudad de cónsules, comerciantes y espías, una médium francesa con buena conversación tiene la agenda llena: hace sesiones en salones de cinco legaciones distintas, lee las cartas a esposas aburridas y escucha más de lo que debería.',
@@ -202,7 +202,7 @@ PERSONAJES = [
     'id': 'julio-ferran',
     'nombre': 'Teniente Julio Ferrán',
     'ocupacion': 'Aviador militar', 'arquetipo': 'Temerario', 'edad': 27, 'sexo': 'Hombre',
-    'nacimiento': 'Reus', 'residencia': 'Base de hidroaviones del Atalayón (Melilla)',
+    'nacimiento': 'Reus', 'residencia': 'El Atalayón, Melilla',
     'car': dict(FUE=60, CON=65, TAM=60, DES=80, APA=65, INT=65, POD=50, EDU=70),
     'suerte': 60,
     'lengua': 'Castellano',
@@ -216,7 +216,7 @@ PERSONAJES = [
     },
     'talentos': ['Reflejos', 'Ágil'],
     'armas': [('Pistola Campo-Giro 9 mm', 'Armas de fuego (Arma corta)', '1D10', '15 m', '1 (3)', '8', '100')],
-    'posesiones': 'Uniforme de diario, cazadora de cuero, gafas de vuelo, prismáticos, la pistola reglamentaria y un permiso de quince días firmado en Melilla.',
+    'equipo': ['Uniforme de diario', 'Cazadora de cuero', 'Gafas de vuelo', 'Prismáticos', 'Pistola reglamentaria', 'Permiso de quince días (Melilla)'],
     'dinero': 'Normal. Lleva 120 pesetas y una deuda de juego.',
     'quien': [
         'Piloto de la Aeronáutica Militar, destinado en la nueva base de hidroaviones del Atalayón, en la Mar Chica de Melilla. En julio, cuando se hundió todo, voló un día sí y otro también sobre el Rif: reconocimiento, bombas a mano y sacos de víveres y de hielo para las posiciones sitiadas, que caían casi siempre al otro lado de la alambrada. Ha visto Monte Arruit desde el aire.',

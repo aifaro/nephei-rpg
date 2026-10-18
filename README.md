@@ -16,17 +16,17 @@
 
 ## Las fichas de La Marca del Estrecho
 
-`/la-marca-del-estrecho/fichas` muestra los seis investigadores pregenerados (ficha de Pulp Cthulhu y trasfondo, dos hojas A4 cada uno) y `/la-marca-del-estrecho/investigadores/` guarda sus PDF: uno por personaje, `todos.pdf` y `ficha-en-blanco.pdf`.
+`/la-marca-del-estrecho/fichas` enseña los seis investigadores pregenerados y `/la-marca-del-estrecho/investigadores/` guarda sus PDF: uno por personaje, `todos.pdf`, `ficha-en-blanco.pdf` y las vistas previas JPG. Cada PDF tiene tres hojas: las dos caras de la ficha oficial de Pulp Cthulhu (Edge) con campos de formulario ya rellenos, y una hoja de trasfondo propia (quién es, por qué le escribía Guerrero, a quién conoce en el barco) con campos en sus líneas en blanco.
 
-No se editan a mano. Los datos están en `herramientas/fichas-marca/personajes.py` y lo derivado (½ y ⅕, puntos de vida de Pulp, movimiento, bonificación al daño, puntos de magia, Cordura) lo calcula el generador:
+No se editan a mano. Los datos están en `herramientas/fichas-marca/personajes.py`; lo derivado (½ y ⅕, puntos de vida de Pulp, movimiento, bonificación al daño, puntos de magia, Cordura, bienes según Crédito) lo calcula el generador. La ficha original, sin campos, está en `herramientas/fichas-marca/pulp-cthulhu-ficha.pdf`. Necesita PyMuPDF y, para la hoja de trasfondo, Google Chrome:
 
 ```
 cd herramientas/fichas-marca
-python generar.py            # página y PDF (imprime con Google Chrome)
+python generar.py            # página, PDF y vistas previas
 python generar.py --sin-pdf  # solo la página
 ```
 
-Si cambia un pregenerado, cámbialo también en el Libro del Guardián (capítulo 7, «Investigadores de ejemplo») y en las dos sinopsis. `herramientas/` no se sirve: el worker solo publica `public/`.
+Si cambia un pregenerado, cámbialo también en el Libro del Guardián (capítulo 7, «Investigadores de ejemplo») y en las dos sinopsis. `herramientas/` no se sirve: el worker solo publica `public/`. Las piezas comunes de las dos fichas (campos, círculos de las pistas, tabla de Crédito) están en `herramientas/formulario.py`.
 
 ## Las fichas de La maldición del Palacio de Linares
 

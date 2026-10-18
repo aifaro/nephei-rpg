@@ -13,18 +13,17 @@ ficha-en-blanco.pdf y una vista previa JPG de cada página para la web.
 
 Necesita PyMuPDF (pip install pymupdf). Los datos están en personajes.py.
 """
-import os, re, sys
+import os, sys
 import pymupdf
 from personajes import PERSONAJES
+
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), '..'))
+from formulario import Ficha, credito, miles, partir, pistas
 
 AQUI = os.path.dirname(os.path.abspath(__file__))
 PLANTILLA = os.path.join(AQUI, 'coc-7ed-1920.pdf')
 SALIDA = os.path.normpath(os.path.join(AQUI, '..', '..', 'public', 'la-maldicion-de-linares', 'investigadores'))
 sys.stdout.reconfigure(encoding='utf-8')
-
-TINTA = (0.10, 0.15, 0.36)  # azul de pluma, para distinguir lo escrito de lo impreso
-LETRA = 'TiRo'               # Times, la más cercana a la Minion de la ficha entre las 14 estándar
-METRICA = 'tiro'
 
 # ----------------------------------------------------------------- reglas
 def derivados(p):
@@ -36,16 +35,10 @@ def derivados(p):
     elif c['DES'] > c['TAM'] and c['FUE'] > c['TAM']: mov = 9
     else: mov = 8
     mov -= max(0, (p['edad'] - 30) // 10)
-    cr = p['hab'].get('Crédito', 0)
+    gasto, dinero, bienes = credito(p['hab'].get('Crédito', 0))
     return {'PV': (c['CON'] + c['TAM']) // 10, 'PM': c['POD'] // 5, 'MOV': mov, 'BD': bd,
             'Corpulencia': corp, 'Esquivar': p['hab'].get('Esquivar', c['DES'] // 2),
-            # Tabla de Crédito de los años 20 (10-49: gasto 10 $, dinero CR×2 $, bienes CR×50 $),
-            # a cinco pesetas por dólar.
-            'gasto': 50, 'dinero': cr * 10, 'bienes': cr * 250}
-
-
-def miles(n):
-    return '{:,}'.format(n).replace(',', '.')
+            'gasto': gasto, 'dinero': dinero, 'bienes': bienes}
 
 
 # ----------------------------------------------------------------- geometría de la ficha
@@ -98,114 +91,11 @@ COMPANEROS = [(43.0, 433.2), (154.6, 433.2), (266.1, 433.2), (43.0, 486.4),
               (266.1, 486.4), (43.0, 539.5), (154.6, 539.5), (266.1, 539.5)]
 
 
-# ----------------------------------------------------------------- campos
-class Ficha:
-    def __init__(self, doc, n_pag, prefijo):
-        self.doc, self.p1, self.p2, self.pre = doc, doc[n_pag], doc[n_pag + 1], prefijo
-        self.etiquetas = {}
-        self.anillos = []
-
-    def etiqueta(self, pagina, texto, cerca=None):
-        """Rectángulo de una etiqueta impresa (la más cercana a `cerca` si hay varias)."""
-        rs = pagina.search_for(texto)
-        if cerca:
-            rs.sort(key=lambda r: abs(r.x0 - cerca[0]) + abs(r.y0 - cerca[1]))
-        return rs[0]
-
-    def texto(self, pagina, nombre, rect, valor='', tam=9, alin=0, multilinea=False, minimo=6):
-        rect = pymupdf.Rect(rect)
-        valor = str(valor)
-        if not multilinea:
-            while tam > minimo and pymupdf.get_text_length(valor, METRICA, tam) > rect.width - 3:
-                tam -= 0.25
-        w = pymupdf.Widget()
-        w.field_type = pymupdf.PDF_WIDGET_TYPE_TEXT
-        w.field_name = self.pre + nombre
-        w.rect = rect
-        w.text_font, w.text_fontsize, w.text_color = LETRA, tam, TINTA
-        w.border_width, w.border_color, w.fill_color = 0, None, None
-        w.field_value = valor
-        if multilinea:
-            w.field_flags = pymupdf.PDF_TX_FIELD_IS_MULTILINE
-        a = pagina.add_widget(w)
-        if alin:  # /Q: 1 centrado, 2 a la derecha; se fija y se regenera la apariencia
-            self.doc.xref_set_key(a.xref, 'Q', str(alin))
-            w.update()
-
-    def casilla(self, pagina, nombre, rect, marcada=False, anillo=False):
-        w = pymupdf.Widget()
-        w.field_type = pymupdf.PDF_WIDGET_TYPE_CHECKBOX
-        w.field_name = self.pre + nombre
-        w.rect = pymupdf.Rect(rect)
-        w.border_width, w.border_color, w.fill_color = 0, None, None
-        w.text_color = TINTA
-        w.field_value = marcada
-        a = pagina.add_widget(w)
-        if anillo:
-            self.anillos.append((a.xref, marcada, a.rect))
-
-    def linea(self, pagina, nombre, x0, x1, y, valor='', **kw):
-        """Campo sobre una línea de puntos cuya caja de texto empieza en `y`."""
-        self.texto(pagina, nombre, (x0, y + 0.5, x1, y + 11.2), valor, **kw)
-
-
-def partir(texto, anchos, tam):
-    """Reparte el texto en líneas de los anchos dados; devuelve None si no cabe."""
-    palabras, lineas, actual = texto.split(), [], ''
-    for pal in palabras:
-        prueba = (actual + ' ' + pal).strip()
-        if pymupdf.get_text_length(prueba, METRICA, tam) <= anchos[min(len(lineas), len(anchos) - 1)] - 3:
-            actual = prueba
-        else:
-            lineas.append(actual)
-            actual = pal
-    lineas.append(actual)
-    return lineas if len(lineas) <= len(anchos) else None
-
-
-def anillos(doc, lista):
-    """Casillas de las pistas: marcadas, un círculo de tinta alrededor del número; si no, nada."""
-    for xref, marcada, r in lista:
-        w, h = r.width, r.height
-        k = 0.5523
-        rx, ry, cx, cy = w / 2 - 0.6, h / 2 - 0.6, w / 2, h / 2
-        circulo = (f'q {TINTA[0]} {TINTA[1]} {TINTA[2]} RG 0.9 w '
-                   f'{cx + rx:.2f} {cy:.2f} m '
-                   f'{cx + rx:.2f} {cy + k * ry:.2f} {cx + k * rx:.2f} {cy + ry:.2f} {cx:.2f} {cy + ry:.2f} c '
-                   f'{cx - k * rx:.2f} {cy + ry:.2f} {cx - rx:.2f} {cy + k * ry:.2f} {cx - rx:.2f} {cy:.2f} c '
-                   f'{cx - rx:.2f} {cy - k * ry:.2f} {cx - k * rx:.2f} {cy - ry:.2f} {cx:.2f} {cy - ry:.2f} c '
-                   f'{cx + k * rx:.2f} {cy - ry:.2f} {cx + rx:.2f} {cy - k * ry:.2f} {cx + rx:.2f} {cy:.2f} c S Q')
-        on, off = doc.get_new_xref(), doc.get_new_xref()
-        for x, contenido in ((on, circulo), (off, '')):
-            doc.update_object(x, f'<< /Type /XObject /Subtype /Form /BBox [0 0 {w:.2f} {h:.2f}] >>')
-            doc.update_stream(x, contenido.encode())
-        doc.xref_set_key(xref, 'AP', f'<< /N << /Yes {on} 0 R /Off {off} 0 R >> >>')
-        doc.xref_set_key(xref, 'MK', '<< >>')
-        doc.xref_set_key(xref, 'AS', '/Yes' if marcada else '/Off')
-
-
-def pistas(pagina):
-    """Posición de cada número de las cuatro pistas: {pista: {valor: (x, y) de la caja de texto}}."""
-    res = {'PV': {}, 'Cordura': {}, 'PM': {}, 'Suerte': {}}
-    for b in pagina.get_text('dict')['blocks']:
-        for l in b.get('lines', []):
-            for s in l['spans']:
-                m = re.fullmatch(r'(\d\d)\t?', s['text'])
-                if not m:
-                    continue
-                x, y = s['bbox'][:2]
-                if 150 < y < 212: pista = 'PV' if x < 185 else 'Cordura'
-                elif 222 < y < 285: pista = 'PM' if x < 185 else 'Suerte'
-                else: continue
-                res[pista][int(m.group(1))] = (x, y)
-    return res
-
-
 # ----------------------------------------------------------------- relleno
 def rellenar(doc, n_pag, p, prefijo='', todos=()):
     f = Ficha(doc, n_pag, prefijo)
     p1, p2 = f.p1, f.p2
-    numeros_pistas = pistas(p1)  # antes de añadir campos, que también tienen texto
+    numeros_pistas = pistas(p1, 185)  # antes de añadir campos, que también tienen texto
     vacio = p is None
     p = p or {'car': {}, 'hab': {}, 'armas': [], 'equipo': [], 'edad': 30}
     d = derivados(p) if not vacio else None
@@ -239,11 +129,7 @@ def rellenar(doc, n_pag, p, prefijo='', todos=()):
     f.casilla(p1, 'Locura temporal', (226.5, 141.7, 234.5, 149.7))
     f.casilla(p1, 'Locura indefinida', (284.3, 141.7, 292.3, 149.7))
     actuales = {} if vacio else {'PV': d['PV'], 'Cordura': p['car']['POD'], 'PM': d['PM'], 'Suerte': p['suerte']}
-    for pista, numeros in numeros_pistas.items():
-        for n, (x, y) in sorted(numeros.items()):
-            cx, cy = x + 4.9, y + 8.6
-            f.casilla(p1, f'{pista} {n:02d}', (cx - 6.6, cy - 5.2, cx + 6.6, cy + 5.2),
-                      marcada=actuales.get(pista) == n, anillo=True)
+    f.pistas(numeros_pistas, actuales)
 
     # Habilidades
     hab = dict(p['hab'])
@@ -349,7 +235,7 @@ def rellenar(doc, n_pag, p, prefijo='', todos=()):
     notas = '' if vacio else f'{p["trasfondo"]}\n\nPor qué está aquí: {p["motivo"]}'
     f.texto(p2, 'Notas', (387, 430, 553, 588), notas, tam=8.5, multilinea=True)
 
-    anillos(doc, f.anillos)
+    f.cerrar()
 
 
 def nuevo():
