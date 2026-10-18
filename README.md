@@ -14,32 +14,18 @@
 | `src/worker.js` | Solo atiende `/la-marca-del-estrecho/keepers/…`: lee las páginas del repo privado, verifica el token de Cloudflare Access y guarda el libro desde su modo edición. |
 | `wrangler.jsonc` | Configuración del Worker `nephei-rpg`. |
 
-## Las fichas de La Marca del Estrecho
+## Las fichas de los pregenerados
 
-`/la-marca-del-estrecho/fichas` enseña los seis investigadores pregenerados y `/la-marca-del-estrecho/investigadores/` guarda sus PDF: uno por personaje, `todos.pdf`, `ficha-en-blanco.pdf` y las vistas previas JPG. Cada PDF tiene tres hojas: las dos caras de la ficha oficial de Pulp Cthulhu (Edge) con campos de formulario ya rellenos, y una hoja de trasfondo propia (quién es, por qué le escribía Guerrero, a quién conoce en el barco) con campos en sus líneas en blanco.
+Los investigadores pregenerados de las dos aventuras están en las fichas oficiales de Edge, en PDF rellenable (se editan con Adobe Reader o el navegador). Los PDF, sus vistas previas y, en La Marca, la página `fichas.html` **los genera un programa a partir de un archivo de datos: no se editan a mano.**
 
-No se editan a mano. Los datos están en `herramientas/fichas-marca/personajes.py`; lo derivado (½ y ⅕, puntos de vida de Pulp, movimiento, bonificación al daño, puntos de magia, Cordura, bienes según Crédito) lo calcula el generador. La ficha original, sin campos, está en `herramientas/fichas-marca/pulp-cthulhu-ficha.pdf`. Necesita PyMuPDF y, para la hoja de trasfondo, Google Chrome:
+| Aventura | Ficha | Datos | Instrucciones |
+|---|---|---|---|
+| La Marca del Estrecho | Pulp Cthulhu, más una hoja de trasfondo propia | `herramientas/fichas-marca/personajes.py` | [herramientas/fichas-marca/README.md](herramientas/fichas-marca/README.md) |
+| La maldición del Palacio de Linares | 7.ª edición, años 20 | `herramientas/fichas-linares/personajes.py` | [herramientas/fichas-linares/README.md](herramientas/fichas-linares/README.md) |
 
-```
-cd herramientas/fichas-marca
-python generar.py            # página, PDF y vistas previas
-python generar.py --sin-pdf  # solo la página
-```
+En los dos casos el ciclo es el mismo: `git pull`, cambiar `personajes.py`, ejecutar `python generar.py` en su carpeta, revisar las vistas previas JPG y hacer push. Los README de cada carpeta lo explican paso a paso, con lo que hay que instalar, qué significa cada campo, qué otras páginas hay que cambiar a mano y qué hacer si sale un error.
 
-Si cambia un pregenerado, cámbialo también en el Libro del Guardián (capítulo 7, «Investigadores de ejemplo») y en las dos sinopsis. `herramientas/` no se sirve: el worker solo publica `public/`. Las piezas comunes de las dos fichas (campos, círculos de las pistas, tabla de Crédito) están en `herramientas/formulario.py`.
-
-## Las fichas de La maldición del Palacio de Linares
-
-`/la-maldicion-de-linares/fichas` enseña los cinco pregenerados sobre la ficha oficial de 7.ª edición (Edge, años 20) y `/la-maldicion-de-linares/investigadores/` guarda sus PDF rellenables: uno por personaje, `todos.pdf`, `ficha-en-blanco.pdf` y las vistas previas JPG.
-
-La ficha original, sin campos, está en `herramientas/fichas-linares/coc-7ed-1920.pdf`. El generador le pone encima campos de formulario ya rellenos (con lo derivado calculado: ½ y ⅕, PV, PM, MOV, BD, Corpulencia, dinero según Crédito a 5 pesetas por dólar) y una casilla sobre cada número de las pistas que, marcada, lo rodea con un círculo. Necesita PyMuPDF:
-
-```
-cd herramientas/fichas-linares
-python generar.py
-```
-
-Si cambia un pregenerado, cámbialo en `personajes.py`, en la aventura (`#pregenerados`) y en la sinopsis.
+`herramientas/` no se sirve: el worker solo publica `public/`. Las piezas comunes de los dos generadores están en `herramientas/formulario.py`.
 
 ## El área del Guardián
 
