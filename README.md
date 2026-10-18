@@ -28,6 +28,19 @@ python generar.py --sin-pdf  # solo la página
 
 Si cambia un pregenerado, cámbialo también en el Libro del Guardián (capítulo 7, «Investigadores de ejemplo») y en las dos sinopsis. `herramientas/` no se sirve: el worker solo publica `public/`.
 
+## Las fichas de La maldición del Palacio de Linares
+
+`/la-maldicion-de-linares/fichas` enseña los cinco pregenerados sobre la ficha oficial de 7.ª edición (Edge, años 20) y `/la-maldicion-de-linares/investigadores/` guarda sus PDF rellenables: uno por personaje, `todos.pdf`, `ficha-en-blanco.pdf` y las vistas previas JPG.
+
+La ficha original, sin campos, está en `herramientas/fichas-linares/coc-7ed-1920.pdf`. El generador le pone encima campos de formulario ya rellenos (con lo derivado calculado: ½ y ⅕, PV, PM, MOV, BD, Corpulencia, dinero según Crédito a 5 pesetas por dólar) y una casilla sobre cada número de las pistas que, marcada, lo rodea con un círculo. Necesita PyMuPDF:
+
+```
+cd herramientas/fichas-linares
+python generar.py
+```
+
+Si cambia un pregenerado, cámbialo en `personajes.py`, en la aventura (`#pregenerados`) y en la sinopsis.
+
 ## El área del Guardián
 
 `/la-marca-del-estrecho/keepers/…` está detrás de Cloudflare Access y, además, el worker comprueba la firma del token de Access: sin él no sirve nada privado.
