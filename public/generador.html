@@ -10,7 +10,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="/style.css?v=20261016b">
-<link rel="stylesheet" href="/generador/generador.css?v=1">
+<link rel="stylesheet" href="/generador/generador.css?v=2">
 </head>
 <body class="sitio generador">
 <nav class="barra"><a class="marca" href="/">rpg<span>·</span>nephei</a><a href="https://nephei.org">nephei.org</a></nav>
@@ -18,7 +18,7 @@
 <div class="container">
 <main>
   <header class="gen-cabecera">
-    <p class="sello">La llamada de Cthulhu · Pulp Cthulhu</p>
+    <p class="sello"><a href="/utilidades" style="color:inherit;border:0">Utilidades</a> · La llamada de Cthulhu · Pulp Cthulhu</p>
     <h1>Generador de personajes</h1>
     <p class="entradilla">Rellena la ficha oficial aquí mismo, o deja que el asistente te lleve paso a paso por las reglas del manual. Al terminar, descárgala en PDF rellenable.</p>
     <p class="gen-privacidad">Todo se queda en este navegador: los personajes se guardan solos en su almacenamiento local y nada viaja a ningún servidor. Si borras los datos del sitio o cambias de navegador, no estarán; para llevártelos, usa «Copia de seguridad».</p>
@@ -67,7 +67,7 @@
       <li><strong>Pistas.</strong> En Vida, Cordura, Magia y Suerte, pulsa un número para rodearlo (el valor actual); vuelve a pulsarlo para quitar el círculo.</li>
       <li><strong>Retrato.</strong> Pulsa la esquina superior derecha de la primera cara para subir una imagen; podrás encuadrarla. Se guarda en el navegador, reducida.</li>
       <li><strong>Descargar PDF.</strong> Sale la ficha oficial con todo relleno, y sigue siendo un PDF con campos: se puede seguir editando en Adobe Reader o en el navegador.</li>
-      <li><strong>Asistente.</strong> Crea un investigador de 7.ª edición siguiendo el capítulo 3 del <em>Manual del Guardián</em>: edad, características (tiradas o método rápido), ocupación, intereses particulares, trasfondo, dinero y equipo. Al final lo pasa a una ficha nueva.</li>
+      <li><strong>Asistente.</strong> Crea un investigador de 7.ª edición siguiendo el capítulo 3 del <em>Manual del Guardián</em> (edad, características por tiradas o método rápido, ocupación, intereses particulares, trasfondo, dinero y equipo) o un héroe de <em>Pulp Cthulhu</em> siguiendo el capítulo 2 de su manual (arquetipo, característica principal, talentos, ocupaciones pulp y puntos de arquetipo). Al final lo pasa a una ficha nueva.</li>
     </ul>
   </section>
 </main>
@@ -108,8 +108,9 @@
 
 <dialog id="d-asistente" class="gen-dialogo ancho"></dialog>
 
-<script src="/generador/datos.js?v=1"></script>
-<script src="/generador/editor.js?v=1"></script>
-<script src="/generador/asistente.js?v=1"></script>
+<script src="/generador/datos.js?v=2"></script>
+<script src="/generador/datos-pulp.js?v=2"></script>
+<script src="/generador/editor.js?v=2"></script>
+<script src="/generador/asistente.js?v=2"></script>
 </body>
 </html>

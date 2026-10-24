@@ -1,6 +1,6 @@
-// Asistente de creación de investigadores de La llamada de Cthulhu 7.ª edición, paso a paso como en el
-// capítulo 3 del Manual del Guardián. Guarda su progreso en el navegador y, al final, crea una ficha nueva
-// en el editor con Generador.crear().
+// Asistente de creación de personajes paso a paso: investigadores de La llamada de Cthulhu 7.ª edición
+// (capítulo 3 del Manual del Guardián) y héroes de Pulp Cthulhu (capítulo 2 de su manual). Guarda su progreso
+// en el navegador y, al final, crea una ficha nueva en el editor con Generador.crear().
 'use strict';
 
 const Asistente = (() => {
@@ -32,7 +32,7 @@ const Asistente = (() => {
     crypto.getRandomValues(u);
     return 1 + (u[0] % caras);
   }
-  function tirar(expr) {  // '3D6' o '2D6+6'
+  function tirar(expr) {  // '3D6', '2D6+6' o '1D6+13'
     const m = /^(\d+)D(\d+)(?:\+(\d+))?$/.exec(expr);
     const dados = Array.from({ length: +m[1] }, () => d(+m[2]));
     const mas = +(m[3] || 0);
@@ -43,13 +43,14 @@ const Asistente = (() => {
   // ------------------------------------------------------------ estado
   function inicial() {
     return {
-      paso: 0, visto: 0, metodo: 'tiradas', epoca: Generador.opciones().epoca || '20', edad: 30,
+      paso: 0, visto: 0, sistema: 'coc', metodo: 'tiradas', epoca: Generador.opciones().epoca || '20', edad: 30,
       tiradas: null, rapido: {}, ajuste: {}, mejoras: null, suerte: null,
       ocupacion: '', formula: {}, huecos: [], ocupPuntos: {}, rapidoHab: {}, sobrante: {},
       interes: {}, interesRapido: [null, null, null, null],
       datos: { Nombre: '', Jugador: '', Género: '', Residencia: '', Nacimiento: '', lengua: 'Español' },
       tras: { descripcion: '', ideologia: '', allegados: '', lugares: '', posesiones: '', rasgos: '' }, vinculo: '',
       foto: null, equipo: '', armas: [{}, {}, {}, {}],
+      arquetipo: '', principal: '', arqPuntos: {}, talentos: [], talentoExtra: {},
     };
   }
   let A = null;
@@ -57,16 +58,43 @@ const Asistente = (() => {
   function guardar() { try { localStorage.setItem(CLAVE, JSON.stringify(A)); } catch (e) { /* el asistente sigue sin recordar */ } }
 
   // ------------------------------------------------------------ reglas aplicadas
-  const tramo = () => REGLAS.edades.find(t => A.edad >= t.desde && A.edad <= t.hasta) || null;
+  const pulp = () => A.sistema === 'pulp';
+  function sis() {
+    return pulp()
+      ? { ficha: 'pulp', nombre: 'Pulp Cthulhu', quien: 'héroe', ocup: OCUPACIONES_PULP, rapido: PULP.rapido,
+          rapidoHab: PULP.rapidoHabilidades, manual: 'manual de Pulp Cthulhu' }
+      : { ficha: 'coc', nombre: 'La llamada de Cthulhu', quien: 'investigador', ocup: OCUPACIONES, rapido: REGLAS.rapido,
+          rapidoHab: REGLAS.rapidoHabilidades, manual: 'Manual del Guardián' };
+  }
+  // En Pulp no hay modificadores por edad (pág. 23): ningún tramo.
+  const tramo = () => pulp() ? null : REGLAS.edades.find(t => A.edad >= t.desde && A.edad <= t.hasta) || null;
+  const edadValida = () => pulp() ? A.edad >= 15 && A.edad <= 90 : !!tramo();
+  const arquetipo = () => ARQUETIPOS.find(a => a.n === A.arquetipo) || null;
+  const dadosDe = k => pulp() && k === A.principal ? '1D6+13' : REGLAS.tirada[k];
   function base(k) {
     if (A.metodo === 'tiradas') return A.tiradas ? A.tiradas[k].total : null;
+    if (pulp() && k === A.principal) return PULP.rapidoPrincipal;
     return A.rapido[k] ?? null;
+  }
+  function bh(n, c) {  // base de una habilidad, con las diferencias de Pulp
+    if (PULP.psiquicos.includes(n)) return 0;
+    if (pulp() && n in PULP.base) return PULP.base[n];
+    return baseHabilidad(n, c || finales());
+  }
+  // Habilidades que traen los talentos (el poder psíquico, la especialidad de Erudición).
+  function habTalentos() {
+    if (!pulp()) return [];
+    const r = [];
+    if (A.talentos.includes('Poder psíquico') && A.talentoExtra.psiquico) r.push(A.talentoExtra.psiquico);
+    if (A.talentos.includes('Erudición') && (A.talentoExtra.erudicion || '').trim()) r.push(`Conocimiento (${A.talentoExtra.erudicion.trim()})`);
+    return r;
   }
   function eduPrevia() {  // EDU antes de las tiradas de mejora
     const t = tramo();
     return base('EDU') - (t && t.eduMenos || 0);
   }
   function finales() {
+    if (pulp()) return Object.fromEntries(CARS.map(k => [k, base(k)]));
     const t = tramo();
     const c = {};
     for (const k of CARS) {
@@ -85,10 +113,11 @@ const Asistente = (() => {
   }
   const suerte = () => {
     if (!A.suerte) return null;
+    if (pulp()) return A.suerte[0].total;
     const t = tramo();
     return t && t.suerteDoble ? Math.max(A.suerte[0].total, A.suerte[1].total) : A.suerte[0].total;
   };
-  const ocupacion = () => OCUPACIONES.find(o => o.n === A.ocupacion) || null;
+  const ocupacion = () => sis().ocup.find(o => o.n === A.ocupacion) || null;
 
   // Huecos de la ocupación; en el método rápido siempre ocho («ocho habilidades de ocupación apropiadas»).
   function huecosDef() {
@@ -121,24 +150,29 @@ const Asistente = (() => {
     }, 0);
   }
   const mejorDe = (cars, c) => cars.reduce((a, b) => ((c[b] || 0) > (c[a] || 0) ? b : a));
-  const valoresRapido = () => [...REGLAS.rapidoHabilidades];
+  const valoresRapido = () => [...sis().rapidoHab];
 
   // Valor final de cada habilidad que no está en su base.
   function valores() {
     const c = finales(), o = ocupacion();
     const v = {};
-    const b = n => baseHabilidad(n, c);
+    const b = n => bh(n, c);
     const ocup = habOcupacion();
+    const anade = reparto => { for (const [n, p] of Object.entries(reparto || {})) if (+p) v[n] = (v[n] ?? b(n)) + +p; };
+    if (pulp() && A.talentos.includes('Conocimiento de los Mitos')) v['Mitos de Cthulhu'] = 10;
+    for (const n of habTalentos()) v[n] = b(n);
     if (A.metodo === 'tiradas') {
-      for (const n of ocup) v[n] = b(n) + (+A.ocupPuntos[n] || 0);
+      for (const n of ocup) v[n] = (v[n] ?? b(n)) + (+A.ocupPuntos[n] || 0);
       v['Crédito'] = +A.ocupPuntos['Crédito'] || 0;
-      for (const [n, p] of Object.entries(A.interes)) if (+p) v[n] = (v[n] ?? b(n)) + +p;
+      if (pulp()) anade(A.arqPuntos);
+      anade(A.interes);
     } else {
-      ocup.forEach((n, i) => { const a = A.rapidoHab[i]; if (a) v[n] = Math.max(+a, b(n)); else v[n] = b(n); });
+      ocup.forEach((n, i) => { const a = A.rapidoHab[i]; v[n] = a ? Math.max(+a, b(n)) : (v[n] ?? b(n)); });
       const cr = +A.rapidoHab.credito || 0;
       v['Crédito'] = o ? Math.min(cr, o.cr[1]) : cr;
-      for (const [n, p] of Object.entries(A.sobrante)) if (+p) v[n] = (v[n] ?? b(n)) + +p;
+      anade(A.sobrante);
       for (const n of A.interesRapido) if (n) v[n] = b(n) + 20;
+      if (pulp()) anade(A.arqPuntos);
     }
     return v;
   }
@@ -149,10 +183,10 @@ const Asistente = (() => {
     const lista = [];
     for (const x of HABILIDADES) {
       if (x.n === 'Crédito' || x.n === 'Mitos de Cthulhu') continue;
-      if (x.actual && A.epoca !== 'actual') continue;
+      if (x.actual && A.epoca !== 'actual' && !(pulp() && x.n === 'Informática')) continue;  // Pulp la trae en su listado
       lista.push(x.fam ? `${x.n} (*)` : x.n);
     }
-    return lista;
+    return lista.concat(habTalentos());
   }
   const etiquetaOpcion = s => s.endsWith('(*)') ? s.slice(0, -4) + ' (especialidad)' : s;
   // Un desplegable con las opciones y, si se elige una familia, un campo para la especialidad.
@@ -174,9 +208,9 @@ const Asistente = (() => {
   }
 
   // ------------------------------------------------------------ pasos
-  const PASOS = [
+  const PASOS_COC = [
     { t: 'Empezar', pintar: pasoEmpezar, ok: () => true },
-    { t: 'Edad', pintar: pasoEdad, ok: () => tramo() ? true : 'La edad tiene que estar entre 15 y 89 años.' },
+    { t: 'Edad', pintar: pasoEdad, ok: () => edadValida() ? true : 'La edad tiene que estar entre 15 y 89 años.' },
     { t: 'Características', pintar: pasoCaracteristicas, ok: okCaracteristicas },
     { t: 'Ajustes por edad', pintar: pasoAjustes, ok: okAjustes },
     { t: 'Atributos derivados', pintar: pasoDerivados, ok: () => true },
@@ -187,21 +221,50 @@ const Asistente = (() => {
     { t: 'Ingresos y equipo', pintar: pasoEquipo, ok: () => true },
     { t: 'Resumen', pintar: pasoResumen, ok: () => true },
   ];
+  const PASOS_PULP = [
+    { t: 'Empezar', pintar: pasoEmpezar, ok: () => true },
+    { t: 'Arquetipo', pintar: pasoArquetipo, ok: okArquetipo },
+    { t: 'Edad', pintar: pasoEdad, ok: () => edadValida() ? true : 'La edad tiene que estar entre 15 y 90 años.' },
+    { t: 'Características', pintar: pasoCaracteristicas, ok: okCaracteristicas },
+    { t: 'Talentos', pintar: pasoTalentos, ok: okTalentos },
+    { t: 'Atributos derivados', pintar: pasoDerivados, ok: () => true },
+    { t: 'Ocupación', pintar: pasoOcupacion, ok: okOcupacion },
+    { t: 'Habilidades de ocupación', pintar: pasoPuntos, ok: okPuntos },
+    { t: 'Habilidades de arquetipo', pintar: pasoArqPuntos, ok: okArqPuntos },
+    { t: 'Intereses particulares', pintar: pasoInteres, ok: okInteres },
+    { t: 'Trasfondo y retrato', pintar: pasoTrasfondo, ok: () => true },
+    { t: 'Ingresos y equipo', pintar: pasoEquipo, ok: () => true },
+    { t: 'Resumen', pintar: pasoResumen, ok: () => true },
+  ];
+  const pasos = () => pulp() ? PASOS_PULP : PASOS_COC;
 
   function pasoEmpezar(c) {
-    c.append(h('h3', null, 'Un investigador nuevo'),
-      h('p', null, 'El asistente sigue el capítulo 3 del Manual del Guardián. Puedes ir y volver entre los pasos: lo que tires y elijas queda guardado en este navegador hasta que crees la ficha.'),
+    const reiniciar = () => { A.ocupPuntos = {}; A.rapidoHab = {}; A.sobrante = {}; A.interes = {}; A.interesRapido = [null, null, null, null]; A.interesHuecos = null; A.mejoras = null; A.arqPuntos = {}; };
+    c.append(h('h3', null, pulp() ? 'Un héroe pulp nuevo' : 'Un investigador nuevo'),
+      h('p', null, `El asistente sigue ${pulp() ? 'el capítulo 2 del manual de Pulp Cthulhu' : 'el capítulo 3 del Manual del Guardián'}. Puedes ir y volver entre los pasos: lo que tires y elijas queda guardado en este navegador hasta que crees la ficha.`),
+      h('h4', null, 'Juego'),
+      radios('sistema', [
+        ['coc', 'La llamada de Cthulhu', '7.ª edición. Investigadores corrientes; ficha de los años 20.'],
+        ['pulp', 'Pulp Cthulhu', 'Héroes más duros y capaces: arquetipos, talentos y el doble de Puntos de Vida.'],
+      ], v => {
+        if (v === A.sistema) return;
+        const nuevo = inicial();
+        Object.assign(nuevo, { metodo: A.metodo, epoca: A.epoca, datos: A.datos, tras: A.tras, vinculo: A.vinculo, foto: A.foto, equipo: A.equipo, armas: A.armas });
+        A = nuevo;
+      }),
       h('h4', null, 'Método'),
-      radios('metodo', [
+      radios('metodo', pulp() ? [
+        ['tiradas', 'Tiradas', 'El método completo: 3D6×5 y 2D6+6×5, y 1D6+13×5 para la característica principal del arquetipo; puntos de ocupación, de arquetipo e intereses particulares.'],
+        ['rapido', 'Creación rápida', '90 a la característica principal y 80, 70, 60, 60, 50, 50 y 40 a las demás, y valores fijos entre las habilidades.'],
+      ] : [
         ['tiradas', 'Tiradas', 'El método normal: 3D6×5 y 2D6+6×5 para las características; puntos de ocupación e intereses particulares para las habilidades.'],
         ['rapido', 'Método rápido', 'Opción 5: repartes 40, 50, 50, 50, 60, 60, 70 y 80 entre las características, y valores fijos entre las habilidades.'],
-      ], v => { if (v !== A.metodo) { A.metodo = v; A.ocupPuntos = {}; A.rapidoHab = {}; A.sobrante = {}; A.interes = {}; A.interesRapido = [null, null, null, null]; A.interesHuecos = null; A.mejoras = null; } }),
+      ], v => { if (v !== A.metodo) { A.metodo = v; reiniciar(); } }),
       h('h4', null, 'Época'),
       radios('epoca', [
-        ['20', 'Años 20', 'La de la ficha. Dinero según la tabla de los años 20.'],
+        ['20', pulp() ? 'Años 20 o 30' : 'Años 20', pulp() ? 'La tabla de dinero de los años 30 de Pulp tiene los mismos importes que la de los años 20.' : 'La de la ficha. Dinero según la tabla de los años 20.'],
         ['actual', 'Época actual', 'Añade las habilidades y ocupaciones marcadas como actuales y usa la tabla de dinero actual.'],
-      ]),
-      h('p', { class: 'gen-nota' }, 'El asistente es para La llamada de Cthulhu 7.ª edición. El de Pulp Cthulhu llegará más adelante; mientras, la ficha de Pulp se puede rellenar a mano con «Nuevo».'));
+      ]));
   }
   function radios(clave, ops, alCambiar) {
     return h('div', { class: 'asis-opciones', role: 'radiogroup' }, ops.map(([v, t, sub]) =>
@@ -210,8 +273,45 @@ const Asistente = (() => {
         h('span', null, h('strong', null, t), h('small', null, sub)))));
   }
 
+  function pasoArquetipo(c) {
+    const a = arquetipo();
+    c.append(h('h3', null, 'Arquetipo pulp'),
+      regla('Escoge el arquetipo que mejor se ajuste al héroe que quieres interpretar. Cada uno tiene una característica principal (que empieza más alta), una lista de habilidades entre las que repartir 100 puntos de bonificación y, a veces, un talento obligatorio o recomendado.', 'Pulp Cthulhu, págs. 15-22'),
+      h('label', null, 'Arquetipo: ', h('select', { onchange: e => {
+        A.arquetipo = e.target.value; A.principal = ''; A.arqPuntos = {}; A.tiradas = null; A.rapido = {}; A.talentos = [];
+        const x = arquetipo();
+        if (x && x.principal.length === 1) A.principal = x.principal[0];
+        if (x && x.talento) A.talentos = [x.talento];
+        guardar(); pintar();
+      } }, h('option', { value: '' }, '— elige —'), ARQUETIPOS.map(x => h('option', { value: x.n, selected: x.n === A.arquetipo }, x.n)))));
+    if (!a) return;
+    c.append(h('p', null, h('em', null, a.texto)));
+    c.append(h('h4', null, 'Característica principal'));
+    if (a.principal.length === 1) c.append(h('p', null, `${REGLAS.nombres[a.principal[0]]} (${a.principal[0]}).`));
+    else c.append(h('div', { class: 'asis-opciones' }, a.principal.map(k => h('label', null,
+      h('input', { type: 'radio', name: 'principal', checked: A.principal === k, onchange: () => { A.principal = k; A.tiradas = null; A.rapido = {}; guardar(); pintar(); } }),
+      h('span', null, h('strong', null, `${REGLAS.nombres[k]} (${k})`))))));
+    c.append(h('h4', null, 'Habilidades de arquetipo (100 puntos)'),
+      h('p', null, a.hab.map(x => x.replace(' (*)', ' (cualquiera)')).join(', ') + (a.psiquico ? '; con el talento Poder psíquico, también las habilidades psíquicas.' : '.')),
+      h('h4', null, 'Talentos'),
+      h('p', null, a.talento ? `Debe escoger el talento ${a.talento} y otro más.` : `Escoge dos cualesquiera${a.recomienda ? ` (se recomienda ${a.recomienda})` : ''}.`),
+      h('h4', null, 'Ocupaciones sugeridas'), h('p', null, a.ocupaciones + '.'),
+      h('h4', null, 'Rasgos sugeridos'), h('p', null, a.rasgos.join(', ') + '.'),
+      a.especial ? h('p', { class: 'asis-regla' }, 'Especial: ' + a.especial) : null);
+  }
+  function okArquetipo() {
+    if (!arquetipo()) return 'Elige un arquetipo.';
+    return A.principal ? true : 'Elige la característica principal.';
+  }
+
   function pasoEdad(c) {
-    const t = tramo();
+    if (pulp()) {
+      c.append(h('h3', null, 'Edad'),
+        regla('Escoge una edad entre los 15 y los 90 años. Los modificadores por edad (penalizaciones a las características o bonificaciones por experiencia) no se utilizan en Pulp Cthulhu.', 'Pulp Cthulhu, pág. 23'),
+        h('label', null, 'Edad: ', h('input', { type: 'number', min: 15, max: 90, value: A.edad,
+          oninput: e => { A.edad = parseInt(e.target.value, 10) || 0; guardar(); pie(); } })));
+      return;
+    }
     c.append(h('h3', null, 'Edad'),
       regla('Antes de anotar las características, decide la edad del investigador (de 15 a 89 años; fuera de ese margen, con permiso del Guardián). Los modificadores de cada tramo no se acumulan.', 'Manual del Guardián, pág. 34'),
       h('label', null, 'Edad: ', h('input', { type: 'number', min: 15, max: 89, value: A.edad,
@@ -236,32 +336,41 @@ const Asistente = (() => {
 
   function pasoCaracteristicas(c) {
     c.append(h('h3', null, 'Características'));
+    const P = pulp() ? A.principal : null;
     if (A.metodo === 'tiradas') {
-      c.append(regla('Tira 3D6 y multiplica el resultado por 5 para FUE, CON, DES, APA y POD. Tira 2D6+6 y multiplica el resultado por 5 para TAM, INT y EDU. Los ajustes por la edad vienen en el paso siguiente.', 'Manual del Guardián, pág. 36'));
+      c.append(pulp()
+        ? regla(`Tira 3D6×5 para FUE, CON, DES, APA y POD, y 2D6+6×5 para TAM, INT y EDU, salvo la característica principal del arquetipo (${P}), que se tira con 1D6+13 y se multiplica por 5.`, 'Pulp Cthulhu, pág. 23')
+        : regla('Tira 3D6 y multiplica el resultado por 5 para FUE, CON, DES, APA y POD. Tira 2D6+6 y multiplica el resultado por 5 para TAM, INT y EDU. Los ajustes por la edad vienen en el paso siguiente.', 'Manual del Guardián, pág. 36'));
       if (!A.tiradas) {
         c.append(h('button', { type: 'button', class: 'gen-boton principal', onclick: () => {
-          A.tiradas = Object.fromEntries(CARS.map(k => [k, tirar(REGLAS.tirada[k])]));
+          A.tiradas = Object.fromEntries(CARS.map(k => [k, tirar(dadosDe(k))]));
           A.ajuste = {}; A.mejoras = null; guardar(); pintar();
         } }, 'Tirar los dados'));
-        return;
-      }
-      c.append(h('div', { class: 'asis-cars' }, CARS.map(k => h('div', { class: 'asis-car' },
-        h('b', null, `${k} · ${REGLAS.tirada[k]}`), h('span', { class: 'v' }, A.tiradas[k].total),
-        h('small', null, textoTirada(A.tiradas[k]))))));
-      const bajas = CARS.filter(k => A.tiradas[k].total < 50).length;
-      c.append(h('p', { class: 'gen-nota' }, 'Opción 1 del manual (pág. 49): si no te gusta el resultado, el Guardián puede dejarte empezar de nuevo, por ejemplo cuando tres o más características salen por debajo de 50.' + (bajas >= 3 ? ` Aquí hay ${bajas}.` : '')),
-        h('button', { type: 'button', class: 'gen-boton', onclick: () => {
+      } else {
+        c.append(h('div', { class: 'asis-cars' }, CARS.map(k => h('div', { class: 'asis-car' },
+          h('b', null, `${k} · ${dadosDe(k)}${k === P ? ' · principal' : ''}`), h('span', { class: 'v' }, A.tiradas[k].total),
+          h('small', null, textoTirada(A.tiradas[k]))))));
+        const bajas = CARS.filter(k => A.tiradas[k].total < 50).length;
+        if (!pulp()) c.append(h('p', { class: 'gen-nota' }, 'Opción 1 del manual (pág. 49): si no te gusta el resultado, el Guardián puede dejarte empezar de nuevo, por ejemplo cuando tres o más características salen por debajo de 50.' + (bajas >= 3 ? ` Aquí hay ${bajas}.` : '')));
+        c.append(h('button', { type: 'button', class: 'gen-boton', onclick: () => {
           if (!confirm('¿Descartar estas tiradas y volver a tirar? Hazlo solo si tu Guardián lo permite.')) return;
           A.tiradas = null; A.ajuste = {}; A.mejoras = null; guardar(); pintar();
         } }, 'Volver a tirar'));
+      }
     } else {
-      c.append(regla('Asigna 40, 50, 50, 50, 60, 60, 70 y 80 como desees entre tus características. Después se aplican los modificadores de edad y EDU.', 'Opción 5: método rápido, pág. 50'));
+      c.append(pulp()
+        ? regla(`Asigna 90 a tu característica principal (${P}) y a continuación 80, 70, 60, 60, 50, 50 y 40 como desees entre las restantes.`, 'Creación rápida, pág. 45')
+        : regla('Asigna 40, 50, 50, 50, 60, 60, 70 y 80 como desees entre tus características. Después se aplican los modificadores de edad y EDU.', 'Opción 5: método rápido, pág. 50'));
       const tabla = h('div', { class: 'asis-cars' });
       const pintarSel = () => {
         tabla.textContent = '';
         for (const k of CARS) {
-          const libres = [...REGLAS.rapido];
-          for (const j of CARS) if (j !== k && A.rapido[j] != null) libres.splice(libres.indexOf(A.rapido[j]), 1);
+          if (k === P) {
+            tabla.append(h('div', { class: 'asis-car' }, h('b', null, `${k} · principal`), h('span', { class: 'v' }, PULP.rapidoPrincipal)));
+            continue;
+          }
+          const libres = [...sis().rapido];
+          for (const j of CARS) if (j !== k && j !== P && A.rapido[j] != null) libres.splice(libres.indexOf(A.rapido[j]), 1);
           const ops = [...new Set(libres)].sort((a, b) => b - a);
           tabla.append(h('label', { class: 'asis-car' }, h('b', null, `${k} · ${REGLAS.nombres[k]}`),
             h('select', { onchange: e => { A.rapido[k] = e.target.value ? +e.target.value : null; A.ajuste = {}; A.mejoras = null; guardar(); pintarSel(); pie(); } },
@@ -271,10 +380,91 @@ const Asistente = (() => {
       pintarSel();
       c.append(tabla);
     }
+    if (pulp()) {
+      c.append(h('h4', null, 'Suerte'), regla('Tira 2D6+6 y multiplica el resultado por 5.', 'Pulp Cthulhu, pág. 23'));
+      if (!A.suerte) c.append(h('button', { type: 'button', class: 'gen-boton principal', onclick: () => { A.suerte = [tirar('2D6+6')]; guardar(); pintar(); } }, 'Tirar la Suerte'));
+      else c.append(h('p', null, `2D6+6 = ${textoTirada(A.suerte[0])} = `, h('strong', null, `Suerte ${A.suerte[0].total}`)));
+    }
   }
   function okCaracteristicas() {
-    if (A.metodo === 'tiradas') return A.tiradas ? true : 'Falta tirar los dados.';
-    return CARS.every(k => A.rapido[k] != null) ? true : 'Falta asignar un valor a cada característica.';
+    if (A.metodo === 'tiradas' && !A.tiradas) return 'Falta tirar los dados.';
+    if (A.metodo === 'rapido' && !CARS.every(k => base(k) != null)) return 'Falta asignar un valor a cada característica.';
+    if (pulp() && !A.suerte) return 'Falta tirar la Suerte.';
+    return true;
+  }
+
+  // Talentos pulp: dos, elegidos o al azar (1D4 para la tabla y 1D10 para el talento).
+  function pasoTalentos(c) {
+    const a = arquetipo();
+    const max = 2;
+    c.append(h('h3', null, 'Talentos pulp'),
+      regla('Elige dos talentos de entre las cuatro tablas, o determínalos al azar: 1D4 para la tabla (físicos, mentales, de combate, varios) y 1D10 para el talento.' +
+        (a && a.talento ? ` Tu arquetipo (${a.n}) debe escoger ${a.talento}.` : a && a.recomienda ? ` Para tu arquetipo se recomienda ${a.recomienda}.` : ''), 'Pulp Cthulhu, págs. 23-25'),
+      h('p', null, h('button', { type: 'button', class: 'gen-boton', disabled: A.talentos.length >= max, onclick: () => {
+        const tablas = Object.keys(TALENTOS);
+        for (let i = 0; i < 50 && A.talentos.length < max; i++) {
+          const t = d(4), n = d(10), x = TALENTOS[tablas[t - 1]][n - 1][0];
+          A.ultimaTirada = `1D4 = ${t} (${tablas[t - 1].toLowerCase()}), 1D10 = ${n}: ${x}`;
+          if (!A.talentos.includes(x)) { A.talentos.push(x); break; }
+        }
+        guardar(); pintar();
+      } }, 'Tirar un talento al azar'), A.ultimaTirada ? h('span', { class: 'gen-nota' }, ' ' + A.ultimaTirada) : null));
+    for (const [tabla, lista] of Object.entries(TALENTOS)) {
+      c.append(h('h4', null, `Talentos ${tabla.toLowerCase()}`));
+      const t = h('table', { class: 'asis-tabla' }, h('tbody'));
+      lista.forEach(([n, ef], i) => {
+        const marcado = A.talentos.includes(n);
+        const fijo = a && a.talento === n;
+        t.tBodies[0].append(h('tr', null,
+          h('td', { class: 'n' }, i + 1),
+          h('td', null, h('label', null, h('input', { type: 'checkbox', checked: marcado, disabled: fijo || (!marcado && A.talentos.length >= max),
+            onchange: e => { if (e.target.checked) A.talentos.push(n); else A.talentos = A.talentos.filter(x => x !== n); guardar(); pintar(); } }), ' ', h('strong', null, n))),
+          h('td', null, ef)));
+      });
+      c.append(t);
+    }
+    if (A.talentos.includes('Poder psíquico')) {
+      c.append(h('h4', null, 'Poder psíquico'), h('label', null, 'Poder: ', h('select', { onchange: e => { A.talentoExtra.psiquico = e.target.value; guardar(); pie(); } },
+        h('option', { value: '' }, '— elige —'), PULP.psiquicos.map(x => h('option', { value: x, selected: A.talentoExtra.psiquico === x }, x)))),
+        h('p', { class: 'gen-nota' }, 'Empieza en 0%: hay que darle puntos de ocupación, de arquetipo o de interés particular (pág. 87).'));
+    }
+    if (A.talentos.includes('Erudición')) {
+      c.append(h('h4', null, 'Erudición'), h('label', null, 'Conocimiento de… ', h('input', { type: 'text', value: A.talentoExtra.erudicion || '', placeholder: 'los sueños, los vampiros…',
+        oninput: e => { A.talentoExtra.erudicion = e.target.value; guardar(); pie(); } })),
+        h('p', { class: 'gen-nota' }, 'Hay que darle puntos de ocupación o de interés particular.'));
+    }
+    if (A.talentos.includes('Recarga rápida')) {
+      c.append(h('h4', null, 'Recarga rápida'), h('label', null, 'Especialidad de Armas de fuego: ', h('input', { type: 'text', value: A.talentoExtra.recarga || '', list: 'esp-recarga',
+        oninput: e => { A.talentoExtra.recarga = e.target.value; guardar(); } }), h('datalist', { id: 'esp-recarga' }, ESPECIALIDADES['Armas de fuego'].map(x => h('option', { value: x[0] })))));
+    }
+  }
+  function okTalentos() {
+    const a = arquetipo();
+    if (A.talentos.length !== 2) return 'Elige dos talentos.';
+    if (a && a.talento && !A.talentos.includes(a.talento)) return `Tu arquetipo debe escoger ${a.talento}.`;
+    if (A.talentos.includes('Poder psíquico') && !A.talentoExtra.psiquico) return 'Elige el poder psíquico.';
+    if (A.talentos.includes('Erudición') && !(A.talentoExtra.erudicion || '').trim()) return 'Escribe la especialidad de Conocimiento.';
+    return true;
+  }
+
+  function pasoArqPuntos(c) {
+    const a = arquetipo();
+    c.append(h('h3', null, 'Habilidades de arquetipo'),
+      regla(`Reparte ${PULP.puntosArquetipo} puntos de bonificación entre las habilidades de tu arquetipo (${a.n}); pueden coincidir con las de la ocupación. No se pueden usar en otras habilidades, y los que no asignes se pierden.` +
+        (A.metodo === 'rapido' ? ' En la creación rápida se recomienda subir solo dos o tres.' : ''), 'Pulp Cthulhu, págs. 37 y 45'),
+      tablaReparto(A.arqPuntos, PULP.puntosArquetipo, () => { guardar(); pie(); }, { opciones: opcionesArquetipo() }));
+  }
+  function opcionesArquetipo() {
+    const a = arquetipo();
+    return a ? a.hab.concat(a.psiquico ? habTalentos().filter(n => PULP.psiquicos.includes(n)) : []) : [];
+  }
+  function okArqPuntos() {
+    if (suma(A.arqPuntos) > PULP.puntosArquetipo) return 'Has repartido más puntos de los que tienes.';
+    const ops = opcionesArquetipo();
+    const valida = n => ops.includes(n) || ops.some(o => o.endsWith('(*)') && n.startsWith(o.slice(0, -3)));
+    if (Object.entries(A.arqPuntos).some(([n, p]) => +p && !valida(n))) return 'Solo se pueden usar en habilidades del arquetipo.';
+    if (Object.values(valores()).some(x => x > 99)) return 'Ninguna habilidad puede pasar de 99.';
+    return true;
   }
 
   function pasoAjustes(c) {
@@ -362,14 +552,16 @@ const Asistente = (() => {
   function derivados() {
     const f = finales();
     const k = combate(f.FUE, f.TAM);
-    return { Cordura: f.POD, PM: Math.floor(f.POD / 5), PV: Math.floor((f.CON + f.TAM) / 10), Suerte: suerte(),
-             MOV: movimiento(f.FUE, f.DES, f.TAM, A.edad), BD: k.bd, Corpulencia: k.corp, Esquivar: Math.floor(f.DES / 2) };
+    return { Cordura: f.POD, PM: Math.floor(f.POD / 5), PV: Math.floor((f.CON + f.TAM) / (pulp() ? 5 : 10)), Suerte: suerte(),
+             MOV: movimiento(f.FUE, f.DES, f.TAM, pulp() ? 0 : A.edad), BD: k.bd, Corpulencia: k.corp, Esquivar: Math.floor(f.DES / 2) };
   }
   function pasoDerivados(c) {
     const v = derivados();
     c.append(h('h3', null, 'Atributos derivados y combate'),
-      regla('Cordura = POD. Puntos de Magia = POD/5. Puntos de Vida = (CON+TAM)/10. MOV 7 si DES y FUE son menores que TAM, 9 si las dos son mayores, 8 en otro caso, menos 1 por década a partir de los 40. Bonificación al daño y Corpulencia según FUE+TAM. Esquivar empieza en DES/2.', 'Manual del Guardián, págs. 34-36'),
-      h('div', { class: 'asis-cars' }, [['Cordura', 'POD'], ['PM', 'POD/5'], ['PV', '(CON+TAM)/10'], ['Suerte', ''], ['MOV', ''],
+      pulp()
+        ? regla('Cordura = POD. Puntos de Magia = POD/5. Puntos de Vida = (CON+TAM)/5: los héroes pulp aguantan el doble que un investigador. MOV 7 si DES y FUE son menores que TAM, 9 si las dos son mayores, 8 en otro caso (en Pulp, sin descuento por edad). Bonificación al daño y Corpulencia según FUE+TAM. Esquivar empieza en DES/2.', 'Pulp Cthulhu, pág. 23')
+        : regla('Cordura = POD. Puntos de Magia = POD/5. Puntos de Vida = (CON+TAM)/10. MOV 7 si DES y FUE son menores que TAM, 9 si las dos son mayores, 8 en otro caso, menos 1 por década a partir de los 40. Bonificación al daño y Corpulencia según FUE+TAM. Esquivar empieza en DES/2.', 'Manual del Guardián, págs. 34-36'),
+      h('div', { class: 'asis-cars' }, [['Cordura', 'POD'], ['PM', 'POD/5'], ['PV', pulp() ? '(CON+TAM)/5' : '(CON+TAM)/10'], ['Suerte', ''], ['MOV', ''],
         ['BD', 'FUE+TAM'], ['Corpulencia', 'FUE+TAM'], ['Esquivar', 'DES/2']].map(([k, s]) =>
         h('div', { class: 'asis-car' }, h('b', null, k === 'BD' ? 'Bonif. daño' : k), h('span', { class: 'v' }, v[k]), h('small', null, s)))),
       h('p', { class: 'gen-nota' }, 'Combatir (Pelea) y Esquivar se pueden subir con los puntos de habilidad de los pasos siguientes.'));
@@ -378,12 +570,14 @@ const Asistente = (() => {
   function pasoOcupacion(c) {
     const o = ocupacion();
     c.append(h('h3', null, 'Ocupación'),
-      regla('Elige una ocupación y anota sus habilidades y su Crédito. Las marcadas [Lovecraftiana] aparecen en los relatos de Lovecraft; las [Actual], solo en partidas de hoy en día.', 'Ocupaciones de ejemplo, págs. 42-43'),
+      pulp()
+        ? regla('La ocupación determina con qué habilidades tiene más soltura el héroe, sus ingresos y a quién conoce. Ten en cuenta las sugeridas por tu arquetipo' + (arquetipo() ? `: ${arquetipo().ocupaciones.toLowerCase()}.` : '.'), 'Pulp Cthulhu, págs. 26-36')
+        : regla('Elige una ocupación y anota sus habilidades y su Crédito. Las marcadas [Lovecraftiana] aparecen en los relatos de Lovecraft; las [Actual], solo en partidas de hoy en día.', 'Ocupaciones de ejemplo, págs. 42-43'),
       h('label', null, 'Ocupación: ', h('select', { onchange: e => {
         A.ocupacion = e.target.value; A.huecos = []; A.formula = {}; A.ocupPuntos = {}; A.rapidoHab = {}; A.sobrante = {};
         A.interes = {}; A.interesRapido = [null, null, null, null]; A.interesHuecos = null; guardar(); pintar();
       } }, h('option', { value: '' }, '— elige —'),
-        OCUPACIONES.filter(x => !x.actual || A.epoca === 'actual').map(x =>
+        sis().ocup.filter(x => !x.actual || A.epoca === 'actual').map(x =>
           h('option', { value: x.n, selected: x.n === A.ocupacion }, x.n + (x.love ? ' [Lovecraftiana]' : '') + (x.actual ? ' [Actual]' : ''))))));
     if (!o) return;
     const f = finales();
@@ -401,6 +595,7 @@ const Asistente = (() => {
     if (A.metodo === 'tiradas') c.append(h('p', null, `Tienes ${puntosOcupacion()} puntos para habilidades de ocupación.`));
 
     c.append(h('h4', null, 'Habilidades de la ocupación'));
+    if (A.metodo === 'rapido' && o.hab.length > 8) c.append(h('p', { class: 'gen-nota' }, `Esta ocupación trae ${o.hab.length} habilidades y el método rápido reparte nueve valores entre ocho y el Crédito: una se quedará sin valor (en su base).`));
     if (A.metodo === 'rapido' && o.hab.length < 8) c.append(h('p', { class: 'gen-nota' }, `Esta ocupación trae ${o.hab.length}; el método rápido pide ocho, así que eliges ${8 - o.hab.length} más.`));
     const tabla = h('table', { class: 'asis-tabla' }, h('tbody'));
     huecosDef().forEach((hd, i) => {
@@ -435,12 +630,12 @@ const Asistente = (() => {
     const ocup = habOcupacion();
     c.append(h('h3', null, 'Habilidades de ocupación'));
     if (A.metodo === 'tiradas') {
-      c.append(regla(`Reparte ${puntosOcupacion()} puntos entre las habilidades de la ocupación y el Crédito (de ${o.cr[0]} a ${o.cr[1]}). Se suman a la puntuación básica; los que no asignes se pierden.`, 'Manual del Guardián, págs. 38 y 41'));
+      c.append(regla(`Reparte ${puntosOcupacion()} puntos entre las habilidades de la ocupación y el Crédito (de ${o.cr[0]} a ${o.cr[1]}). Se suman a la puntuación básica; los que no asignes se pierden.`, pulp() ? 'Pulp Cthulhu, pág. 37' : 'Manual del Guardián, págs. 38 y 41'));
       const filas = [...ocup, 'Crédito'];
       const tb = h('tbody');
       const tabla = h('table', { class: 'asis-tabla' }, h('thead', null, h('tr', null, h('th', null, 'Habilidad'), h('th', null, 'Base'), h('th', null, 'Puntos'), h('th', null, 'Total'))), tb);
       for (const n of filas) {
-        const b = n === 'Crédito' ? 0 : baseHabilidad(n, f);
+        const b = n === 'Crédito' ? 0 : bh(n, f);
         const tot = h('td', { class: 'n' });
         const tr = h('tr', null, h('td', null, n), h('td', { class: 'n' }, b),
           h('td', null, h('input', { type: 'number', min: 0, max: 99, value: A.ocupPuntos[n] || 0, 'aria-label': `Puntos en ${n}`,
@@ -463,7 +658,7 @@ const Asistente = (() => {
       };
       act();
     } else {
-      c.append(regla('Asigna estos valores entre las ocho habilidades de ocupación y el Crédito: uno a 70%, dos a 60%, tres a 50% y tres a 40%, directamente, sin sumar la puntuación básica. Si el Crédito de tu ocupación no puede llegar al valor que le das, se queda en su máximo y el exceso se reparte entre otras habilidades.', 'Opción 5: método rápido, pág. 50'));
+      c.append(regla(`Asigna estos valores entre las ocho habilidades de ocupación y el Crédito: ${pulp() ? 'uno a 80%, dos a 70%, dos a 60%, tres a 50% y uno a 40%' : 'uno a 70%, dos a 60%, tres a 50% y tres a 40%'}, directamente, sin sumar la puntuación básica. Si el Crédito de tu ocupación no puede llegar al valor que le das, se queda en su máximo y el exceso se reparte entre otras habilidades.`, pulp() ? 'Creación rápida, pág. 45' : 'Opción 5: método rápido, pág. 50'));
       const filas = [...ocup.map((n, i) => [i, n]), ['credito', 'Crédito']];
       const tb = h('tbody');
       const pintarFilas = () => {
@@ -471,7 +666,7 @@ const Asistente = (() => {
         for (const [i, n] of filas) {
           const libres = valoresRapido();
           for (const [j] of filas) if (j !== i && A.rapidoHab[j]) libres.splice(libres.indexOf(A.rapidoHab[j]), 1);
-          const b = n === 'Crédito' ? 0 : baseHabilidad(n, f);
+          const b = n === 'Crédito' ? 0 : bh(n, f);
           const a = A.rapidoHab[i];
           let nota = '';
           if (a && n !== 'Crédito' && b > a) nota = `Su base (${b}) ya es mayor: se queda en ${b}.`;
@@ -506,7 +701,8 @@ const Asistente = (() => {
       if (usados > puntosOcupacion()) return 'Has repartido más puntos de los que tienes.';
       if (v['Crédito'] < o.cr[0] || v['Crédito'] > o.cr[1]) return `El Crédito tiene que estar entre ${o.cr[0]} y ${o.cr[1]}.`;
     } else {
-      if ([...habOcupacion().keys(), 'credito'].some(k => !A.rapidoHab[k])) return 'Falta asignar algún valor.';
+      const filas = [...habOcupacion().keys(), 'credito'];
+      if (!A.rapidoHab.credito || filas.filter(k => A.rapidoHab[k]).length < Math.min(filas.length, valoresRapido().length)) return 'Falta asignar algún valor.';
       if ((+A.rapidoHab.credito || 0) < o.cr[0]) return `El Crédito de esta ocupación empieza en ${o.cr[0]}: dale un valor mayor.`;
       const sobra = Math.max(0, (+A.rapidoHab.credito || 0) - o.cr[1]);
       if (sobra && suma(A.sobrante) !== sobra) return `Reparte los ${sobra} puntos que sobran del Crédito.`;
@@ -516,7 +712,7 @@ const Asistente = (() => {
   }
 
   // Tabla para repartir puntos entre habilidades a elección (intereses particulares, exceso del Crédito).
-  function tablaReparto(reparto, total, alCambiar, { incluirOcupacion } = {}) {
+  function tablaReparto(reparto, total, alCambiar, { incluirOcupacion, opciones } = {}) {
     const f = finales();
     const caja = h('div');
     const tb = h('tbody');
@@ -524,7 +720,7 @@ const Asistente = (() => {
     const nuevo = { sel: '', esp: '' };
     const actual = n => {  // valor sin lo que se reparte en esta tabla
       const v = valores();
-      return (v[n] ?? baseHabilidad(n, f)) - (+reparto[n] || 0);
+      return (v[n] ?? bh(n, f)) - (+reparto[n] || 0);
     };
     const pintarT = () => {
       tb.textContent = '';
@@ -546,7 +742,7 @@ const Asistente = (() => {
     const agregar = h('div', { class: 'asis-hab' });
     const pintarAgregar = () => {
       agregar.textContent = '';
-      agregar.append(selectorHab(nuevo, opcionesHabilidad(), rehacer => { if (rehacer) pintarAgregar(); }),
+      agregar.append(selectorHab(nuevo, opciones || opcionesHabilidad(), rehacer => { if (rehacer) pintarAgregar(); }),
         h('button', { type: 'button', class: 'gen-boton mini', onclick: () => {
           const n = resuelta(nuevo);
           if (!n) return;
@@ -579,7 +775,7 @@ const Asistente = (() => {
         const act = () => {
           const r = resuelta(hu);
           A.interesRapido[i] = r;
-          valor.textContent = r ? ` ${baseHabilidad(r, f)} + 20 = ${baseHabilidad(r, f) + 20}` : '';
+          valor.textContent = r ? ` ${bh(r, f)} + 20 = ${bh(r, f) + 20}` : '';
         };
         act();
         c.append(h('p', null, `${i + 1}. `, selectorHab(hu, ops, rehacer => { act(); guardar(); if (rehacer) pintar(); else pie(); }), valor));
@@ -605,35 +801,44 @@ const Asistente = (() => {
     ['descripcion', 'Descripción personal'], ['ideologia', 'Ideología/Creencias'], ['allegados', 'Allegados'],
     ['lugares', 'Lugares significativos'], ['posesiones', 'Posesiones preciadas'], ['rasgos', 'Rasgos'],
   ];
+  // Cómo se llaman esos apartados en los campos de cada ficha.
+  const campoTras = (k, t) => pulp() ? ({ descripcion: 'Descripción', ideologia: 'Ideología y creencias' }[k] || t) : t;
+  const sugerencia = x => x[1] ? `${x[0]} (${x[1]})` : x[0];
   function pasoTrasfondo(c) {
+    const P = pulp(), T = P ? TRASFONDO_PULP : TRASFONDO;
     c.append(h('h3', null, 'Datos, trasfondo y retrato'),
       h('div', { class: 'asis-rejilla' }, [['Nombre', 'Nombre'], ['Jugador', 'Jugador'], ['Género', 'Género'],
         ['Residencia', 'Lugar de residencia'], ['Nacimiento', 'Lugar de nacimiento'], ['lengua', 'Lengua propia']].map(([k, t]) =>
         h('label', null, t, h('input', { type: 'text', value: A.datos[k] || '', oninput: e => { A.datos[k] = e.target.value; guardar(); } })))),
-      regla('Escribe entre tres y seis frases sobre estas categorías. Las tablas del manual sirven de inspiración: tira 1D10 o elige, y luego hazlo concreto y personal (dale un nombre, un sentimiento). Marca una como vínculo fundamental: el Guardián no puede arrebatártelo sin darte una tirada para salvarlo.', 'Paso 4: crear un trasfondo, págs. 44-48'));
+      regla('Escribe al menos una frase sobre cada categoría. Las tablas del manual sirven de inspiración: tira o elige, y luego hazlo concreto y personal (dale un nombre, un sentimiento). Marca una como vínculo fundamental: el Guardián no puede arrebatártelo sin darte una tirada para salvarlo.',
+        P ? 'Paso 6: crear un trasfondo, Pulp Cthulhu, págs. 41-43' : 'Paso 4: crear un trasfondo, Manual del Guardián, págs. 44-48'));
     for (const [k, t] of TRAS) {
       const ta = h('textarea', { 'aria-label': t, value: A.tras[k], oninput: e => { A.tras[k] = e.target.value; guardar(); } });
       const sug = h('p', { class: 'sugerencia' });
-      const poner = txt => { A.tras[k] = (A.tras[k] ? A.tras[k].replace(/\s*$/, '') + (k === 'descripcion' ? ', ' : '. ') : '') + txt; ta.value = A.tras[k]; guardar(); };
+      const poner = txt => { A.tras[k] = (A.tras[k] ? A.tras[k].replace(/\s*$/, '') + (['descripcion', 'rasgos'].includes(k) ? ', ' : '. ') : '') + txt; ta.value = A.tras[k]; guardar(); };
+      const chips = lista => h('div', { class: 'asis-chips' }, lista.map(x => h('button', { type: 'button', onclick: () => poner(x.toLowerCase()) }, x)));
+      const tirada = (txt, fn) => h('button', { type: 'button', class: 'gen-boton mini', onclick: () => { sug.textContent = fn(); } }, txt);
       const cab = h('header', null, h('b', null, t), h('label', { class: 'gen-nota' },
         h('input', { type: 'radio', name: 'vinculo', checked: A.vinculo === k, onchange: () => { A.vinculo = k; guardar(); } }), ' vínculo fundamental'));
       const caja = h('div', { class: 'asis-tras' }, cab);
-      if (k === 'descripcion') {
-        caja.append(h('p', { class: 'sugerencia' }, 'Elige en lugar de tirar:'),
-          h('div', { class: 'asis-chips' }, TRASFONDO.descripcion.map(x => h('button', { type: 'button', onclick: () => poner(x.toLowerCase()) }, x))));
+      if (k === 'descripcion' && !P) {
+        caja.append(h('p', { class: 'sugerencia' }, 'Elige en lugar de tirar:'), chips(TRASFONDO.descripcion));
+      } else if (k === 'descripcion') {
+        cab.append(tirada('Tirar 1D20', () => { const n = d(20), D = T.descripcion; return `1D20 = ${n}: ${D.Masculino[n - 1]} · ${D.Femenino[n - 1]} · ${D.Unisex[n - 1]} (masculino, femenino, unisex)`; }));
+        for (const [g, lista] of Object.entries(T.descripcion)) caja.append(h('p', { class: 'sugerencia' }, g + ':'), chips(lista));
+      } else if (k === 'allegados') {
+        cab.append(tirada('Tirar 1D10', () => {
+          const a = d(10), b = d(10);
+          return `1D10 = ${a}: ${sugerencia(T.allegadosQuien[a - 1])}. 1D10 = ${b}: ${sugerencia(TRASFONDO.allegadosPorque[b - 1])}`;
+        }));
+      } else if (k === 'rasgos' && P) {
+        const a = arquetipo();
+        cab.append(tirada('Tirar 1D10', () => { const n = d(10); return `1D10 = ${n}: ${T.rasgos[n - 1].join(', ')} (elige uno)`; }));
+        if (a) caja.append(h('p', { class: 'sugerencia' }, `Sugeridos para ${a.n}:`), chips(a.rasgos.map(x => x.replace(/^./, m => m.toUpperCase()))));
       } else {
-        const tabla = k === 'allegados' ? null : TRASFONDO[k];
-        cab.prepend(h('span'));
-        cab.append(h('button', { type: 'button', class: 'gen-boton mini', onclick: () => {
-          if (k === 'allegados') {
-            const a = d(10), b = d(10);
-            const q = TRASFONDO.allegadosQuien[a - 1], p = TRASFONDO.allegadosPorque[b - 1];
-            sug.textContent = `1D10 = ${a}: ${q[0]} (${q[1]}). 1D10 = ${b}: ${p[0]} (${p[1]})`;
-          } else {
-            const n = d(10), x = tabla[n - 1];
-            sug.textContent = `1D10 = ${n}: ${x[0]} (${x[1]})`;
-          }
-        } }, 'Tirar 1D10'));
+        const tabla = (P && T[k]) || TRASFONDO[k];
+        cab.append(tirada('Tirar 1D10', () => { const n = d(10); return `1D10 = ${n}: ${sugerencia(tabla[n - 1])}`; }));
+        if (P && k === 'lugares') caja.append(h('p', { class: 'sugerencia' }, 'El manual de Pulp no trae esta tabla: es la del Manual del Guardián.'));
       }
       caja.append(sug, ta);
       c.append(caja);
@@ -651,7 +856,7 @@ const Asistente = (() => {
     r.onload = () => {
       const img = new Image();
       img.onload = () => {
-        const [x0, y0, x1, y1] = Generador.ficha('coc').foto.r;
+        const [x0, y0, x1, y1] = Generador.ficha(sis().ficha).foto.r;
         const cv = document.createElement('canvas');
         cv.width = Math.round((x1 - x0) * 3); cv.height = Math.round((y1 - y0) * 3);
         const s = Math.max(cv.width / img.width, cv.height / img.height);
@@ -671,7 +876,7 @@ const Asistente = (() => {
     const din = dinero(cr, A.epoca);
     const imp = Generador.importe;
     c.append(h('h3', null, 'Ingresos y equipo'),
-      regla(`Con Crédito ${cr}, tu nivel de vida es ${din.nivel.toLowerCase()}: nivel de gasto ${imp(din.gasto)}, dinero en efectivo ${imp(din.dinero)} y propiedades por valor de ${imp(din.bienes)}. Lo que encaja en tu nivel de vida no hay que pagarlo: simplemente lo tienes. La moneda se cambia en «Más», en la barra de la ficha.`, `Tabla II: Dinero y propiedades (${A.epoca === 'actual' ? 'época actual' : 'años 20'}), pág. 41`),
+      regla(`Con Crédito ${cr}, tu nivel de vida es ${din.nivel.toLowerCase()}: nivel de gasto ${imp(din.gasto)}, dinero en efectivo ${imp(din.dinero)} y propiedades por valor de ${imp(din.bienes)}. Lo que encaja en tu nivel de vida no hay que pagarlo: simplemente lo tienes. La moneda se cambia en «Más», en la barra de la ficha.`, pulp() && A.epoca !== 'actual' ? 'Tabla 7: Dinero y propiedades (años 30), Pulp Cthulhu, pág. 44' : `Tabla II: Dinero y propiedades (${A.epoca === 'actual' ? 'época actual' : 'años 20'}), Manual del Guardián, pág. 41`),
       h('h4', null, 'Equipo y posesiones'),
       h('p', { class: 'gen-nota' }, 'Una cosa por línea (caben 14 en la ficha). Las listas de equipo están en las págs. 424-429 del manual.'),
       h('textarea', { rows: 6, value: A.equipo, oninput: e => { A.equipo = e.target.value; guardar(); } }),
@@ -685,7 +890,7 @@ const Asistente = (() => {
       const campo = (k, ph, w) => h('input', { type: 'text', placeholder: ph, value: a[k] || '', style: `width:${w}`, oninput: e => { a[k] = e.target.value; guardar(); } });
       tb.append(h('tr', null, h('td', null, campo('arma', 'Arma', '9rem')),
         h('td', null, h('select', { onchange: e => { a.hab = e.target.value; guardar(); } }, h('option', { value: '' }, 'habilidad'),
-          habs.map(n => h('option', { value: n, selected: a.hab === n }, `${n} (${v[n] ?? baseHabilidad(n, f)})`)))),
+          habs.map(n => h('option', { value: n, selected: a.hab === n }, `${n} (${v[n] ?? bh(n, f)})`)))),
         h('td', null, campo('dano', 'Daño', '4.5rem')), h('td', null, campo('alcance', 'Alcance', '4.5rem')),
         h('td', null, campo('ataques', 'Ataq.', '3rem')), h('td', null, campo('municion', 'Mun.', '3rem')),
         h('td', null, campo('averia', 'Avería', '3rem'))));
@@ -695,21 +900,22 @@ const Asistente = (() => {
 
   function pasoResumen(c) {
     const f = finales(), v = valores(), dv = derivados();
-    c.append(h('h3', null, A.datos.Nombre || 'Tu investigador'),
-      h('p', null, [A.ocupacion, `${A.edad} años`, A.datos.Residencia].filter(Boolean).join(' · ')),
+    c.append(h('h3', null, A.datos.Nombre || (pulp() ? 'Tu héroe' : 'Tu investigador')),
+      h('p', null, [pulp() && A.arquetipo, A.ocupacion, `${A.edad} años`, A.datos.Residencia].filter(Boolean).join(' · ')),
+      pulp() ? h('p', null, h('strong', null, 'Talentos: '), textoTalentos().map(t => t.split(':')[0]).join(', ') + '.') : null,
       h('h4', null, 'Características'),
       h('p', null, CARS.map(k => `${k} ${f[k]}`).join(' · ')),
       h('p', null, `Cordura ${dv.Cordura} · PM ${dv.PM} · PV ${dv.PV} · Suerte ${dv.Suerte} · MOV ${dv.MOV} · BD ${dv.BD} · Corpulencia ${dv.Corpulencia}`),
       h('h4', null, 'Habilidades que no están en su base'),
-      h('div', { class: 'asis-resumen' }, Object.entries(v).filter(([n, x]) => x !== baseHabilidad(n, f) || n === 'Crédito')
+      h('div', { class: 'asis-resumen' }, Object.entries(v).filter(([n, x]) => x !== bh(n, f) || n === 'Crédito')
         .sort((a, b) => a[0].localeCompare(b[0], 'es')).map(([n, x]) => h('div', null, `${n} ${x}`))),
       h('p', { class: 'gen-nota', style: 'margin-top:1rem' }, 'Al crear la ficha se abre como personaje nuevo en el editor; lo que tienes abierto ahora se queda en «Mis personajes». Desde allí puedes retocar cualquier cosa y descargar el PDF.'),
       h('p', null, h('button', { type: 'button', class: 'gen-boton principal', onclick: crearFicha }, 'Crear la ficha')));
   }
 
   // ------------------------------------------------------------ de aquí a la ficha
-  function repartirTexto(texto, anchos, tam) {
-    for (; tam >= 5; tam -= 0.25) {
+  function repartirTexto(texto, anchos, tam, minimo = 5) {
+    for (; tam >= minimo; tam -= 0.25) {
       const lineas = [];
       let actual = '';
       for (const pal of texto.split(/\s+/).filter(Boolean)) {
@@ -723,13 +929,24 @@ const Asistente = (() => {
     return null;
   }
 
+  function textoTalentos() {  // «Nombre: efecto.» de cada talento, con lo que se haya elegido
+    const efecto = Object.fromEntries(Object.values(TALENTOS).flat());
+    return A.talentos.map(n => {
+      if (n === 'Poder psíquico' && A.talentoExtra.psiquico) return `Poder psíquico: ${A.talentoExtra.psiquico}.`;
+      if (n === 'Erudición' && A.talentoExtra.erudicion) return `Erudición: Conocimiento de ${A.talentoExtra.erudicion.trim()}.`;
+      if (n === 'Recarga rápida' && A.talentoExtra.recarga) return `Recarga rápida (${A.talentoExtra.recarga.trim()}): ${efecto[n]}`;
+      return `${n}: ${efecto[n]}`;
+    });
+  }
+
   function crearFicha() {
-    const def = Generador.ficha('coc');
+    const def = Generador.ficha(sis().ficha);
     const rect = Object.fromEntries(def.campos.map(c => [c.n, c]));
     const f = finales(), v = valores(), cp = {}, tam = {};
     const pon = (n, x) => { if (rect[n] && x != null && x !== '') cp[n] = String(x); };
     pon('Nombre', A.datos.Nombre); pon('Jugador', A.datos.Jugador); pon('Ocupación', A.ocupacion);
     pon('Residencia', A.datos.Residencia); pon('Nacimiento', A.datos.Nacimiento); pon('Género', A.datos.Género); pon('Edad', A.edad);
+    if (pulp()) pon('Arquetipo', A.arquetipo);
     for (const k of CARS) pon(k, f[k]);
 
     // Habilidades: las impresas en su fila; las especialidades en las líneas de su familia; el resto, en las libres.
@@ -763,7 +980,7 @@ const Asistente = (() => {
     let fa = 2;
     for (const a of A.armas) {
       if (!a.arma) continue;
-      const pct = a.hab ? (v[a.hab] ?? baseHabilidad(a.hab, f)) : '';
+      const pct = a.hab ? (v[a.hab] ?? bh(a.hab, f)) : '';
       pon(`Arma ${fa} arma`, a.arma); pon(`Arma ${fa} normal`, pct); pon(`Arma ${fa} dano`, a.dano);
       pon(`Arma ${fa} alcance`, a.alcance); pon(`Arma ${fa} ataques`, a.ataques); pon(`Arma ${fa} municion`, a.municion);
       pon(`Arma ${fa} averia`, a.averia);
@@ -775,7 +992,7 @@ const Asistente = (() => {
       let texto = (A.tras[k] || '').trim();
       if (!texto) continue;
       if (A.vinculo === k) texto = '* ' + texto;
-      const ns = [1, 2, 3].map(i => `${t} ${i}`).filter(n => rect[n]);
+      const ns = [1, 2, 3].map(i => `${campoTras(k, t)} ${i}`).filter(n => rect[n]);
       const r = repartirTexto(texto, ns.map(n => rect[n].r[2] - rect[n].r[0]), rect[ns[0]].tam);
       if (!r) { pon(ns[0], texto); continue; }
       r.lineas.forEach((l, i) => { pon(ns[i], l); tam[ns[i]] = r.tam; });
@@ -784,12 +1001,24 @@ const Asistente = (() => {
 
     const s = suerte();
     if (rect[`Suerte ${pad(s)}`]) cp[`Suerte ${pad(s)}`] = true;
-    if (sobran.length) pon('Notas', 'Otras habilidades: ' + sobran.join(', ') + '.');
+    // Talentos de Pulp: cada uno en sus líneas, con la letra que haga falta para que quepan los dos en cinco
+    if (pulp() && rect['Talento 1']) {
+      const ns = [1, 2, 3, 4, 5].map(i => `Talento ${i}`);
+      const w = rect[ns[0]].r[2] - rect[ns[0]].r[0];
+      for (let t = rect[ns[0]].tam; t >= 5; t -= 0.25) {
+        const lineas = textoTalentos().flatMap(x => (repartirTexto(x, Array(5).fill(w), t, t) || { lineas: [x, '', '', '', '', ''] }).lineas);
+        if (lineas.length <= 5 || t <= 5.25) { lineas.slice(0, 5).forEach((l, i) => { pon(ns[i], l); tam[ns[i]] = t; }); break; }
+      }
+    }
+    const notas = [];
+    if (sobran.length) notas.push('Otras habilidades: ' + sobran.join(', ') + '.');
+    if (pulp() && arquetipo() && arquetipo().especial) notas.push(arquetipo().especial);
+    if (notas.length) pon('Notas', notas.join('\n'));
 
     Generador.opciones().epoca = A.epoca;
     $('#o-epoca').value = A.epoca;
-    Generador.crear('coc', { campos: cp, tam, foto: A.foto });
-    if (confirm('Ficha creada. ¿Vaciar el asistente para empezar otro investigador más adelante?')) { A = inicial(); guardar(); }
+    Generador.crear(sis().ficha, { campos: cp, tam, foto: A.foto });
+    if (confirm(`Ficha creada. ¿Vaciar el asistente para empezar otro ${sis().quien} más adelante?`)) { A = inicial(); guardar(); }
     $('#d-asistente').close();
   }
 
@@ -797,9 +1026,9 @@ const Asistente = (() => {
   function pie() {
     const z = $('#asis-pie-msg');
     if (!z) return;
-    const r = PASOS[A.paso].ok();
+    const r = pasos()[A.paso].ok();
     z.textContent = r === true ? '' : r;
-    $('#asis-sig').disabled = r !== true || A.paso === PASOS.length - 1;
+    $('#asis-sig').disabled = r !== true || A.paso === pasos().length - 1;
     document.querySelectorAll('.asis-pasos button').forEach((b, i) => { b.disabled = i > A.visto && i !== A.paso; });
   }
   function pintar() {
@@ -807,23 +1036,23 @@ const Asistente = (() => {
     dlg.textContent = '';
     const cuerpo = h('div', { class: 'asis-cuerpo' });
     dlg.append(h('div', { class: 'asis' },
-      h('form', { method: 'dialog', class: 'gen-dialogo-cab' }, h('h2', null, 'Asistente · La llamada de Cthulhu'),
+      h('form', { method: 'dialog', class: 'gen-dialogo-cab' }, h('h2', null, 'Asistente · ' + sis().nombre),
         h('button', { class: 'gen-cerrar', 'aria-label': 'Cerrar' }, '×')),
-      h('ol', { class: 'asis-pasos' }, PASOS.map((p, i) => h('li', null, h('button', { type: 'button',
+      h('ol', { class: 'asis-pasos' }, pasos().map((p, i) => h('li', null, h('button', { type: 'button',
         'aria-current': i === A.paso ? 'step' : null, onclick: () => ir(i) }, `${i + 1}. ${p.t}`)))),
       cuerpo,
       h('div', { class: 'asis-pie' },
         h('button', { type: 'button', class: 'gen-boton', disabled: A.paso === 0, onclick: () => ir(A.paso - 1) }, 'Anterior'),
         h('span', { id: 'asis-pie-msg', class: 'asis-aviso', style: 'margin:0;align-self:center;text-align:center;flex:1' }),
         h('button', { type: 'button', class: 'gen-boton principal', id: 'asis-sig', onclick: () => ir(A.paso + 1) }, 'Siguiente'))));
-    PASOS[A.paso].pintar(cuerpo);
+    pasos()[A.paso].pintar(cuerpo);
     const actual = dlg.querySelector('[aria-current=step]');
     if (actual) actual.scrollIntoView({ block: 'nearest', inline: 'center' });
     pie();
   }
   function ir(i) {
-    if (i < 0 || i >= PASOS.length) return;
-    for (let j = A.paso; j < i; j++) if (PASOS[j].ok() !== true) { i = j; break; }  // no se salta un paso a medias
+    if (i < 0 || i >= pasos().length) return;
+    for (let j = A.paso; j < i; j++) if (pasos()[j].ok() !== true) { i = j; break; }  // no se salta un paso a medias
     A.paso = i;
     A.visto = Math.max(A.visto, i);
     guardar();
@@ -834,6 +1063,7 @@ const Asistente = (() => {
   async function abrir() {
     await Generador.listo;
     leer();
+    if (A.paso >= pasos().length) A.paso = 0;
     pintar();
     $('#d-asistente').showModal();
   }

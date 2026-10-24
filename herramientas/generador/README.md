@@ -11,8 +11,9 @@
 | `public/generador.html` | La página (barra, diálogos, textos de ayuda). | Sí |
 | `public/generador/generador.css` | Estilos del generador; usa las variables de `/style.css`. | Sí |
 | `public/generador/editor.js` | El editor: dibuja la ficha, calcula lo derivado, guarda en el navegador, retrato y descarga del PDF. | Sí |
-| `public/generador/asistente.js` | El asistente de creación (7.ª edición). | Sí |
+| `public/generador/asistente.js` | El asistente de creación (7.ª edición y Pulp). | Sí |
 | `public/generador/datos.js` | Reglas, habilidades, ocupaciones y tablas de trasfondo sacadas del *Manual del Guardián* (Edge), con la página de cada cosa. | Sí |
+| `public/generador/datos-pulp.js` | Arquetipos, talentos, ocupaciones y tablas de trasfondo de *Pulp Cthulhu* (Edge, capítulo 2). | Sí |
 | `public/generador/pdf-lib.min.js` | pdf-lib 1.17.1, copiada de cdnjs. Se carga solo al descargar. | No |
 | `public/generador/coc.pdf`, `pulp.pdf` | Las fichas en blanco con campos de formulario. | **No: las genera `preparar.py`** |
 | `public/generador/coc-1.jpg` … `pulp-2.jpg` | El fondo de cada cara, sin campos. | **No: `preparar.py`** |
@@ -47,8 +48,12 @@ Un valor calculado se recalcula mientras nadie lo toque; si se escribe a mano al
 
 ## El asistente
 
-Sigue el capítulo 3 del *Manual del Guardián*: edad, características (tiradas o método rápido, opción 5), ajustes por edad con las tiradas de mejora de EDU y la Suerte, atributos derivados, ocupación (las 25 ocupaciones de ejemplo de las págs. 42-43), puntos de ocupación o valores del método rápido (con el exceso de Crédito), intereses particulares, trasfondo con las tablas de las págs. 45-48, retrato, dinero y equipo. Al final crea un personaje nuevo en el editor.
+Primero se elige el juego. Lo que se haya escrito en el trasfondo se conserva al cambiar de juego; las tiradas y elecciones, no.
 
-Las especialidades que no vienen impresas van a las líneas en blanco de su familia y, si no caben, a las líneas libres del final de la tercera columna; lo que tampoco cabe se apunta en Notas.
+**La llamada de Cthulhu 7.ª edición** sigue el capítulo 3 del *Manual del Guardián*: edad, características (tiradas o método rápido, opción 5), ajustes por edad con las tiradas de mejora de EDU y la Suerte, atributos derivados, ocupación (las 25 ocupaciones de ejemplo de las págs. 42-43), puntos de ocupación o valores del método rápido (con el exceso de Crédito), intereses particulares, trasfondo con las tablas de las págs. 45-48, retrato, dinero y equipo.
 
-Pendiente: el asistente de Pulp Cthulhu (arquetipos, talentos, reglas de Pulp) y, si se quiere, la tabla de armas del manual para elegirlas de una lista.
+**Pulp Cthulhu** sigue el capítulo 2 de su manual: arquetipo (22, con su característica principal, que se tira con 1D6+13×5 o vale 90 en la creación rápida), edad sin modificadores, Suerte 2D6+6×5, dos talentos (elegidos o al azar, con los obligatorios de Despiadado y Místico), PV = (CON+TAM)/5, MOV sin descuento por edad, las 68 ocupaciones pulp (págs. 26-36), 100 puntos de arquetipo, intereses particulares y las tablas de trasfondo de Pulp. El manual de Pulp en español no trae tabla de Lugares significativos: se usa la del *Manual del Guardián*. Las reglas opcionales del Pulpómetro (PV /10, más o menos talentos) no están.
+
+Al final crea un personaje nuevo en el editor. Las especialidades que no vienen impresas van a las líneas en blanco de su familia y, si no caben, a las líneas libres del final de la tercera columna; lo que tampoco cabe se apunta en Notas. En Pulp, los talentos van a su recuadro.
+
+Pendiente, si se quiere: la tabla de armas del manual para elegirlas de una lista.

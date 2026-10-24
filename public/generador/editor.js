@@ -212,7 +212,7 @@ const Generador = (() => {
       rodear('Cordura', c.POD);
     }
     if (algo) poner('Cordura máxima', 99 - (num('Mitos de Cthulhu') || 0));
-    if (c.FUE != null && c.DES != null && c.TAM != null) poner('MOV', movimiento(c.FUE, c.DES, c.TAM, edad));
+    if (c.FUE != null && c.DES != null && c.TAM != null) poner('MOV', movimiento(c.FUE, c.DES, c.TAM, pj.ficha === 'pulp' ? 0 : edad));  // en Pulp no hay modificadores por edad
     if (c.FUE != null && c.TAM != null) {
       const k = combate(c.FUE, c.TAM);
       poner('Bonificación al daño', k.bd);

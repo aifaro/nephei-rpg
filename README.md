@@ -1,10 +1,10 @@
 # nephei-rpg
 
-[rpg.nephei.org](https://rpg.nephei.org): aventuras de La llamada de Cthulhu ambientadas en la España de los años veinte.
+[rpg.nephei.org](https://rpg.nephei.org): aventuras y utilidades para juegos de rol. La portada solo enlaza a las dos secciones: `/aventuras` (`public/aventuras.html`) y `/utilidades` (`public/utilidades.html`); cada aventura o utilidad nueva es una tarjeta `article.aventura` en su página de sección.
 
 - **La Marca del Estrecho** (Pulp Cthulhu, Ceuta, 1921). En desarrollo. El material del Guardián vive en el repositorio privado `ttrpg-resources-private`.
 - **La maldición del Palacio de Linares** (La llamada de Cthulhu 7.ª ed., Madrid, 1920). Completa.
-- **Generador de personajes** (`/generador`): la ficha oficial de 7.ª edición o de Pulp rellenable en el navegador, con asistente de creación y descarga en PDF. Todo en el navegador, sin servidor. Ver [herramientas/generador/README.md](herramientas/generador/README.md).
+- **Generador de personajes** (`/generador`): la ficha oficial de 7.ª edición o de Pulp rellenable en el navegador, con asistente de creación (7.ª edición y Pulp) y descarga en PDF. Todo en el navegador, sin servidor. Ver [herramientas/generador/README.md](herramientas/generador/README.md).
 
 ## Estructura
 
