@@ -4,6 +4,7 @@
 
 - **La Marca del Estrecho** (Pulp Cthulhu, Ceuta, 1921). En desarrollo. El material del Guardián vive en el repositorio privado `ttrpg-resources-private`.
 - **La maldición del Palacio de Linares** (La llamada de Cthulhu 7.ª ed., Madrid, 1920). Completa.
+- **Generador de personajes** (`/generador`): la ficha oficial de 7.ª edición o de Pulp rellenable en el navegador, con asistente de creación y descarga en PDF. Todo en el navegador, sin servidor. Ver [herramientas/generador/README.md](herramientas/generador/README.md).
 
 ## Estructura
 
@@ -11,6 +12,7 @@
 |---|---|
 | `public/` | Todo lo público, servido tal cual como assets estáticos. La URL espeja la ruta: `/la-marca-del-estrecho/players` es `public/la-marca-del-estrecho/players.html`. |
 | `public/style.css` | La hoja única del sitio, también la del Libro del Guardián. Si cambias el bloque «SITIO», sube el `?v=` de las páginas de `public/` y la constante `HOJA` de `src/worker.js`. |
+| `public/generador.html`, `public/generador/` | El generador de personajes. Las fichas en blanco, sus fondos y `fichas.json` los genera `herramientas/generador/preparar.py`. |
 | `src/worker.js` | Solo atiende `/la-marca-del-estrecho/keepers/…`: lee las páginas del repo privado, verifica el token de Cloudflare Access y guarda el libro desde su modo edición. |
 | `wrangler.jsonc` | Configuración del Worker `nephei-rpg`. |
 

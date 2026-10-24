@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Generador de personajes · rpg.nephei.org</title>
+<meta name="description" content="Crea investigadores de La llamada de Cthulhu 7.ª edición y Pulp Cthulhu sobre la ficha oficial: rellénala en el navegador o usa el asistente, y descárgala en PDF. No se guarda nada en ningún servidor.">
+<meta name="theme-color" content="#16130f">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="/style.css?v=20261016b">
+<link rel="stylesheet" href="/generador/generador.css?v=1">
+</head>
+<body class="sitio generador">
+<nav class="barra"><a class="marca" href="/">rpg<span>·</span>nephei</a><a href="https://nephei.org">nephei.org</a></nav>
+
+<div class="container">
+<main>
+  <header class="gen-cabecera">
+    <p class="sello">La llamada de Cthulhu · Pulp Cthulhu</p>
+    <h1>Generador de personajes</h1>
+    <p class="entradilla">Rellena la ficha oficial aquí mismo, o deja que el asistente te lleve paso a paso por las reglas del manual. Al terminar, descárgala en PDF rellenable.</p>
+    <p class="gen-privacidad">Todo se queda en este navegador: los personajes se guardan solos en su almacenamiento local y nada viaja a ningún servidor. Si borras los datos del sitio o cambias de navegador, no estarán; para llevártelos, usa «Copia de seguridad».</p>
+  </header>
+
+  <div class="gen-barra" role="toolbar" aria-label="Personaje">
+    <div class="gen-quien">
+      <span class="gen-ficha" id="rotulo-ficha"></span>
+      <strong id="rotulo-nombre">Sin nombre</strong>
+      <span class="gen-guardado" id="guardado" aria-live="polite"></span>
+    </div>
+    <div class="gen-acciones">
+      <button type="button" class="gen-boton principal" id="b-asistente">Asistente</button>
+      <button type="button" class="gen-boton" id="b-nuevo">Nuevo</button>
+      <button type="button" class="gen-boton" id="b-lista">Mis personajes</button>
+      <button type="button" class="gen-boton" id="b-pdf">Descargar PDF</button>
+      <details class="gen-mas">
+        <summary class="gen-boton">Más</summary>
+        <div class="gen-menu">
+          <label class="gen-opcion">Dinero en
+            <select id="o-moneda">
+              <option value="dolar">dólares (como el manual)</option>
+              <option value="peseta">pesetas (1 $ = 5 ptas.)</option>
+            </select>
+          </label>
+          <label class="gen-opcion">Tabla de dinero
+            <select id="o-epoca">
+              <option value="20">años 20</option>
+              <option value="actual">época actual</option>
+            </select>
+          </label>
+          <label class="gen-opcion"><input type="checkbox" id="o-auto" checked> Calcular solo mitades, quintos y atributos derivados</label>
+          <button type="button" class="gen-boton" id="b-retrato">Cambiar retrato</button>
+          <button type="button" class="gen-boton" id="b-vaciar">Vaciar esta ficha</button>
+        </div>
+      </details>
+    </div>
+  </div>
+
+  <div id="hojas" class="gen-hojas"></div>
+
+  <section class="gen-ayuda">
+    <h2>Cómo funciona</h2>
+    <ul>
+      <li><strong>Escribir en la ficha.</strong> Cada línea y cada casilla de la ficha es un campo. Al poner una característica o una habilidad, la mitad y el quinto se calculan solos, y también los Puntos de Vida, la Magia, la Cordura, el Movimiento, la Bonificación al daño, la Corpulencia, Esquivar y el dinero según el Crédito. Si escribes tú uno de esos valores, se respeta.</li>
+      <li><strong>Pistas.</strong> En Vida, Cordura, Magia y Suerte, pulsa un número para rodearlo (el valor actual); vuelve a pulsarlo para quitar el círculo.</li>
+      <li><strong>Retrato.</strong> Pulsa la esquina superior derecha de la primera cara para subir una imagen; podrás encuadrarla. Se guarda en el navegador, reducida.</li>
+      <li><strong>Descargar PDF.</strong> Sale la ficha oficial con todo relleno, y sigue siendo un PDF con campos: se puede seguir editando en Adobe Reader o en el navegador.</li>
+      <li><strong>Asistente.</strong> Crea un investigador de 7.ª edición siguiendo el capítulo 3 del <em>Manual del Guardián</em>: edad, características (tiradas o método rápido), ocupación, intereses particulares, trasfondo, dinero y equipo. Al final lo pasa a una ficha nueva.</li>
+    </ul>
+  </section>
+</main>
+</div>
+
+<input type="file" id="f-retrato" accept="image/*" hidden>
+<input type="file" id="f-importar" accept="application/json,.json" hidden>
+
+<dialog id="d-lista" class="gen-dialogo">
+  <form method="dialog" class="gen-dialogo-cab"><h2>Mis personajes</h2><button class="gen-cerrar" aria-label="Cerrar">×</button></form>
+  <ul id="lista-personajes" class="gen-lista"></ul>
+  <div class="gen-dialogo-pie">
+    <button type="button" class="gen-boton" id="b-exportar">Copia de seguridad (descargar)</button>
+    <button type="button" class="gen-boton" id="b-importar">Recuperar una copia</button>
+  </div>
+</dialog>
+
+<dialog id="d-nuevo" class="gen-dialogo estrecho">
+  <form method="dialog" class="gen-dialogo-cab"><h2>Ficha nueva</h2><button class="gen-cerrar" aria-label="Cerrar">×</button></form>
+  <p>¿En qué ficha? La que tienes abierta queda guardada en «Mis personajes».</p>
+  <div class="gen-elige">
+    <button type="button" class="gen-boton" data-ficha="coc">La llamada de Cthulhu<br><small>7.ª edición · años 20</small></button>
+    <button type="button" class="gen-boton" data-ficha="pulp">Pulp Cthulhu<br><small>ficha de héroe</small></button>
+  </div>
+</dialog>
+
+<dialog id="d-retrato" class="gen-dialogo estrecho">
+  <form method="dialog" class="gen-dialogo-cab"><h2>Encuadra el retrato</h2><button class="gen-cerrar" aria-label="Cerrar">×</button></form>
+  <p class="gen-nota">Arrastra la imagen para moverla y usa la barra para acercarla.</p>
+  <div class="gen-recorte"><canvas id="c-retrato"></canvas></div>
+  <label class="gen-opcion">Zoom <input type="range" id="r-zoom" min="1" max="4" step="0.01" value="1"></label>
+  <div class="gen-dialogo-pie">
+    <button type="button" class="gen-boton" id="b-quitar-retrato">Quitar retrato</button>
+    <button type="button" class="gen-boton" id="b-otra-imagen">Otra imagen</button>
+    <button type="button" class="gen-boton principal" id="b-poner-retrato">Ponerlo</button>
+  </div>
+</dialog>
+
+<dialog id="d-asistente" class="gen-dialogo ancho"></dialog>
+
+<script src="/generador/datos.js?v=1"></script>
+<script src="/generador/editor.js?v=1"></script>
+<script src="/generador/asistente.js?v=1"></script>
+</body>
+</html>

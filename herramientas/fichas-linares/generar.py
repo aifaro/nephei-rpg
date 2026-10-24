@@ -152,7 +152,7 @@ def rellenar(doc, n_pag, p, prefijo='', todos=()):
             elif base == 'DES':
                 valor = '' if vacio else d['Esquivar']
             elif base == 'EDU':
-                f.linea(p1, 'Lengua propia', col['nombre'], col['fin'], y - 0.4, '' if vacio else 'Español')
+                f.linea(p1, 'Lengua propia (nombre)', col['nombre'], col['fin'], y - 0.4, '' if vacio else 'Español')
                 valor = p['car'].get('EDU', '')
             else:
                 valor = '' if vacio else hab.get(nombre, base)
