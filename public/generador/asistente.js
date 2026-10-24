@@ -71,8 +71,10 @@ const Asistente = (() => {
   const edadValida = () => pulp() ? A.edad >= 15 && A.edad <= 90 : !!tramo();
   const arquetipo = () => ARQUETIPOS.find(a => a.n === A.arquetipo) || null;
   const dadosDe = k => pulp() && k === A.principal ? '1D6+13' : REGLAS.tirada[k];
+  // Con «mover las tiradas» (opción 3 del Manual del Guardián, pág. 49), qué tirada lleva cada característica.
+  const tiradaDe = k => (A.mover && A.asignacion && A.asignacion[k]) || k;
   function base(k) {
-    if (A.metodo === 'tiradas') return A.tiradas ? A.tiradas[k].total : null;
+    if (A.metodo === 'tiradas') return A.tiradas ? A.tiradas[tiradaDe(k)].total : null;
     if (pulp() && k === A.principal) return PULP.rapidoPrincipal;
     return A.rapido[k] ?? null;
   }
@@ -341,20 +343,46 @@ const Asistente = (() => {
       c.append(pulp()
         ? regla(`Tira 3D6×5 para FUE, CON, DES, APA y POD, y 2D6+6×5 para TAM, INT y EDU, salvo la característica principal del arquetipo (${P}), que se tira con 1D6+13 y se multiplica por 5.`, 'Pulp Cthulhu, pág. 23')
         : regla('Tira 3D6 y multiplica el resultado por 5 para FUE, CON, DES, APA y POD. Tira 2D6+6 y multiplica el resultado por 5 para TAM, INT y EDU. Los ajustes por la edad vienen en el paso siguiente.', 'Manual del Guardián, pág. 36'));
+      c.append(regla('Unas características bajas no hacen un ' + sis().quien + ' peor: a menudo le dan vida y lo hacen más real, lejos del superhombre increíble. En lugar de rechazar una mala tirada, intenta incorporarla a su historia. Una DES baja puede venir de una herida en una pierna o en una mano mientras servía en el ejército; una EDU baja, de no haber ido nunca a la escuela y haber crecido en la calle.', 'Manual del Guardián, pág. 33'));
       if (!A.tiradas) {
         c.append(h('button', { type: 'button', class: 'gen-boton principal', onclick: () => {
           A.tiradas = Object.fromEntries(CARS.map(k => [k, tirar(dadosDe(k))]));
-          A.ajuste = {}; A.mejoras = null; guardar(); pintar();
+          A.ajuste = {}; A.mejoras = null; A.asignacion = null; guardar(); pintar();
         } }, 'Tirar los dados'));
       } else {
-        c.append(h('div', { class: 'asis-cars' }, CARS.map(k => h('div', { class: 'asis-car' },
-          h('b', null, `${k} · ${dadosDe(k)}${k === P ? ' · principal' : ''}`), h('span', { class: 'v' }, A.tiradas[k].total),
-          h('small', null, textoTirada(A.tiradas[k]))))));
+        // Mover las tiradas: cada característica toma el resultado de otra; al elegir, se intercambian.
+        // En Pulp la característica principal se queda con su 1D6+13, que es del arquetipo.
+        if (!A.asignacion) A.asignacion = Object.fromEntries(CARS.map(k => [k, k]));
+        const movibles = CARS.filter(k => k !== P);
+        const cambiar = (k, origen) => {
+          const otra = movibles.find(j => A.asignacion[j] === origen);
+          if (otra) A.asignacion[otra] = A.asignacion[k];
+          A.asignacion[k] = origen;
+          A.ajuste = {}; A.mejoras = null; guardar(); pintar();
+        };
+        c.append(h('label', { class: 'asis-opcion-mover' }, h('input', { type: 'checkbox', checked: !!A.mover, onchange: e => {
+          A.mover = e.target.checked; A.ajuste = {}; A.mejoras = null; guardar(); pintar();
+        } }), ' Mover las tiradas entre características (si el Guardián lo permite)'));
+        c.append(h('div', { class: 'asis-cars' }, CARS.map(k => {
+          const t = A.tiradas[tiradaDe(k)];
+          const caja = h('div', { class: 'asis-car' },
+            h('b', null, `${k}${k === P ? ' · principal' : ''}`), h('span', { class: 'v' }, t.total),
+            h('small', null, (tiradaDe(k) !== k ? `tirada de ${tiradaDe(k)}: ` : `${dadosDe(k)}: `) + textoTirada(t)));
+          if (A.mover && k !== P) caja.append(h('select', { 'aria-label': `Tirada para ${k}`, onchange: e => cambiar(k, e.target.value) },
+            movibles.map(j => h('option', { value: j, selected: tiradaDe(k) === j }, `${A.tiradas[j].total} · ${j}`))));
+          return caja;
+        })));
+        if (A.mover) {
+          c.append(h('p', { class: 'gen-nota' }, 'Opción 3 del Manual del Guardián (pág. 49): se pueden asignar los ocho resultados como se quiera entre las características. Al elegir una tirada para una característica, las dos se intercambian.' +
+            (pulp() ? ` La característica principal (${P}) conserva su tirada de 1D6+13.` : '')));
+          const bajas40 = ['INT', 'TAM'].filter(k => base(k) < 40);
+          if (bajas40.length) c.append(h('p', { class: 'asis-aviso' }, `Se recomienda un mínimo de 40 en INT y TAM; aquí ${bajas40.join(' y ')} ${bajas40.length > 1 ? 'quedan' : 'queda'} por debajo (se puede, con el consentimiento del Guardián).`));
+        }
         const bajas = CARS.filter(k => A.tiradas[k].total < 50).length;
         if (!pulp()) c.append(h('p', { class: 'gen-nota' }, 'Opción 1 del manual (pág. 49): si no te gusta el resultado, el Guardián puede dejarte empezar de nuevo, por ejemplo cuando tres o más características salen por debajo de 50.' + (bajas >= 3 ? ` Aquí hay ${bajas}.` : '')));
         c.append(h('button', { type: 'button', class: 'gen-boton', onclick: () => {
           if (!confirm('¿Descartar estas tiradas y volver a tirar? Hazlo solo si tu Guardián lo permite.')) return;
-          A.tiradas = null; A.ajuste = {}; A.mejoras = null; guardar(); pintar();
+          A.tiradas = null; A.ajuste = {}; A.mejoras = null; A.asignacion = null; guardar(); pintar();
         } }, 'Volver a tirar'));
       }
     } else {
