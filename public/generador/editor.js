@@ -102,7 +102,7 @@ const Generador = (() => {
     let e;
     const m = PISTA.exec(c.n);
     if (c.t === 'c') {
-      e = el('button', m ? 'gen-pista' : 'gen-casilla');
+      e = el('button', m ? 'gen-pista' : c.forma === 'rombo' ? 'gen-casilla rombo' : 'gen-casilla');
       e.type = 'button';
       e.setAttribute('aria-label', c.n);
       e.setAttribute('aria-pressed', pj.campos[c.n] === true ? 'true' : 'false');
@@ -210,7 +210,7 @@ const Generador = (() => {
 
   function recalcular() {
     if (pj.ficha === 'dg') return recalcularDG();
-    if (pj.ficha === 'dnd') return recalcularDnD();
+    if (pj.ficha === 'dnd' || pj.ficha === 'dnd24') return recalcularDnD();
     const c = {};
     for (const k of CARS) c[k] = num(k);
     const edad = num('Edad') || 0;
@@ -281,8 +281,8 @@ const Generador = (() => {
     for (let i = 1; i <= 5; i++) poner(`Lazo ${i} valor`, (pj.campos[`Lazo ${i}`] || '').trim() && c.CAR != null ? c.CAR : '');
   }
 
-  // D&D 5.ª: modificadores, bonificador por competencia según el nivel, salvaciones, habilidades,
-  // Percepción pasiva, iniciativa, y CD y ataque de conjuros con la aptitud mágica.
+  // D&D (hojas de 2014 y de 2024): modificadores, bonificador por competencia según el nivel, salvaciones,
+  // habilidades, Percepción pasiva, iniciativa, y modificador, CD y ataque de conjuros con la aptitud mágica.
   const conSigno = v => (v >= 0 ? '+' : '-') + Math.abs(v);
   const APTITUDES = ['FUE', 'DES', 'CON', 'INT', 'SAB', 'CAR'];
   function recalcularDnD() {
@@ -292,8 +292,8 @@ const Generador = (() => {
       m[k] = v == null ? null : Math.floor((v - 10) / 2);
       poner(k + ' mod', m[k] == null ? '' : conSigno(m[k]));
     }
-    // Nivel: la suma de los números de «Clase y nivel» («Guerrero 3 / Mago 2» es nivel 5)
-    const niveles = String(pj.campos['Clase y nivel'] || '').match(/\d+/g);
+    // Nivel: el campo «Nivel» (hoja de 2024) o la suma de los números de «Clase y nivel» («Guerrero 3 / Mago 2» es nivel 5)
+    const niveles = String(pj.campos[nombres.has('Nivel') ? 'Nivel' : 'Clase y nivel'] || '').match(/\d+/g);
     const nivel = niveles ? niveles.reduce((a, b) => a + +b, 0) : null;
     const comp = nivel ? 2 + Math.floor((Math.min(nivel, 20) - 1) / 4) : null;
     poner('Competencia', comp ? conSigno(comp) : '');
@@ -307,6 +307,7 @@ const Generador = (() => {
     // «INT», «Inteligencia», «Sab.»…: basta con las tres primeras letras
     const apt = String(pj.campos['Aptitud mágica'] || '').trim().normalize('NFD').replace(/[̀-ͯ]/g, '').slice(0, 3).toUpperCase();
     const ma = APTITUDES.includes(apt) ? m[apt] : null;
+    poner('Modificador de conjuros', ma != null ? conSigno(ma) : '');
     poner('CD de conjuros', ma != null && comp ? 8 + comp + ma : '');
     poner('Ataque de conjuros', ma != null && comp ? conSigno(comp + ma) : '');
   }
@@ -351,7 +352,7 @@ const Generador = (() => {
       guardarYa();
       await cargarPdfLib();
       const { PDFDocument, StandardFonts } = window.PDFLib;
-      const bytes = await (await fetch('/generador/' + def.pdf + '?v=2')).arrayBuffer();
+      const bytes = await (await fetch('/generador/' + def.pdf + '?v=3')).arrayBuffer();
       const doc = await PDFDocument.load(bytes);
       const form = doc.getForm();
       const font = await doc.embedFont(StandardFonts[LETRAS[def.letra][1]]);
@@ -582,7 +583,7 @@ const Generador = (() => {
 
   const listo = (async () => {
     leer();
-    FICHAS = await (await fetch('/generador/fichas.json?v=2')).json();
+    FICHAS = await (await fetch('/generador/fichas.json?v=3')).json();
     const recientes = Object.values(almacen.personajes).filter(deAqui).sort((a, b) => b.actualizado - a.actualizado);
     pj = [almacen.personajes[almacen.actuales[FAMILIA]]].find(deAqui) || recientes[0] || nuevoPj(fichaInicial());
     pintar();

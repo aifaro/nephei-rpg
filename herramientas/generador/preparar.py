@@ -35,8 +35,13 @@ FICHAS = {
                  foto=(0, (416, 22, 566, 129))),
     'dg': dict(carpeta='fichas-dg', plantilla='delta-green.pdf',
                titulo='Delta Green', familia='dg', letra='Courier', sub='Profesión', foto=None),
+    # D&D: la primera de la familia es la que se usa para los personajes nuevos (reglas de 2024); la de 2014
+    # queda solo para abrir los que se crearon con ella
+    'dnd24': dict(carpeta='fichas-dnd24', plantilla='dnd-2024.pdf',
+                  titulo='Dungeons & Dragons · reglas de 2024', familia='dnd', letra='Helvetica', sub='Clase',
+                  foto=(1, (521, 32, 587, 97))),   # a la derecha de «Appearance»
     'dnd': dict(carpeta='fichas-dnd', plantilla='dnd-5e.pdf',
-                titulo='Dungeons & Dragons · 5.ª edición', familia='dnd', letra='Helvetica', sub='Clase y nivel',
+                titulo='Dungeons & Dragons · 5.ª edición (2014)', familia='dnd', letra='Helvetica', sub='Clase y nivel',
                 foto=(1, (36, 134, 209, 352))),   # «Aspecto del personaje»
 }
 ETIQUETA = {'Ocultismo': 'Ciencias ocultas'}  # el campo se llama distinto de lo que pone la ficha
@@ -125,9 +130,13 @@ def main():
             raise SystemExit(f'{clave}: campos con el mismo nombre: {", ".join(sorted(repes))}')
 
         foto = f['foto'] and {'p': f['foto'][0], 'r': list(f['foto'][1])}
+        lista = campos(blanco)
+        for c in lista:  # las casillas en rombo se pintan rellenas, como en el PDF
+            if hasattr(mod, 'rombos') and c['n'] in mod.rombos():
+                c['forma'] = 'rombo'
         filas = mod.habilidades() if hasattr(mod, 'habilidades') else habilidades(clave, mod)
         datos[clave] = {'titulo': f['titulo'], 'familia': f['familia'], 'letra': f['letra'], 'sub': f['sub'],
-                        'pdf': clave + '.pdf', 'paginas': paginas, 'foto': foto, 'campos': campos(blanco),
+                        'pdf': clave + '.pdf', 'paginas': paginas, 'foto': foto, 'campos': lista,
                         'habilidades': filas}
         print('  ', clave, len(datos[clave]['campos']), 'campos,', len(datos[clave]['habilidades']), 'filas de habilidad')
 

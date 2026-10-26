@@ -117,8 +117,8 @@ class Ficha:
         w.text_color = self.tinta
         w.field_value = marcada
         a = pagina.add_widget(w)
-        if anillo:
-            self.anillos.append((a.xref, marcada, a.rect))
+        if anillo:  # True: círculo de tinta (pistas); 'rombo': rombo relleno (hoja de D&D de 2024)
+            self.anillos.append((a.xref, marcada, a.rect, anillo))
 
     def linea(self, pagina, nombre, x0, x1, y, valor='', **kw):
         """Campo sobre una línea de puntos cuya caja de texto empieza en `y`."""
@@ -137,9 +137,9 @@ class Ficha:
                              marcada=actuales.get(pista) == n, anillo=True)
 
     def cerrar(self):
-        """Sustituye la apariencia de las casillas de las pistas por un círculo de tinta."""
+        """Sustituye la apariencia de las casillas de las pistas por un círculo de tinta (o un rombo relleno)."""
         doc = self.doc
-        for xref, marcada, r in self.anillos:
+        for xref, marcada, r, forma in self.anillos:
             w, h = r.width, r.height
             k = 0.5523
             rx, ry, cx, cy = w / 2 - 0.6, h / 2 - 0.6, w / 2, h / 2
@@ -149,6 +149,10 @@ class Ficha:
                        f'{cx - k * rx:.2f} {cy + ry:.2f} {cx - rx:.2f} {cy + k * ry:.2f} {cx - rx:.2f} {cy:.2f} c '
                        f'{cx - rx:.2f} {cy - k * ry:.2f} {cx - k * rx:.2f} {cy - ry:.2f} {cx:.2f} {cy - ry:.2f} c '
                        f'{cx + k * rx:.2f} {cy - ry:.2f} {cx + rx:.2f} {cy - k * ry:.2f} {cx + rx:.2f} {cy:.2f} c S Q')
+            if forma == 'rombo':
+                circulo = (f'q {self.tinta[0]} {self.tinta[1]} {self.tinta[2]} rg '
+                           f'{cx:.2f} {cy + ry * 0.75:.2f} m {cx + rx * 0.75:.2f} {cy:.2f} l {cx:.2f} {cy - ry * 0.75:.2f} l '
+                           f'{cx - rx * 0.75:.2f} {cy:.2f} l h f Q')
             on, off = doc.get_new_xref(), doc.get_new_xref()
             for x, contenido in ((on, circulo), (off, '')):
                 doc.update_object(x, f'<< /Type /XObject /Subtype /Form /BBox [0 0 {w:.2f} {h:.2f}] >>')

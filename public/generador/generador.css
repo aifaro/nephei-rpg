@@ -259,3 +259,5 @@ textarea.gen-campo{line-height:1.2;padding-top:.2cqw;overflow:auto}
 .asis-columnas li{break-inside:avoid}
 .tema-dg .gen-cabecera .sello a{color:inherit}
 @media (max-width:40rem){.tema-dg .gen-cabecera{padding:1rem .9rem;border-left-width:8px}.tema-dg .gen-cabecera .entradilla{font-size:.92rem}}
+/* Casillas en rombo (hoja de D&D de 2024): marcadas, el rombo se rellena */
+.gen-casilla.rombo[aria-pressed=true]::after{content:"";inset:22%;background:#1a2660;clip-path:polygon(50% 0,100% 50%,50% 100%,0 50%)}

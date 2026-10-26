@@ -3,14 +3,14 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Generador de personajes de D&amp;D 5.ª edición · rpg.nephei.org</title>
-<meta name="description" content="Crea personajes de Dungeons &amp; Dragons 5.ª edición sobre la hoja oficial en español: rellénala en el navegador o usa el asistente de nivel 1 (raza, clase, trasfondo, conjuros y equipo), y descárgala en PDF. No se guarda nada en ningún servidor.">
+<title>Generador de personajes de D&amp;D (reglas de 2024) · rpg.nephei.org</title>
+<meta name="description" content="Crea personajes de Dungeons &amp; Dragons con las reglas de 2024 sobre la hoja oficial: rellénala en el navegador o usa el asistente de nivel 1 (clase, trasfondo, especie, dotes, conjuros y equipo), y descárgala en PDF. No se guarda nada en ningún servidor.">
 <meta name="theme-color" content="#1c0d08">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="/style.css?v=20261016b">
-<link rel="stylesheet" href="/generador/generador.css?v=4">
+<link rel="stylesheet" href="/generador/generador.css?v=5">
 </head>
 <body class="sitio generador tema-dnd" data-familia="dnd">
 <nav class="barra"><a class="marca" href="/">rpg<span>·</span>nephei</a><a href="https://nephei.org">nephei.org</a></nav>
@@ -20,12 +20,12 @@
   <nav class="gen-pestanas" aria-label="Juego">
     <a href="/generador">La llamada de Cthulhu<small>7.ª edición · Pulp</small></a>
     <a href="/generador/delta-green">Delta Green<small>agentes</small></a>
-    <a href="/generador/dnd" aria-current="page">Dungeons &amp; Dragons<small>5.ª edición</small></a>
+    <a href="/generador/dnd" aria-current="page">Dungeons &amp; Dragons<small>reglas de 2024</small></a>
   </nav>
   <header class="gen-cabecera">
-    <p class="sello"><a href="/utilidades" style="color:inherit;border:0">Utilidades</a> · Dungeons &amp; Dragons · 5.ª edición</p>
+    <p class="sello"><a href="/utilidades" style="color:inherit;border:0">Utilidades</a> · Dungeons &amp; Dragons · reglas de 2024</p>
     <h1>Generador de personajes</h1>
-    <p class="entradilla">Rellena la hoja de personaje oficial aquí mismo, o deja que el asistente te lleve por la raza, la clase, el trasfondo, los conjuros y el equipo de un personaje de nivel 1. Al terminar, descárgala en PDF rellenable.</p>
+    <p class="entradilla">Rellena la hoja de personaje oficial aquí mismo, o deja que el asistente te lleve por la clase, el trasfondo, la especie, las dotes, los conjuros y el equipo de un personaje de nivel 1 con el Manual del Jugador de 2024. Al terminar, descárgala en PDF rellenable.</p>
     <p class="gen-privacidad">Todo se queda en este navegador: los personajes se guardan solos en su almacenamiento local y nada viaja a ningún servidor. Si borras los datos del sitio o cambias de navegador, no estarán; para llevártelos, usa «Copia de seguridad».</p>
   </header>
 
@@ -56,11 +56,13 @@
   <section class="gen-ayuda">
     <h2>Cómo funciona</h2>
     <ul>
-      <li><strong>Escribir en la ficha.</strong> Son las tres hojas oficiales en español: personaje, detalles y conjuros. Al poner las puntuaciones de característica se calculan los modificadores; con el nivel de «Clase y nivel» («Guerrero 3», o «Guerrero 3 / Mago 2»), el bonificador por competencia; y con eso las tiradas de salvación, las habilidades, la Sabiduría (Percepción) pasiva, la iniciativa y, si pones la aptitud mágica (INT, SAB o CAR), la CD y el ataque de conjuros. Si escribes tú uno de esos valores, se respeta.</li>
-      <li><strong>Competencias.</strong> Pulsa el círculo de una salvación o una habilidad para marcar que eres competente: se suma el bonificador. En la hoja de conjuros, el círculo marca los preparados.</li>
-      <li><strong>Retrato.</strong> Pulsa el recuadro «Aspecto del personaje» de la segunda hoja para subir una imagen; podrás encuadrarla. Se guarda en el navegador, reducida.</li>
+      <li><strong>La hoja.</strong> Es la hoja oficial de 2024, en sus dos caras. Wizards solo la ha publicado en inglés, así que los rótulos impresos están en inglés; lo que se escribe, en español.</li>
+      <li><strong>Escribir en la ficha.</strong> Al poner las puntuaciones de característica se calculan los modificadores; con el nivel, el bonificador por competencia; y con eso las tiradas de salvación, las habilidades, la Percepción pasiva, la iniciativa y, si pones la aptitud mágica (INT, SAB o CAR, o su nombre), el modificador, la CD y el ataque de conjuros. Si escribes tú uno de esos valores, se respeta.</li>
+      <li><strong>Competencias.</strong> Pulsa el círculo de una salvación o una habilidad para marcar que eres competente: se suma el bonificador. Los rombos marcan el entrenamiento con armaduras, el escudo, las salvaciones contra muerte y la concentración, el ritual o el material de cada conjuro.</li>
+      <li><strong>Retrato.</strong> Pulsa el hueco junto a «Appearance», en la segunda cara, para subir una imagen; podrás encuadrarla. Se guarda en el navegador, reducida.</li>
       <li><strong>Descargar PDF.</strong> Sale la hoja oficial con todo relleno, y sigue siendo un PDF con campos: se puede seguir editando en cualquier lector de PDF.</li>
-      <li><strong>Asistente.</strong> Crea un personaje de nivel 1 con el <em>Manual del Jugador</em> de 2014: las nueve razas y sus subrazas, las doce clases (con dominio, patrón u origen cuando toca a nivel 1, estilo de combate, pericia), características por conjunto estándar, compra de puntos o tiradas, los trece trasfondos, habilidades e idiomas, trucos y conjuros de nivel 1, el equipo inicial con la CA y los ataques ya calculados, y la personalidad. Al final lo pasa a una ficha nueva.</li>
+      <li><strong>Asistente.</strong> Crea un personaje de nivel 1 con el <em>Player's Handbook</em> de 2024, en el orden del libro: las doce clases (con orden divina o primigenia, estilo de combate, invocación, maestría con armas y pericia), los dieciséis trasfondos con sus aumentos de característica y su dote de origen, las diez especies con sus linajes, características por conjunto estándar, compra de puntos o tiradas, habilidades, idiomas, trucos y conjuros con su tiempo, alcance y componentes, el equipo inicial o su oro con la CA y los ataques calculados, y la personalidad. Al final lo pasa a una ficha nueva.</li>
+      <li><strong>Personajes de 2014.</strong> Los que se crearon antes con la hoja de 2014 siguen en «Mis personajes» y se abren con su hoja.</li>
     </ul>
   </section>
 </main>
@@ -92,9 +94,9 @@
 
 <dialog id="d-asistente" class="gen-dialogo ancho"></dialog>
 
-<script src="/generador/datos-dnd.js?v=1"></script>
-<script src="/generador/editor.js?v=3"></script>
-<script src="/generador/asis-comun.js?v=1"></script>
-<script src="/generador/asistente-dnd.js?v=1"></script>
+<script src="/generador/datos-dnd.js?v=2"></script>
+<script src="/generador/editor.js?v=4"></script>
+<script src="/generador/asis-comun.js?v=2"></script>
+<script src="/generador/asistente-dnd.js?v=3"></script>
 </body>
 </html>

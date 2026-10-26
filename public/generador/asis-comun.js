@@ -76,6 +76,8 @@ const AsisComun = (() => {
       const arriba = dlg.querySelector('.asis-cuerpo') ? dlg.querySelector('.asis-cuerpo').scrollTop : 0;
       dlg.textContent = '';
       const cuerpo = h('div', { class: 'asis-cuerpo' });
+      const meter = cuerpo.append.bind(cuerpo);  // los pasos añaden piezas opcionales: lo que es null no se pinta
+      cuerpo.append = (...xs) => meter(...xs.flat().filter(x => x != null && x !== false));
       dlg.append(h('div', { class: 'asis' },
         h('form', { method: 'dialog', class: 'gen-dialogo-cab' }, h('h2', null, cfg.titulo()),
           h('button', { class: 'gen-cerrar', 'aria-label': 'Cerrar' }, '×')),
