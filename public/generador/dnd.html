@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Generador de personajes de D&amp;D 5.ª edición · rpg.nephei.org</title>
+<meta name="description" content="Crea personajes de Dungeons &amp; Dragons 5.ª edición sobre la hoja oficial en español: rellénala en el navegador o usa el asistente de nivel 1 (raza, clase, trasfondo, conjuros y equipo), y descárgala en PDF. No se guarda nada en ningún servidor.">
+<meta name="theme-color" content="#1c0d08">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="/style.css?v=20261016b">
+<link rel="stylesheet" href="/generador/generador.css?v=4">
+</head>
+<body class="sitio generador tema-dnd" data-familia="dnd">
+<nav class="barra"><a class="marca" href="/">rpg<span>·</span>nephei</a><a href="https://nephei.org">nephei.org</a></nav>
+
+<div class="container">
+<main>
+  <nav class="gen-pestanas" aria-label="Juego">
+    <a href="/generador">La llamada de Cthulhu<small>7.ª edición · Pulp</small></a>
+    <a href="/generador/delta-green">Delta Green<small>agentes</small></a>
+    <a href="/generador/dnd" aria-current="page">Dungeons &amp; Dragons<small>5.ª edición</small></a>
+  </nav>
+  <header class="gen-cabecera">
+    <p class="sello"><a href="/utilidades" style="color:inherit;border:0">Utilidades</a> · Dungeons &amp; Dragons · 5.ª edición</p>
+    <h1>Generador de personajes</h1>
+    <p class="entradilla">Rellena la hoja de personaje oficial aquí mismo, o deja que el asistente te lleve por la raza, la clase, el trasfondo, los conjuros y el equipo de un personaje de nivel 1. Al terminar, descárgala en PDF rellenable.</p>
+    <p class="gen-privacidad">Todo se queda en este navegador: los personajes se guardan solos en su almacenamiento local y nada viaja a ningún servidor. Si borras los datos del sitio o cambias de navegador, no estarán; para llevártelos, usa «Copia de seguridad».</p>
+  </header>
+
+  <div class="gen-barra" role="toolbar" aria-label="Personaje">
+    <div class="gen-quien">
+      <span class="gen-ficha" id="rotulo-ficha"></span>
+      <strong id="rotulo-nombre">Sin nombre</strong>
+      <span class="gen-guardado" id="guardado" aria-live="polite"></span>
+    </div>
+    <div class="gen-acciones">
+      <button type="button" class="gen-boton principal" id="b-asistente">Asistente</button>
+      <button type="button" class="gen-boton" id="b-nuevo">Nuevo</button>
+      <button type="button" class="gen-boton" id="b-lista">Mis personajes</button>
+      <button type="button" class="gen-boton" id="b-pdf">Descargar PDF</button>
+      <details class="gen-mas">
+        <summary class="gen-boton">Más</summary>
+        <div class="gen-menu">
+          <label class="gen-opcion"><input type="checkbox" id="o-auto" checked> Calcular solo modificadores, salvaciones, habilidades y conjuros</label>
+          <button type="button" class="gen-boton" id="b-retrato">Cambiar retrato</button>
+          <button type="button" class="gen-boton" id="b-vaciar">Vaciar esta ficha</button>
+        </div>
+      </details>
+    </div>
+  </div>
+
+  <div id="hojas" class="gen-hojas"></div>
+
+  <section class="gen-ayuda">
+    <h2>Cómo funciona</h2>
+    <ul>
+      <li><strong>Escribir en la ficha.</strong> Son las tres hojas oficiales en español: personaje, detalles y conjuros. Al poner las puntuaciones de característica se calculan los modificadores; con el nivel de «Clase y nivel» («Guerrero 3», o «Guerrero 3 / Mago 2»), el bonificador por competencia; y con eso las tiradas de salvación, las habilidades, la Sabiduría (Percepción) pasiva, la iniciativa y, si pones la aptitud mágica (INT, SAB o CAR), la CD y el ataque de conjuros. Si escribes tú uno de esos valores, se respeta.</li>
+      <li><strong>Competencias.</strong> Pulsa el círculo de una salvación o una habilidad para marcar que eres competente: se suma el bonificador. En la hoja de conjuros, el círculo marca los preparados.</li>
+      <li><strong>Retrato.</strong> Pulsa el recuadro «Aspecto del personaje» de la segunda hoja para subir una imagen; podrás encuadrarla. Se guarda en el navegador, reducida.</li>
+      <li><strong>Descargar PDF.</strong> Sale la hoja oficial con todo relleno, y sigue siendo un PDF con campos: se puede seguir editando en cualquier lector de PDF.</li>
+      <li><strong>Asistente.</strong> Crea un personaje de nivel 1 con el <em>Manual del Jugador</em> de 2014: las nueve razas y sus subrazas, las doce clases (con dominio, patrón u origen cuando toca a nivel 1, estilo de combate, pericia), características por conjunto estándar, compra de puntos o tiradas, los trece trasfondos, habilidades e idiomas, trucos y conjuros de nivel 1, el equipo inicial con la CA y los ataques ya calculados, y la personalidad. Al final lo pasa a una ficha nueva.</li>
+    </ul>
+  </section>
+</main>
+</div>
+
+<input type="file" id="f-retrato" accept="image/*" hidden>
+<input type="file" id="f-importar" accept="application/json,.json" hidden>
+
+<dialog id="d-lista" class="gen-dialogo">
+  <form method="dialog" class="gen-dialogo-cab"><h2>Mis personajes</h2><button class="gen-cerrar" aria-label="Cerrar">×</button></form>
+  <ul id="lista-personajes" class="gen-lista"></ul>
+  <div class="gen-dialogo-pie">
+    <button type="button" class="gen-boton" id="b-exportar">Copia de seguridad (descargar)</button>
+    <button type="button" class="gen-boton" id="b-importar">Recuperar una copia</button>
+  </div>
+</dialog>
+
+<dialog id="d-retrato" class="gen-dialogo estrecho">
+  <form method="dialog" class="gen-dialogo-cab"><h2>Encuadra el retrato</h2><button class="gen-cerrar" aria-label="Cerrar">×</button></form>
+  <p class="gen-nota">Arrastra la imagen para moverla y usa la barra para acercarla.</p>
+  <div class="gen-recorte"><canvas id="c-retrato"></canvas></div>
+  <label class="gen-opcion">Zoom <input type="range" id="r-zoom" min="1" max="4" step="0.01" value="1"></label>
+  <div class="gen-dialogo-pie">
+    <button type="button" class="gen-boton" id="b-quitar-retrato">Quitar retrato</button>
+    <button type="button" class="gen-boton" id="b-otra-imagen">Otra imagen</button>
+    <button type="button" class="gen-boton principal" id="b-poner-retrato">Ponerlo</button>
+  </div>
+</dialog>
+
+<dialog id="d-asistente" class="gen-dialogo ancho"></dialog>
+
+<script src="/generador/datos-dnd.js?v=1"></script>
+<script src="/generador/editor.js?v=3"></script>
+<script src="/generador/asis-comun.js?v=1"></script>
+<script src="/generador/asistente-dnd.js?v=1"></script>
+</body>
+</html>

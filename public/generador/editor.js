@@ -1,18 +1,27 @@
 // Editor de la ficha: pinta la ficha oficial de fondo, pone encima un campo por cada campo del PDF
 // rellenable (fichas.json, que sale de herramientas/generador/preparar.py), calcula lo derivado,
 // guarda los personajes en el almacenamiento local del navegador y descarga el PDF relleno con pdf-lib.
+// Cada pestaña (body[data-familia]: cthulhu, dg o dnd) enseña solo los personajes de sus fichas;
+// todos comparten el mismo almacén.
 'use strict';
 
 const Generador = (() => {
   const CLAVE = 'nephei-generador-v1';
+  const FAMILIA = document.body.dataset.familia || 'cthulhu';
+  const QUIEN = { cthulhu: 'investigador', dg: 'agente', dnd: 'personaje' }[FAMILIA];
   const CARS = ['FUE', 'CON', 'TAM', 'DES', 'APA', 'INT', 'POD', 'EDU'];
+  const LETRAS = {  // la letra de cada ficha: en la página y en el PDF (de las 14 estándar)
+    Times: ['"Times New Roman", Times, serif', 'TimesRoman'],
+    Courier: ['"Courier New", Courier, monospace', 'Courier'],
+    Helvetica: ['Helvetica, Arial, sans-serif', 'Helvetica'],
+  };
   const PISTA = /^(PV|PM|Cordura|Suerte) (\d\d)$/;
   const $ = s => document.querySelector(s);
   const el = (tag, cls, txt) => { const e = document.createElement(tag); if (cls) e.className = cls; if (txt != null) e.textContent = txt; return e; };
   const pad = v => (v == null || v === '' ? '' : String(v).padStart(2, '0'));
 
   let FICHAS = null;
-  let almacen = { actual: null, personajes: {}, opciones: { moneda: 'dolar', epoca: '20', auto: true } };
+  let almacen = { actuales: {}, personajes: {}, opciones: { moneda: 'dolar', epoca: '20', auto: true } };
   let pj = null;
   const campos = new Map();   // nombre del campo → elemento
   let def = null, nombres = new Set();
@@ -24,7 +33,7 @@ const Generador = (() => {
       if (t) {
         const a = JSON.parse(t);
         almacen.personajes = a.personajes || {};
-        almacen.actual = a.actual || null;
+        almacen.actuales = a.actuales || { cthulhu: a.actual || null };  // antes solo había una pestaña
         Object.assign(almacen.opciones, a.opciones || {});
       }
     } catch (e) { /* sin almacenamiento: se trabaja igual, pero no se recuerda */ }
@@ -35,7 +44,7 @@ const Generador = (() => {
     clearTimeout(espera);
     pj.actualizado = Date.now();
     almacen.personajes[pj.id] = pj;
-    almacen.actual = pj.id;
+    almacen.actuales[FAMILIA] = pj.id;
     try {
       localStorage.setItem(CLAVE, JSON.stringify(almacen));
       $('#guardado').textContent = 'Guardado en este navegador';
@@ -47,11 +56,13 @@ const Generador = (() => {
     return { id: 'p' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6), ficha,
              campos: {}, auto: {}, tam: {}, foto: null, creado: Date.now(), actualizado: Date.now() };
   }
+  const deAqui = p => !!(p && FICHAS[p.ficha] && FICHAS[p.ficha].familia === FAMILIA);
+  const fichaInicial = () => Object.keys(FICHAS).find(k => FICHAS[k].familia === FAMILIA);
   function vacio(p) { return !p.foto && !Object.values(p.campos).some(v => v !== '' && v !== false); }
 
   // ------------------------------------------------------------ dibujo de la ficha
   const lienzo = document.createElement('canvas').getContext('2d');
-  function ancho(texto, tam) { lienzo.font = `${tam}px "Times New Roman", Times, serif`; return lienzo.measureText(texto).width; }
+  function ancho(texto, tam) { lienzo.font = `${tam}px ${LETRAS[def.letra][0]}`; return lienzo.measureText(texto).width; }
   function letra(c, texto) {  // tamaño para que quepa en una línea, como hará el PDF
     let t = pj.tam[c.n] || c.tam;
     if (!c.ml) while (t > 4.5 && ancho(texto, t) > c.r[2] - c.r[0] - 3) t -= 0.25;
@@ -69,6 +80,7 @@ const Generador = (() => {
     nombres = new Set(def.campos.map(c => c.n));
     const cont = $('#hojas');
     cont.textContent = '';
+    cont.style.setProperty('--letra-ficha', LETRAS[def.letra][0]);
     campos.clear();
     def.paginas.forEach((pg, i) => {
       const hoja = el('div', 'gen-hoja');
@@ -80,7 +92,7 @@ const Generador = (() => {
       const capa = el('div', 'gen-capa');
       hoja.append(img, capa);
       for (const c of def.campos) if (c.p === i) capa.append(crearCampo(c, pg));
-      if (def.foto.p === i) capa.append(crearFoto(pg));
+      if (def.foto && def.foto.p === i) capa.append(crearFoto(pg));
       cont.append(hoja);
     });
     rotulos();
@@ -99,6 +111,7 @@ const Generador = (() => {
         if (m) for (const n of nombres) if (n !== c.n && n.startsWith(m[1] + ' ') && PISTA.test(n)) marcar(n, false);
         marcar(c.n, on);
         if (m) pj.auto['pista:' + m[1]] = '';  // elegido a mano: el cálculo ya no lo mueve
+        else if (almacen.opciones.auto) recalcular();  // las competencias de D&D cambian los bonificadores
         guardar();
       });
     } else {
@@ -115,7 +128,7 @@ const Generador = (() => {
         pj.campos[c.n] = e.value;
         tamano(c, e);
         if (almacen.opciones.auto) recalcular();
-        if (c.n === 'Nombre' || c.n === 'Ocupación') rotulos();
+        if (c.n === 'Nombre' || c.n === def.sub) rotulos();
         guardar();
       });
       tamano(c, e, pg);
@@ -196,6 +209,8 @@ const Generador = (() => {
   }
 
   function recalcular() {
+    if (pj.ficha === 'dg') return recalcularDG();
+    if (pj.ficha === 'dnd') return recalcularDnD();
     const c = {};
     for (const k of CARS) c[k] = num(k);
     const edad = num('Edad') || 0;
@@ -243,6 +258,59 @@ const Generador = (() => {
     }
   }
 
+  // Delta Green: ×5, atributos derivados (Agent's Handbook, pág. 16) y valor de los Lazos (= CAR).
+  function recalcularDG() {
+    const c = {};
+    for (const k of ['FUE', 'CON', 'DES', 'INT', 'POD', 'CAR']) {
+      c[k] = num(k);
+      poner(k + ' ×5', c[k] == null ? '' : c[k] * 5, true);
+    }
+    if (c.FUE != null && c.CON != null) {
+      const ps = Math.ceil((c.FUE + c.CON) / 2);
+      poner('PS máximo', ps);
+      poner('PS actual', ps);
+    }
+    if (c.POD != null) {
+      poner('PV máximo', c.POD);
+      poner('PV actual', c.POD);
+      poner('COR actual', c.POD * 5);
+      const cor = num('COR actual');
+      if (cor != null) poner('PR actual', cor - c.POD);
+    }
+    if (Object.values(c).some(v => v != null)) poner('COR máximo', 99 - (num('Antinatural') || 0));
+    for (let i = 1; i <= 5; i++) poner(`Lazo ${i} valor`, (pj.campos[`Lazo ${i}`] || '').trim() && c.CAR != null ? c.CAR : '');
+  }
+
+  // D&D 5.ª: modificadores, bonificador por competencia según el nivel, salvaciones, habilidades,
+  // Percepción pasiva, iniciativa, y CD y ataque de conjuros con la aptitud mágica.
+  const conSigno = v => (v >= 0 ? '+' : '-') + Math.abs(v);
+  const APTITUDES = ['FUE', 'DES', 'CON', 'INT', 'SAB', 'CAR'];
+  function recalcularDnD() {
+    const m = {};
+    for (const k of APTITUDES) {
+      const v = num(k);
+      m[k] = v == null ? null : Math.floor((v - 10) / 2);
+      poner(k + ' mod', m[k] == null ? '' : conSigno(m[k]));
+    }
+    // Nivel: la suma de los números de «Clase y nivel» («Guerrero 3 / Mago 2» es nivel 5)
+    const niveles = String(pj.campos['Clase y nivel'] || '').match(/\d+/g);
+    const nivel = niveles ? niveles.reduce((a, b) => a + +b, 0) : null;
+    const comp = nivel ? 2 + Math.floor((Math.min(nivel, 20) - 1) / 4) : null;
+    poner('Competencia', comp ? conSigno(comp) : '');
+    const bono = (k, competente) => m[k] == null ? '' : conSigno(m[k] + (competente && comp ? comp : 0));
+    for (const k of APTITUDES) poner('Salvación ' + k, bono(k, pj.campos[`Salvación ${k} (competente)`] === true));
+    for (const x of def.habilidades) poner(x.valor, bono(x.car, pj.campos[x.competencia] === true));
+    const perc = num('Percepción');
+    poner('Percepción pasiva', perc == null ? '' : 10 + perc);
+    poner('Iniciativa', m.DES == null ? '' : conSigno(m.DES));
+    poner('Nombre (2)', pj.campos['Nombre'] || '');
+    // «INT», «Inteligencia», «Sab.»…: basta con las tres primeras letras
+    const apt = String(pj.campos['Aptitud mágica'] || '').trim().normalize('NFD').replace(/[̀-ͯ]/g, '').slice(0, 3).toUpperCase();
+    const ma = APTITUDES.includes(apt) ? m[apt] : null;
+    poner('CD de conjuros', ma != null && comp ? 8 + comp + ma : '');
+    poner('Ataque de conjuros', ma != null && comp ? conSigno(comp + ma) : '');
+  }
+
   // ------------------------------------------------------------ PDF
   function cargarPdfLib() {
     if (window.PDFLib) return Promise.resolve();
@@ -261,8 +329,8 @@ const Generador = (() => {
     return u;
   }
   function nombreArchivo(s) {
-    return (s || 'investigador').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase()
-      .replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'investigador';
+    return (s || QUIEN).normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase()
+      .replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || QUIEN;
   }
   function bajar(blob, nombre) {
     const a = document.createElement('a');
@@ -283,10 +351,10 @@ const Generador = (() => {
       guardarYa();
       await cargarPdfLib();
       const { PDFDocument, StandardFonts } = window.PDFLib;
-      const bytes = await (await fetch('/generador/' + def.pdf)).arrayBuffer();
+      const bytes = await (await fetch('/generador/' + def.pdf + '?v=2')).arrayBuffer();
       const doc = await PDFDocument.load(bytes);
       const form = doc.getForm();
-      const font = await doc.embedFont(StandardFonts.TimesRoman);
+      const font = await doc.embedFont(StandardFonts[LETRAS[def.letra][1]]);
       const sirve = new Map();
       const limpiar = s => [...s].map(ch => {
         if (ch === '\n') return ch;
@@ -311,14 +379,14 @@ const Generador = (() => {
         tf.setText(s);
       }
       form.updateFieldAppearances(font);
-      if (pj.foto) {
+      if (pj.foto && def.foto) {
         const img = await doc.embedJpg(bytesDe(pj.foto));
         const pag = doc.getPage(def.foto.p);
         const [x0, y0, x1, y1] = def.foto.r;
         pag.drawImage(img, { x: x0, y: pag.getHeight() - y1, width: x1 - x0, height: y1 - y0 });
       }
       const nombre = pj.campos['Nombre'] || '';
-      doc.setTitle(nombre ? `${nombre} · Ficha de investigador` : 'Ficha de investigador');
+      doc.setTitle(nombre ? `${nombre} · Ficha de ${QUIEN}` : `Ficha de ${QUIEN}`);
       doc.setCreator('rpg.nephei.org/generador');
       doc.setProducer('rpg.nephei.org/generador (pdf-lib)');
       const out = await doc.save({ updateFieldAppearances: false });
@@ -368,6 +436,7 @@ const Generador = (() => {
       pintarLienzo();
     }
     function enlazar() {
+      if (!$('#d-retrato')) return;  // fichas sin retrato (Delta Green)
       $('#f-retrato').addEventListener('change', ev => {
         const f = ev.target.files[0];
         ev.target.value = '';
@@ -421,13 +490,13 @@ const Generador = (() => {
   function lista() {
     const ul = $('#lista-personajes');
     ul.textContent = '';
-    const todos = Object.values(almacen.personajes).sort((a, b) => b.actualizado - a.actualizado);
+    const todos = Object.values(almacen.personajes).filter(deAqui).sort((a, b) => b.actualizado - a.actualizado);
     if (!todos.length) ul.append(el('li', 'gen-nota', 'Todavía no hay ninguno.'));
     for (const p of todos) {
       const li = el('li', p.id === pj.id ? 'actual' : '');
       const t = el('div', 'gen-lista-texto');
       t.append(el('strong', null, p.campos['Nombre'] || 'Sin nombre'));
-      t.append(el('span', null, [p.campos['Ocupación'], FICHAS[p.ficha].titulo,
+      t.append(el('span', null, [p.campos[FICHAS[p.ficha].sub], FICHAS[p.ficha].titulo,
         new Date(p.actualizado).toLocaleString('es-ES', { dateStyle: 'short', timeStyle: 'short' })].filter(Boolean).join(' · ')));
       const acc = el('div', 'gen-lista-acc');
       const b = (txt, fn) => { const x = el('button', 'gen-boton', txt); x.type = 'button'; x.addEventListener('click', fn); acc.append(x); };
@@ -442,12 +511,14 @@ const Generador = (() => {
       b('Borrar', () => {
         if (!confirm(`¿Borrar a ${p.campos['Nombre'] || 'este personaje'}? No se puede deshacer.`)) return;
         delete almacen.personajes[p.id];
-        if (p.id === pj.id) { pj = Object.values(almacen.personajes)[0] || nuevoPj('coc'); pintar(); }
+        if (p.id === pj.id) { pj = Object.values(almacen.personajes).find(deAqui) || nuevoPj(fichaInicial()); pintar(); }
         guardarYa(); lista();
       });
       li.append(t, acc);
       ul.append(li);
     }
+    const otros = Object.values(almacen.personajes).length - todos.length;
+    if (otros) ul.append(el('li', 'gen-nota', otros === 1 ? 'Hay otro personaje de otro juego: está en su pestaña.' : `Hay ${otros} personajes de otros juegos: están en su pestaña.`));
   }
   function exportar() {
     guardarYa();
@@ -464,7 +535,8 @@ const Generador = (() => {
         if (!ps.length) throw new Error('no hay personajes en el archivo');
         for (const p of ps) almacen.personajes[p.id] = Object.assign({ auto: {}, tam: {}, foto: null }, p);
         guardarYa(); lista();
-        alert(`Recuperados: ${ps.length}.`);
+        const fuera = ps.filter(p => !deAqui(p)).length;
+        alert(`Recuperados: ${ps.length}.` + (fuera ? ` ${fuera === 1 ? 'Uno es' : fuera + ' son'} de otros juegos y está${fuera === 1 ? '' : 'n'} en su pestaña.` : ''));
       } catch (e) { alert('Ese archivo no es una copia de seguridad del generador: ' + e.message); }
     };
     r.readAsText(f);
@@ -474,7 +546,10 @@ const Generador = (() => {
   function enlazar() {
     $('#b-pdf').addEventListener('click', descargar);
     $('#b-lista').addEventListener('click', () => { guardarYa(); lista(); $('#d-lista').showModal(); });
-    $('#b-nuevo').addEventListener('click', () => $('#d-nuevo').showModal());
+    $('#b-nuevo').addEventListener('click', () => {
+      if ($('#d-nuevo')) $('#d-nuevo').showModal();  // en Cthulhu hay que elegir la ficha
+      else abrirPj(nuevoPj(fichaInicial()));
+    });
     document.querySelectorAll('#d-nuevo [data-ficha]').forEach(b => b.addEventListener('click', () => {
       $('#d-nuevo').close();
       abrirPj(nuevoPj(b.dataset.ficha));
@@ -482,7 +557,7 @@ const Generador = (() => {
     $('#b-exportar').addEventListener('click', exportar);
     $('#b-importar').addEventListener('click', () => $('#f-importar').click());
     $('#f-importar').addEventListener('change', e => { const f = e.target.files[0]; e.target.value = ''; if (f) importar(f); });
-    $('#b-retrato').addEventListener('click', () => { $('.gen-mas').open = false; Retrato.abrir(); });
+    if ($('#b-retrato')) $('#b-retrato').addEventListener('click', () => { $('.gen-mas').open = false; Retrato.abrir(); });
     $('#b-vaciar').addEventListener('click', () => {
       if (!confirm('¿Vaciar toda la ficha, retrato incluido?')) return;
       Object.assign(pj, { campos: {}, auto: {}, tam: {}, foto: null });
@@ -490,15 +565,16 @@ const Generador = (() => {
       guardarYa(); pintar();
     });
     const o = almacen.opciones;
-    $('#o-moneda').value = o.moneda;
-    $('#o-epoca').value = o.epoca;
-    $('#o-auto').checked = o.auto;
-    const cambio = () => {
-      o.moneda = $('#o-moneda').value; o.epoca = $('#o-epoca').value; o.auto = $('#o-auto').checked;
-      if (o.auto) recalcular();
-      guardarYa();
-    };
-    ['#o-moneda', '#o-epoca', '#o-auto'].forEach(s => $(s).addEventListener('change', cambio));
+    // Moneda y época solo están en la pestaña de Cthulhu
+    for (const [s, k, prop] of [['#o-moneda', 'moneda', 'value'], ['#o-epoca', 'epoca', 'value'], ['#o-auto', 'auto', 'checked']]) {
+      if (!$(s)) continue;
+      $(s)[prop] = o[k];
+      $(s).addEventListener('change', () => {
+        o[k] = $(s)[prop];
+        if (o.auto) recalcular();
+        guardarYa();
+      });
+    }
     document.querySelectorAll('.gen-dialogo').forEach(d => d.addEventListener('click', e => { if (e.target === d) d.close(); }));
     window.addEventListener('beforeunload', () => { if (espera) guardarYa(); });
     Retrato.enlazar();
@@ -506,8 +582,9 @@ const Generador = (() => {
 
   const listo = (async () => {
     leer();
-    FICHAS = await (await fetch('/generador/fichas.json?v=1')).json();
-    pj = almacen.personajes[almacen.actual] || Object.values(almacen.personajes)[0] || nuevoPj('coc');
+    FICHAS = await (await fetch('/generador/fichas.json?v=2')).json();
+    const recientes = Object.values(almacen.personajes).filter(deAqui).sort((a, b) => b.actualizado - a.actualizado);
+    pj = [almacen.personajes[almacen.actuales[FAMILIA]]].find(deAqui) || recientes[0] || nuevoPj(fichaInicial());
     pintar();
     enlazar();
   })();
@@ -526,7 +603,7 @@ const Generador = (() => {
   }
 
   return {
-    listo, crear, ancho,
+    listo, crear, ancho, conSigno,
     ficha: clave => FICHAS[clave],
     opciones: () => almacen.opciones,
     importe,

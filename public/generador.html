@@ -4,19 +4,24 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Generador de personajes · rpg.nephei.org</title>
-<meta name="description" content="Crea investigadores de La llamada de Cthulhu 7.ª edición y Pulp Cthulhu sobre la ficha oficial: rellénala en el navegador o usa el asistente, y descárgala en PDF. No se guarda nada en ningún servidor.">
+<meta name="description" content="Crea investigadores de La llamada de Cthulhu 7.ª edición y Pulp Cthulhu, agentes de Delta Green y personajes de D&amp;D 5.ª sobre la ficha oficial: rellénala en el navegador o usa el asistente, y descárgala en PDF. No se guarda nada en ningún servidor.">
 <meta name="theme-color" content="#16130f">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="/style.css?v=20261016b">
-<link rel="stylesheet" href="/generador/generador.css?v=3">
+<link rel="stylesheet" href="/generador/generador.css?v=4">
 </head>
-<body class="sitio generador">
+<body class="sitio generador" data-familia="cthulhu">
 <nav class="barra"><a class="marca" href="/">rpg<span>·</span>nephei</a><a href="https://nephei.org">nephei.org</a></nav>
 
 <div class="container">
 <main>
+  <nav class="gen-pestanas" aria-label="Juego">
+    <a href="/generador" aria-current="page">La llamada de Cthulhu<small>7.ª edición · Pulp</small></a>
+    <a href="/generador/delta-green">Delta Green<small>agentes</small></a>
+    <a href="/generador/dnd">Dungeons &amp; Dragons<small>5.ª edición</small></a>
+  </nav>
   <header class="gen-cabecera">
     <p class="sello"><a href="/utilidades" style="color:inherit;border:0">Utilidades</a> · La llamada de Cthulhu · Pulp Cthulhu</p>
     <h1>Generador de personajes</h1>
@@ -110,7 +115,7 @@
 
 <script src="/generador/datos.js?v=2"></script>
 <script src="/generador/datos-pulp.js?v=2"></script>
-<script src="/generador/editor.js?v=2"></script>
+<script src="/generador/editor.js?v=3"></script>
 <script src="/generador/asistente.js?v=3"></script>
 </body>
 </html>

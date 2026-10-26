@@ -56,7 +56,7 @@
 .gen-capa{position:absolute;inset:0}
 .gen-campo{
   position:absolute;box-sizing:border-box;margin:0;padding:0 .15cqw;border:0;border-radius:1px;
-  background:transparent;color:#1a2660;font-family:"Times New Roman",Times,serif;line-height:1.05;
+  background:transparent;color:#1a2660;font-family:var(--letra-ficha,"Times New Roman",Times,serif);line-height:1.05;
   resize:none;overflow:hidden;
 }
 textarea.gen-campo{line-height:1.2;padding-top:.2cqw;overflow:auto}
@@ -175,3 +175,87 @@ textarea.gen-campo{line-height:1.2;padding-top:.2cqw;overflow:auto}
 @media (max-width:40rem){.asis-cuerpo{padding-left:.9rem;padding-right:.9rem}.gen-dialogo-cab h2{font-size:1.15rem}}
 .asis-opcion-mover{display:flex;align-items:center;gap:.3rem;margin:0 0 .8rem;font-family:var(--f-caja);font-size:.95rem}
 .asis-car select{margin-top:.35rem;width:100%;font-size:.85rem}
+
+/* Pestañas: un juego por página (/generador, /generador/delta-green, /generador/dnd) */
+.gen-pestanas{display:flex;flex-wrap:wrap;gap:.35rem;margin:0 0 1.4rem;border-bottom:2px solid var(--regla)}
+.gen-pestanas a{
+  display:flex;flex-direction:column;justify-content:center;gap:.05rem;
+  padding:.5rem .95rem .45rem;margin-bottom:-2px;border:1px solid var(--regla);border-bottom:2px solid var(--regla);border-radius:4px 4px 0 0;
+  background:var(--papel-caja);color:var(--tinta-2);font-family:var(--f-caja);font-weight:700;font-size:.95rem;line-height:1.15;
+}
+.gen-pestanas a small{font-weight:400;font-size:.78rem;color:var(--tinta-suave)}
+.gen-pestanas a:hover{color:var(--sangre);border-color:var(--ocre)}
+.gen-pestanas a[aria-current=page]{background:var(--papel-hoja);border-bottom-color:var(--papel-hoja);color:var(--noche);box-shadow:inset 0 3px 0 var(--sangre)}
+@media (max-width:40rem){.gen-pestanas a{flex:1 1 30%;padding:.45rem .5rem;font-size:.86rem}.gen-pestanas a small{display:none}}
+
+/* Delta Green: expediente clasificado */
+:root:has(body.tema-dg),body.tema-dg{
+  --papel:#e3e2dc;--papel-hoja:#f2f1ec;--papel-oscuro:#cfcdc4;--papel-caja:#d9d8d0;
+  --tinta:#141414;--tinta-2:#2a2a28;--tinta-suave:#5d5d57;--regla:#97958c;--regla-suave:#c3c1b8;
+  --ocre:#2f6b34;--ocre-vivo:#4e9a50;--amarillo:#7fc47a;--sangre:#9a1d18;--sangre-suave:#b3342c;
+  --mar:#1f3d22;--mar-suave:#3a5c3c;--noche:#0c0c0c;
+  --f-titulo:'Oswald','Alegreya Sans',sans-serif;--f-titulo-sc:'Oswald','Alegreya Sans SC',sans-serif;
+}
+.tema-dg .barra{background:#050505}
+.tema-dg .gen-cabecera{position:relative;background:#111;color:#e8e8e2;padding:1.4rem 1.4rem 1.3rem;border-left:14px solid var(--ocre);overflow:hidden}
+.tema-dg .gen-cabecera .sello{color:var(--amarillo);font-family:var(--f-impreso);letter-spacing:.22em}
+.tema-dg .gen-cabecera h1{font-family:'Oswald',var(--f-caja),sans-serif;font-weight:300;text-transform:uppercase;letter-spacing:.14em;color:#fff;font-size:clamp(2rem,6vw,3.2rem)}
+.tema-dg .gen-cabecera h1 b{font-weight:500;color:var(--amarillo)}
+.tema-dg .gen-cabecera .entradilla{font-family:var(--f-impreso);font-style:normal;font-size:1.02rem;color:#cfcfc8}
+.tema-dg .gen-privacidad{color:#a9a9a2;border-left-color:#444}
+.tema-dg .gen-cabecera::after{
+  content:"ALTO SECRETO//ORCON";position:absolute;right:-1.2rem;top:1.1rem;transform:rotate(9deg);
+  padding:.2rem .9rem;border:3px double rgba(200,40,32,.85);color:rgba(220,60,50,.85);
+  font-family:var(--f-maquina);font-size:.95rem;letter-spacing:.12em;pointer-events:none;
+}
+@media (max-width:48rem){.tema-dg .gen-cabecera::after{display:none}}
+.tema-dg .gen-barra{background:rgba(242,241,236,.97);border-top:3px solid #111}
+.tema-dg .gen-quien strong{font-family:var(--f-impreso);font-size:1.15rem}
+.tema-dg .gen-boton{border-radius:0}
+.tema-dg .gen-boton.principal{background:var(--mar);border-color:var(--mar);color:#eef5ea}
+.tema-dg .gen-boton.principal:hover{background:var(--ocre)}
+.tema-dg .gen-ayuda h2,.tema-dg .gen-dialogo-cab h2{font-family:'Oswald',sans-serif;font-weight:400;text-transform:uppercase;letter-spacing:.1em;color:var(--noche)}
+.tema-dg .gen-dialogo{border-top:4px solid var(--ocre)}
+.tema-dg .asis-cuerpo h3{font-family:'Oswald',sans-serif;font-weight:400;text-transform:uppercase;letter-spacing:.06em}
+.tema-dg .asis-regla{border-left-color:var(--ocre)}
+.tema-dg .asis-pasos button[aria-current=step]{background:var(--mar)}
+
+/* D&D: pergamino y rojo dragón */
+:root:has(body.tema-dnd),body.tema-dnd{
+  --papel:#f1e5c8;--papel-hoja:#fbf4e2;--papel-oscuro:#e2cfa4;--papel-caja:#efe0bd;
+  --tinta:#221510;--tinta-2:#3d281c;--tinta-suave:#715a46;--regla:#c2a26c;--regla-suave:#dcc79c;
+  --ocre:#a0761c;--ocre-vivo:#c99a2e;--amarillo:#e2b54a;--sangre:#8e1a14;--sangre-suave:#a9322a;
+  --mar:#58180d;--mar-suave:#7a2a1a;--noche:#1c0d08;
+}
+.tema-dnd .barra{background:#1c0d08}
+.tema-dnd .gen-cabecera{
+  text-align:center;padding:1.6rem 1rem 1.4rem;border:1px solid var(--regla);border-top:6px solid var(--sangre);
+  background:radial-gradient(ellipse at 50% 0%,rgba(201,154,46,.18),transparent 60%),var(--papel-hoja);
+  box-shadow:0 14px 30px -22px rgba(60,20,5,.7);
+}
+.tema-dnd .gen-cabecera h1{color:var(--mar)}
+.tema-dnd .gen-cabecera h1::after{content:"";display:block;width:min(20rem,70%);height:6px;margin:.55rem auto 0;
+  background:linear-gradient(90deg,transparent,var(--ocre-vivo) 20%,var(--sangre) 50%,var(--ocre-vivo) 80%,transparent);clip-path:polygon(0 50%,50% 0,100% 50%,50% 100%)}
+.tema-dnd .gen-cabecera .entradilla,.tema-dnd .gen-privacidad{margin-left:auto;margin-right:auto}
+.tema-dnd .gen-privacidad{border-left:0;padding-left:0}
+.tema-dnd .gen-barra{border-top:3px solid var(--sangre)}
+.tema-dnd .gen-ayuda h2,.tema-dnd .gen-dialogo-cab h2,.tema-dnd .asis-cuerpo h3{font-family:var(--f-rotulo);font-weight:700;color:var(--mar)}
+.tema-dnd .asis-cuerpo h4{font-family:var(--f-rotulo);font-size:.92rem;color:var(--sangre);border-bottom:2px solid var(--ocre-vivo);padding-bottom:.15rem}
+.tema-dnd .asis-regla{background:#f2e6c4;border-left-color:var(--sangre)}
+.tema-dnd .gen-dialogo{border-top:4px solid var(--sangre)}
+
+/* Piezas de los asistentes de Delta Green y D&D */
+.asis-tarjetas{display:grid;grid-template-columns:repeat(auto-fill,minmax(15rem,1fr));gap:.6rem;margin:0 0 1rem}
+.asis-tarjetas label{display:flex;gap:.5rem;align-items:flex-start;padding:.6rem .75rem;border:1px solid var(--regla);border-radius:3px;background:#fffdf6;cursor:pointer;font-family:var(--f-caja);font-size:.92rem}
+.asis-tarjetas label:has(input:checked){border-color:var(--sangre);box-shadow:inset 0 0 0 1px var(--sangre)}
+.asis-tarjetas label:has(input:disabled){opacity:.5;cursor:default}
+.asis-tarjetas strong{display:block}
+.asis-tarjetas small{display:block;color:var(--tinta-suave);font-size:.84rem;line-height:1.35;margin-top:.15rem}
+.asis-dato{display:grid;grid-template-columns:max-content 1fr;gap:.25rem .8rem;margin:0 0 1rem;font-family:var(--f-caja);font-size:.92rem}
+.asis-dato dt{font-weight:700;color:var(--tinta-2)}
+.asis-dato dd{margin:0}
+@media (max-width:40rem){.asis-dato{grid-template-columns:1fr}.asis-dato dd{margin-bottom:.3rem}}
+.asis-columnas{columns:2 15rem;column-gap:1.5rem;font-size:.92rem}
+.asis-columnas li{break-inside:avoid}
+.tema-dg .gen-cabecera .sello a{color:inherit}
+@media (max-width:40rem){.tema-dg .gen-cabecera{padding:1rem .9rem;border-left-width:8px}.tema-dg .gen-cabecera .entradilla{font-size:.92rem}}

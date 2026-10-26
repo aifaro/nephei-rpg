@@ -75,8 +75,9 @@ def pistas(pagina, corte_x):
 class Ficha:
     """Añade campos a las páginas n y n+1 de un documento; `prefijo` hace únicos los nombres."""
 
-    def __init__(self, doc, n_pag, prefijo=''):
+    def __init__(self, doc, n_pag, prefijo='', letra=LETRA, metrica=METRICA, tinta=TINTA):
         self.doc, self.p1, self.p2, self.pre = doc, doc[n_pag], doc[n_pag + 1], prefijo
+        self.letra, self.metrica, self.tinta = letra, metrica, tinta  # otras fichas usan Courier o Helvetica
         self.anillos = []
 
     @staticmethod
@@ -91,13 +92,13 @@ class Ficha:
         rect = pymupdf.Rect(rect)
         valor = str(valor)
         if not multilinea:
-            while tam > minimo and pymupdf.get_text_length(valor, METRICA, tam) > rect.width - 3:
+            while tam > minimo and pymupdf.get_text_length(valor, self.metrica, tam) > rect.width - 3:
                 tam -= 0.25
         w = pymupdf.Widget()
         w.field_type = pymupdf.PDF_WIDGET_TYPE_TEXT
         w.field_name = self.pre + nombre
         w.rect = rect
-        w.text_font, w.text_fontsize, w.text_color = LETRA, tam, TINTA
+        w.text_font, w.text_fontsize, w.text_color = self.letra, tam, self.tinta
         w.border_width, w.border_color, w.fill_color = 0, None, None
         w.field_value = valor
         if multilinea:
@@ -113,7 +114,7 @@ class Ficha:
         w.field_name = self.pre + nombre
         w.rect = pymupdf.Rect(rect)
         w.border_width, w.border_color, w.fill_color = 0, None, None
-        w.text_color = TINTA
+        w.text_color = self.tinta
         w.field_value = marcada
         a = pagina.add_widget(w)
         if anillo:
@@ -142,7 +143,7 @@ class Ficha:
             w, h = r.width, r.height
             k = 0.5523
             rx, ry, cx, cy = w / 2 - 0.6, h / 2 - 0.6, w / 2, h / 2
-            circulo = (f'q {TINTA[0]} {TINTA[1]} {TINTA[2]} RG 0.9 w '
+            circulo = (f'q {self.tinta[0]} {self.tinta[1]} {self.tinta[2]} RG 0.9 w '
                        f'{cx + rx:.2f} {cy:.2f} m '
                        f'{cx + rx:.2f} {cy + k * ry:.2f} {cx + k * rx:.2f} {cy + ry:.2f} {cx:.2f} {cy + ry:.2f} c '
                        f'{cx - k * rx:.2f} {cy + ry:.2f} {cx - rx:.2f} {cy + k * ry:.2f} {cx - rx:.2f} {cy:.2f} c '

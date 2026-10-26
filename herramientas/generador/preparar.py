@@ -5,14 +5,14 @@
 
 El generador funciona entero en el navegador: pinta la ficha oficial de fondo, pone encima un campo
 por cada campo del PDF rellenable y, al descargar, rellena ese mismo PDF con pdf-lib. Este programa
-saca de los dos generadores de pregenerados (fichas-linares y fichas-marca) lo que necesita:
+saca de los generadores de fichas (fichas-linares, fichas-marca, fichas-dg y fichas-dnd) lo que necesita:
 
-    public/generador/coc.pdf, pulp.pdf          las fichas en blanco con campos de formulario
-    public/generador/coc-1.jpg … pulp-2.jpg     el fondo de cada cara, sin campos
+    public/generador/coc.pdf, pulp.pdf, dg.pdf, dnd.pdf   las fichas en blanco con campos de formulario
+    public/generador/coc-1.jpg … dnd-3.jpg                el fondo de cada cara, sin campos
     public/generador/fichas.json                posición, letra y alineación de cada campo, el hueco
                                                 del retrato y qué campo es cada habilidad
 
-Solo hay que volver a ejecutarlo si cambia la geometría de alguna de las dos fichas.
+Solo hay que volver a ejecutarlo si cambia la geometría de alguna de las fichas.
 Necesita PyMuPDF (pip install pymupdf).
 """
 import importlib.util, json, os, sys
@@ -24,13 +24,20 @@ SALIDA = os.path.normpath(os.path.join(AQUI, '..', '..', 'public', 'generador'))
 sys.stdout.reconfigure(encoding='utf-8')
 sys.path.insert(0, HERR)
 
+# familia: la pestaña del generador en la que sale; letra: la del PDF y la de la vista en la web;
+# sub: el campo que se enseña bajo el nombre en «Mis personajes»; foto: hoja y hueco del retrato.
 FICHAS = {
     'coc': dict(carpeta='fichas-linares', plantilla='coc-7ed-1920.pdf',
-                titulo='La llamada de Cthulhu · 7.ª edición (años 20)',
-                foto=(416, 22, 546, 127)),   # recuadro de la esquina superior derecha, sobre el logo
+                titulo='La llamada de Cthulhu · 7.ª edición (años 20)', familia='cthulhu', letra='Times', sub='Ocupación',
+                foto=(0, (416, 22, 546, 127))),   # recuadro de la esquina superior derecha, sobre el logo
     'pulp': dict(carpeta='fichas-marca', plantilla='pulp-cthulhu-ficha.pdf',
-                 titulo='Pulp Cthulhu',
-                 foto=(416, 22, 566, 129)),
+                 titulo='Pulp Cthulhu', familia='cthulhu', letra='Times', sub='Ocupación',
+                 foto=(0, (416, 22, 566, 129))),
+    'dg': dict(carpeta='fichas-dg', plantilla='delta-green.pdf',
+               titulo='Delta Green', familia='dg', letra='Courier', sub='Profesión', foto=None),
+    'dnd': dict(carpeta='fichas-dnd', plantilla='dnd-5e.pdf',
+                titulo='Dungeons & Dragons · 5.ª edición', familia='dnd', letra='Helvetica', sub='Clase y nivel',
+                foto=(1, (36, 134, 209, 352))),   # «Aspecto del personaje»
 }
 ETIQUETA = {'Ocultismo': 'Ciencias ocultas'}  # el campo se llama distinto de lo que pone la ficha
 
@@ -100,13 +107,14 @@ def main():
         blanco = pymupdf.open()
         blanco.insert_pdf(pymupdf.open(plantilla))
         mod.rellenar(blanco, 0, None)
-        blanco.set_metadata({'title': f'Ficha de investigador · {f["titulo"]}', 'author': 'rpg.nephei.org',
+        quien = {'cthulhu': 'investigador', 'dg': 'agente', 'dnd': 'personaje'}[f['familia']]
+        blanco.set_metadata({'title': f'Ficha de {quien} · {f["titulo"]}', 'author': 'rpg.nephei.org',
                              'creator': 'herramientas/generador/preparar.py'})
         blanco.save(os.path.join(SALIDA, clave + '.pdf'), garbage=4, deflate=True)
 
         limpio = pymupdf.open(plantilla)
         paginas = []
-        for n in range(2):
+        for n in range(len(limpio)):
             nombre = f'{clave}-{n + 1}.jpg'
             limpio[n].get_pixmap(dpi=150).save(os.path.join(SALIDA, nombre), jpg_quality=78)
             paginas.append({'fondo': nombre, 'w': round(limpio[n].rect.width, 2), 'h': round(limpio[n].rect.height, 2)})
@@ -116,9 +124,11 @@ def main():
         if repes:
             raise SystemExit(f'{clave}: campos con el mismo nombre: {", ".join(sorted(repes))}')
 
-        datos[clave] = {'titulo': f['titulo'], 'pdf': clave + '.pdf', 'paginas': paginas,
-                        'foto': {'p': 0, 'r': list(f['foto'])}, 'campos': campos(blanco),
-                        'habilidades': habilidades(clave, mod)}
+        foto = f['foto'] and {'p': f['foto'][0], 'r': list(f['foto'][1])}
+        filas = mod.habilidades() if hasattr(mod, 'habilidades') else habilidades(clave, mod)
+        datos[clave] = {'titulo': f['titulo'], 'familia': f['familia'], 'letra': f['letra'], 'sub': f['sub'],
+                        'pdf': clave + '.pdf', 'paginas': paginas, 'foto': foto, 'campos': campos(blanco),
+                        'habilidades': filas}
         print('  ', clave, len(datos[clave]['campos']), 'campos,', len(datos[clave]['habilidades']), 'filas de habilidad')
 
     with open(os.path.join(SALIDA, 'fichas.json'), 'w', encoding='utf-8') as fh:
