@@ -566,6 +566,23 @@
     for (let i = 0; i < 20; i++) { e = uno(ESPECIALIDADES_DG[n.slice(0, -4)]); if (!usadas || !usadas.has(resolver(n, e))) break; }
     return e;
   }
+  // n elementos de xs sin repetir, con más probabilidad cuanto más peso(x)
+  function elegirPeso(xs, n, peso) {
+    const resto = [...xs], r = [];
+    while (r.length < n && resto.length) {
+      let t = d(resto.reduce((s, x) => s + peso(x), 0));
+      const i = resto.findIndex(x => (t -= peso(x)) <= 0);
+      r.push(...resto.splice(i, 1));
+    }
+    return r;
+  }
+  // Bonificaciones: lo que suele servir en una operación pesa más que lo que casi nunca se tira
+  const UTILES_DG = ['Alerta', 'Búsqueda', 'HUMINT', 'Persuasión', 'Armas de fuego', 'Esquiva', 'Primeros auxilios', 'Sigilo', 'Conducción',
+    'Ocultismo', 'Burocracia', 'Criminología', 'Combate sin armas', 'Informática', 'Medicina', 'Psicoterapia', 'Ciencia forense', 'SIGINT',
+    'Idioma extranjero (*)', 'Historia', 'Derecho', 'Atletismo'];
+  const POCO_UTILES_DG = ['Montar', 'Maquinaria pesada', 'Artillería', 'Natación', 'Disfraz', 'Contabilidad', 'Supervivencia', 'Orientación',
+    'Demoliciones', 'Armas pesadas', 'Pilotaje (*)', 'Arte (*)', 'Ciencia militar (*)', 'Cirugía'];
+  const utilidad = n => UTILES_DG.includes(n) ? 9 : POCO_UTILES_DG.includes(n) ? 1 : 3;
   function lazoAzar(tipo, cultura) {
     const x = personaAlAzar(null, cultura), F = x.g === 'F', otro = () => personaAlAzar(null, cultura).nombre;
     return {
@@ -622,12 +639,14 @@
     if (A.metodo === 'puntos') {
       const v = Object.fromEntries(CARS.map(k => [k, 12]));
       for (let i = 0; i < 20; i++) {
-        const de = uno(orden.slice(-3).filter(k => v[k] > 6)), a = uno(orden.slice(0, 3).filter(k => v[k] < 17).concat(CARS.filter(k => v[k] < 15)));
+        const de = uno(orden.slice(-3).filter(k => v[k] > 8)), a = uno(orden.slice(0, 3).filter(k => v[k] < 17).concat(CARS.filter(k => v[k] < 15)));
         if (de && a && de !== a) { v[de]--; v[a]++; }
       }
       A.puntos = v;
     } else {
-      if (A.metodo === 'tiradas') A.tiradas = Array.from({ length: 6 }, () => { const dados = [d(6), d(6), d(6), d(6)]; return { dados, total: suma(dados) - Math.min(...dados) }; });
+      // Tiradas sin extremos: entre 66 y 80 en total y nada por debajo de 7 (como si el Supervisor dejara repetirlas)
+      if (A.metodo === 'tiradas') do A.tiradas = Array.from({ length: 6 }, () => { const dados = [d(6), d(6), d(6), d(6)]; return { dados, total: suma(dados) - Math.min(...dados) }; });
+      while (suma(A.tiradas.map(x => x.total)) < 66 || suma(A.tiradas.map(x => x.total)) > 80 || A.tiradas.some(x => x.total < 7));
       else A.conjunto = d(DG.conjuntos.length) - 1;
       const vals = valoresAsignables();
       const porValor = vals.map((x, i) => i).sort((i, j) => vals[j] - vals[i]);
@@ -646,7 +665,8 @@
     else if (u && d(3) > 1) primeras = barajar(u.bonus);
     const deProfesion = habProfesion().map(x => x.n);
     A.bonus.forEach((b, i) => {
-      const ops = [primeras[i], ...barajar((pq && pq.elige && pq.elige.de) || []), ...(d(2) === 1 ? barajar(deProfesion) : []), ...barajar(opcionesBonus())].filter(Boolean);
+      const ops = [primeras[i], ...barajar((pq && pq.elige && pq.elige.de) || []), ...(d(2) === 1 ? barajar(deProfesion) : []),
+        ...elegirPeso(opcionesBonus(), 99, utilidad)].filter(Boolean);
       for (const sel of ops) {
         const ya = libre(sel) && deProfesion.find(n => familia(n) === sel.slice(0, -4));  // mejor subir una especialidad que ya tiene
         A.bonus[i] = { sel, esp: ya && d(2) === 1 ? ya.slice(familia(ya).length + 2, -1) : espAzar(sel) };
@@ -656,9 +676,12 @@
 
     // Lo que le trajo a Delta Green
     A.veterano = uno(['nuevo', 'nuevo', 'nuevo', 'violencia', 'cautiverio', 'dura', 'cosas']);
+    if (A.veterano === 'cosas' && caracteristicas().POD < 11) A.veterano = 'nuevo';
+    if (A.veterano === 'violencia' && caracteristicas().CAR < 10) A.veterano = 'nuevo';    // ni sin CAR para sus Lazos
+    if (A.veterano === 'cautiverio' && caracteristicas().POD < 10) A.veterano = 'nuevo';  // con poco POD se quedaría casi sin COR
     if (A.veterano === 'dura') {
       const ya = new Set();
-      A.dura = barajar(opcionesBonus()).slice(0, 5).map(sel => { const esp = espAzar(sel, ya); ya.add(resolver(sel, esp)); return { sel, esp }; });
+      A.dura = elegirPeso(opcionesBonus(), 5, utilidad).map(sel => { const esp = espAzar(sel, ya); ya.add(resolver(sel, esp)); return { sel, esp }; });
     }
     if (A.veterano === 'cosas') A.trastorno = uno(TRASTORNOS_DG);
 

@@ -568,6 +568,32 @@
     'Druida': ['SAB', 'CON', 'DES'], 'Explorador': ['DES', 'SAB', 'CON'], 'Guerrero': ['FUE', 'CON', 'DES'], 'Hechicero': ['CAR', 'CON', 'DES'],
     'Mago': ['INT', 'CON', 'DES'], 'Monje': ['DES', 'SAB', 'CON'], 'Paladín': ['FUE', 'CAR', 'CON'], 'Pícaro': ['DES', 'CON', 'INT'] };
   const IDIOMA_ESPECIE = { 'Dracónido': 'Dracónico', 'Enano': 'Enano', 'Elfo': 'Élfico', 'Gnomo': 'Gnomo', 'Goliat': 'Gigante', 'Mediano': 'Mediano', 'Orco': 'Orco' };
+  // n elementos de xs sin repetir, con más probabilidad cuanto más peso(x)
+  function elegirPeso(xs, n, peso) {
+    const resto = [...xs], r = [];
+    while (r.length < n && resto.length) {
+      let t = d(resto.reduce((s, x) => s + peso(x), 0));
+      const i = resto.findIndex(x => (t -= peso(x)) <= 0);
+      r.push(...resto.splice(i, 1));
+    }
+    return r;
+  }
+  // Trucos que hacen daño (uno como mínimo para cada lanzador) y conjuros de nivel 1 que casi siempre sirven
+  const TRUCOS_ATAQUE = ['Descarga sobrenatural', 'Descarga de fuego', 'Rayo de escarcha', 'Llama sagrada', 'Palabra de resplandor', 'Burla dañina',
+    'Voluta estelar', 'Tronar', 'Crear llama', 'Látigo de espinas', 'Rociada venenosa', 'Agarre electrizante', 'Estallido mágico',
+    'Fragmento mental', 'Salpicadura ácida', 'Toque helado', 'Tañido por los muertos', 'Shillelagh'];
+  const CONJUROS_UTILES = ['Curar heridas', 'Palabra de curación', 'Bendición', 'Saeta guía', 'Escudo de fe', 'Orden imperiosa', 'Dormir',
+    'Hechizar persona', 'Ola atronadora', 'Fuego feérico', 'Enmarañar', 'Proyectil mágico', 'Escudo', 'Armadura de mago', 'Manos ardientes',
+    'Orbe cromático', 'Rayo de hechicería', 'Detectar magia', 'Maleficio', 'Armadura de Agathys', 'Castigo divino', 'Favor divino', 'Heroísmo',
+    'Golpe apresador', 'Cuchillo de hielo', 'Perdición', 'Risa horrible de Tasha', 'Guía', 'Encontrar familiar'];
+  function trucosAzar(lista, n, ya) {
+    const ops = listaConjuros(lista, 0).filter(x => !ya || !ya.has(x));
+    const ataque = ops.includes('Descarga sobrenatural') ? 'Descarga sobrenatural' : uno(ops.filter(x => TRUCOS_ATAQUE.includes(x)));
+    return n ? [ataque, ...elegirPeso(ops.filter(x => x !== ataque), n - 1, x => TRUCOS_ATAQUE.includes(x) || CONJUROS_UTILES.includes(x) ? 3 : 1)] : [];
+  }
+  const conjurosAzar = (xs, n) => elegirPeso(xs, n, x => CONJUROS_UTILES.includes(x) ? 4 : 1);
+  // Habilidades: mejor las que usan sus características altas (y Percepción, que siempre viene bien)
+  const pesoHab = n => Math.max(1, 3 + mod(DND.habilidades[n])) ** 2 * (n === 'Percepción' ? 2 : 1);
   const mejorMental = () => ['INT', 'SAB', 'CAR'].reduce((a, b) => (mod(b) > mod(a) ? b : a));
 
   function doteAzar(D, nombre, listaFija) {  // lo que pide elegir una dote de origen
@@ -575,10 +601,10 @@
     if (x.magia) {
       D.lista = listaFija || uno(['Clérigo', 'Druida', 'Mago']);
       D.aptitud = mejorMental();
-      D.trucos = barajar(listaConjuros(D.lista, 0)).slice(0, 2);
-      D.conjuro = uno(listaConjuros(D.lista, 1));
+      D.trucos = trucosAzar(D.lista, 2);
+      D.conjuro = conjurosAzar(listaConjuros(D.lista, 1), 1)[0];
     }
-    if (x.habilidades) D.habs = barajar(Object.keys(DND.habilidades).filter(n => !habilidadesFijas().has(n))).slice(0, 3);
+    if (x.habilidades) D.habs = elegirPeso(Object.keys(DND.habilidades).filter(n => !habilidadesFijas().has(n)), 3, pesoHab);
     if (x.herramientas) D.herrs = barajar(DND.artesano).slice(0, 3);
     if (nombre === 'Músico') D.herrs = barajar(DND.instrumentos).slice(0, 3);
   }
@@ -591,20 +617,25 @@
     A.clase = cl.n;
     const arquero = cl.n === 'Guerrero' && d(3) === 1;
     if (cl.orden) A.orden = uno(cl.orden.opciones).n;
-    if (cl.estilo) A.estilo = arquero ? 'Tiro con arco' : uno(ESTILOS_DND.filter(x => x[0] !== 'Tiro con arco'))[0];
+    if (cl.estilo) A.estilo = arquero ? 'Tiro con arco' : uno(['Defensa', 'Defensa', 'Combate con armas a dos manos', 'Intercepción']);  // con el espadón y la cota de malla
     if (cl.invocaciones) A.invocacion = uno(INVOCACIONES_DND)[0];
     // Trasfondo y especie
-    const t = uno(TRASFONDOS_DND), e = uno(ESPECIES_DND);
+    // El trasfondo, casi siempre uno que mejore su característica principal
+    const prio = arquero ? ['DES', 'CON', 'FUE'] : PRIORIDAD[cl.n];
+    const afines = TRASFONDOS_DND.filter(x => x.car.includes(prio[0]));
+    const t = uno(d(5) > 1 && afines.length ? afines : TRASFONDOS_DND), e = uno(ESPECIES_DND);
     A.trasfondo = t.n;
     A.especie = e.n;
     A.tam = uno(e.tam);
     if (e.opciones) A.opcion = uno(e.opciones).n;
 
     // Puntuaciones: lo más alto en lo que pide la clase, y el +2 y el +1 del trasfondo donde más luzcan
-    const prio = arquero ? ['DES', 'CON', 'FUE'] : PRIORIDAD[cl.n];
     const orden = [...prio, ...barajar(CARS.filter(k => !prio.includes(k)))];
     A.metodo = d(5) <= 3 ? 'estandar' : 'tiradas';
-    if (A.metodo === 'tiradas') A.tiradas = Array.from({ length: 6 }, () => { const dados = [d(6), d(6), d(6), d(6)]; return { dados, total: suma(dados) - Math.min(...dados) }; });
+    // Tiradas sin extremos: los modificadores suman entre +4 y +8 (el conjunto estándar, +5) y la mejor es 15 o más
+    const modT = v => Math.floor((v - 10) / 2);
+    if (A.metodo === 'tiradas') do A.tiradas = Array.from({ length: 6 }, () => { const dados = [d(6), d(6), d(6), d(6)]; return { dados, total: suma(dados) - Math.min(...dados) }; });
+    while (suma(A.tiradas.map(x => modT(x.total))) < 4 || suma(A.tiradas.map(x => modT(x.total))) > 8 || Math.max(...A.tiradas.map(x => x.total)) < 15);
     const vals = A.metodo === 'tiradas' ? A.tiradas.map(x => x.total) : DND.estandar;
     const porValor = vals.map((_, i) => i).sort((i, j) => vals[j] - vals[i]);
     orden.forEach((k, i) => { A.asig[k] = porValor[i]; });
@@ -623,10 +654,10 @@
     }
 
     // Equipo (casi siempre el de la opción A, que trae armas) y maestría con las armas que lleva
-    A.equipo = arquero ? 1 : d(4) > 1 ? 0 : d(cl.equipo.length) - 1;
+    A.equipo = arquero ? 1 : 0;  // el equipo hecho: con oro solo, saldría sin armas ni armadura
     cl.equipo[A.equipo].items.forEach((x, i) => { if (x === '?instrumento') A.elecciones[`c${i}`] = uno(DND.instrumentos); });
     if (cl.herramientaElegir) A.herrMonje = uno([...DND.artesano, ...DND.instrumentos]);
-    A.equipoTras = d(5) > 1 ? 'A' : 'B';
+    A.equipoTras = 'A';
     if (cl.maestria) {
       const ops = ARMAS_DND.filter(a => competenteArma(a) && (cl.n !== 'Bárbaro' || a[1][1] === 'c')).map(a => a[0]);
       const lleva = objetos().res.map(o => o.n).filter(n => ops.includes(n));
@@ -635,8 +666,8 @@
 
     // Habilidades, pericia e idiomas
     const deClase = cl.habilidades.de === 'todas' ? Object.keys(DND.habilidades) : cl.habilidades.de;
-    A.habClase = barajar(deClase.filter(n => !habilidadesFijas().has(n))).slice(0, cl.habilidades.n);
-    if (cl.pericia) A.pericia = barajar([...competentes()]).slice(0, cl.pericia);
+    A.habClase = elegirPeso(deClase.filter(n => !habilidadesFijas().has(n)), cl.habilidades.n, pesoHab);
+    if (cl.pericia) A.pericia = elegirPeso([...competentes()], cl.pericia, n => pesoHab(n) ** 2);
     const propio = IDIOMA_ESPECIE[e.n];
     A.idiomas = [...new Set([propio, ...barajar(DND.idiomas)].filter(Boolean))].slice(0, numIdiomas());
 
@@ -644,11 +675,11 @@
     const m = magia();
     if (m) {
       const ya = new Set(conjurosAparte().map(x => x[0]));
-      A.trucos = barajar(listaConjuros(m.lista, 0).filter(n => !ya.has(n))).slice(0, numTrucos());
+      A.trucos = trucosAzar(m.lista, numTrucos(), ya);
       if (m.libro) {
-        A.libro = barajar(listaConjuros(m.lista, 1)).slice(0, m.libro);
-        A.preparados = barajar(A.libro).slice(0, m.preparados);
-      } else A.preparados = barajar(listaConjuros(m.lista, 1).filter(n => !ya.has(n))).slice(0, m.preparados);
+        A.libro = conjurosAzar(listaConjuros(m.lista, 1), m.libro);
+        A.preparados = conjurosAzar(A.libro, m.preparados);
+      } else A.preparados = conjurosAzar(listaConjuros(m.lista, 1).filter(n => !ya.has(n)), m.preparados);
     }
 
     // Personalidad y nombre

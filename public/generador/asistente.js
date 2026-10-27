@@ -1071,21 +1071,47 @@ const Asistente = (() => {
     return uno(l.length ? l : ['General']);
   }
   const hueco = sel => ({ sel, esp: sel.endsWith('(*)') ? especialidadAzar(sel.slice(0, -4)) : '' });
-  // Lo que se puede elegir «a tu elección»; las habilidades raras, solo de vez en cuando
-  const libresAzar = () => opcionesHabilidad().filter(n => !HABILIDADES.some(x => x.rara && (x.n === n || `${x.n} (*)` === n)) || d(6) === 1);
-  // Reparte `total` puntos de 5 en 5 entre `nombres`, sin pasar de `tope`, cargando más unas que otras
+  // n elementos de xs sin repetir, con más probabilidad cuanto más peso(x)
+  function elegirPeso(xs, n, peso) {
+    const resto = [...xs], r = [];
+    while (r.length < n && resto.length) {
+      let t = d(resto.reduce((s, x) => s + peso(x), 0));
+      const i = resto.findIndex(x => (t -= peso(x)) <= 0);
+      r.push(...resto.splice(i, 1));
+    }
+    return r;
+  }
+  // Lo que suele servir en una partida: 3, lo corriente: 2, lo que casi nunca se tira: 1
+  const UTILES = ['Descubrir', 'Buscar libros', 'Psicología', 'Escuchar', 'Persuasión', 'Charlatanería', 'Encanto', 'Intimidar', 'Combatir',
+    'Armas de fuego', 'Esquivar', 'Primeros auxilios', 'Medicina', 'Ciencias ocultas', 'Historia', 'Sigilo', 'Conducir automóvil', 'Otras lenguas',
+    'Ciencia', 'Derecho', 'Antropología', 'Arqueología', 'Informática'];
+  const POCO_UTILES = ['Tasación', 'Lanzar', 'Saltar', 'Trepar', 'Nadar', 'Equitación', 'Juego de manos', 'Conducir maquinaria', 'Seguir rastros',
+    'Contabilidad', 'Electricidad', 'Mecánica', 'Cerrajería', 'Disfrazarse', 'Lengua propia', 'Orientarse', 'Naturaleza', 'Supervivencia', 'Electrónica'];
+  const utilidad = n => { const fam = n.replace(/ \(.*$/, ''); return UTILES.includes(fam) ? 3 : POCO_UTILES.includes(fam) ? 1 : 2; };
+  // Lo que se puede elegir «a tu elección», sin las habilidades raras
+  const libresAzar = () => opcionesHabilidad().filter(n => !HABILIDADES.some(x => x.rara && (x.n === n || `${x.n} (*)` === n)));
+  // Reparte `total` puntos de 10 en 10 entre `nombres`, sin pasar de `tope`: más a las útiles, nada a las que ya
+  // empiezan altas (Lengua propia), y lo que no llega a 10 a una que ya tenga puntos
   function repartirAzar(reparto, total, nombres, actual, tope) {
-    const peso = Object.fromEntries(nombres.map(n => [n, d(6) * d(6)]));
+    const peso = Object.fromEntries(nombres.map(n => [n, actual(n) >= 60 ? 0 : utilidad(n) * d(6) * d(6)]));
     let quedan = total;
     while (quedan > 0) {
-      const p = Math.min(5, quedan);
-      const libres = nombres.filter(n => actual(n) + (reparto[n] || 0) + p <= tope);
+      const p = Math.min(10, quedan);
+      let libres = nombres.filter(n => peso[n] && actual(n) + (reparto[n] || 0) + p <= tope);
+      if (p < 10 && libres.some(n => reparto[n])) libres = libres.filter(n => reparto[n]);
       if (!libres.length) break;
       let r = d(libres.reduce((s, n) => s + peso[n], 0));
       const n = libres.find(x => (r -= peso[x]) <= 0);
       reparto[n] = (reparto[n] || 0) + p;
       quedan -= p;
     }
+  }
+  // Tiradas que dan un personaje corriente: nada por debajo de 30, como mucho dos por debajo de 50 (el criterio
+  // de la opción 1 del Manual del Guardián para volver a tirar), POD de 40 o más y una suma razonable
+  function tiradasJugables() {
+    const k8 = CARS.filter(k => k !== A.principal), v = k => A.tiradas[k].total;
+    const sumaT = CARS.reduce((s, k) => s + v(k), 0) - (pulp() ? v(A.principal) - 50 : 0);
+    return k8.every(k => v(k) >= 30) && k8.filter(k => v(k) < 50).length <= 2 && v('POD') >= 40 && sumaT >= 420 && sumaT <= 540;
   }
   function ocupacionAzar() {
     const ops = sis().ocup.filter(x => !x.actual || A.epoca === 'actual');
@@ -1134,9 +1160,9 @@ const Asistente = (() => {
       const a = uno(ARQUETIPOS);
       A.arquetipo = a.n;
       A.principal = uno(a.principal);
-      A.edad = 18 + d(12) + d(12) + d(12);
-    } else A.edad = 15 + d(20) + d(20) + d(6);  // de 18 a 61, casi siempre entre 25 y 50
-    A.tiradas = Object.fromEntries(CARS.map(k => [k, tirar(dadosDe(k))]));
+    }
+    A.edad = 17 + d(12) + d(12) + d(10);  // de 20 a 51, sin las penalizaciones fuertes de la vejez
+    do A.tiradas = Object.fromEntries(CARS.map(k => [k, tirar(dadosDe(k))])); while (!tiradasJugables());
     if (pulp()) {
       A.suerte = [tirar('2D6+6')];
       const a = arquetipo(), tablas = Object.keys(TALENTOS);
@@ -1147,9 +1173,9 @@ const Asistente = (() => {
       if (A.talentos.includes('Recarga rápida')) A.talentoExtra.recarga = uno(['Arma corta', 'Fusil/Escopeta']);
     } else {
       const t = tramo();
-      for (let q = t.resta; q > 0; q -= 5) {  // de 5 en 5, entre las que pueden bajar sin quedarse a cero
-        const pueden = t.entre.filter(j => base(j) - (A.ajuste[j] || 0) - 5 >= 1);
-        const k = uno(pueden.length ? pueden : t.entre);
+      for (let q = t.resta; q > 0; q -= 5) {  // de 5 en 5, casi siempre a la que más tiene en ese momento
+        const queda = j => base(j) - (A.ajuste[j] || 0);
+        const k = elegirPeso(t.entre, 1, j => Math.max(1, queda(j) - 25) ** 2)[0];
         A.ajuste[k] = (A.ajuste[k] || 0) + Math.min(5, q);
       }
       if (t.mejoras) tirarMejoras();
@@ -1160,7 +1186,7 @@ const Asistente = (() => {
     huecosDef().forEach((hd, i) => {
       const usadas = new Set(A.huecos.map(resuelta));
       for (let intento = 0; intento < 40; intento++) {
-        const hu = hueco(typeof hd !== 'string' ? uno(hd) : hd === 'interpersonal' ? uno(INTERPERSONALES) : hd === 'cualquiera' ? uno(libresAzar()) : hd);
+        const hu = hueco(typeof hd !== 'string' ? uno(hd) : hd === 'interpersonal' ? uno(INTERPERSONALES) : hd === 'cualquiera' ? elegirPeso(libresAzar(), 1, n => utilidad(n) ** 2)[0] : hd);
         if (!usadas.has(resuelta(hu))) { A.huecos[i] = hu; break; }
       }
     });
@@ -1171,11 +1197,13 @@ const Asistente = (() => {
     repartirAzar(A.ocupPuntos, puntosOcupacion() - cr, ocup, sin(A.ocupPuntos), 80);
     if (pulp()) {
       const ops = opcionesArquetipo().map(n => n.endsWith('(*)') ? (ocup.find(x => x.startsWith(n.slice(0, -3))) || resuelta(hueco(n))) : n);
-      repartirAzar(A.arqPuntos, PULP.puntosArquetipo, barajar(ops).slice(0, 2 + d(3)), sin(A.arqPuntos), 90);
+      repartirAzar(A.arqPuntos, PULP.puntosArquetipo, elegirPeso(ops, 2 + d(2), n => utilidad(n) ** 2), sin(A.arqPuntos), 90);
     }
-    const intereses = new Set(barajar(libresAzar().filter(n => !n.endsWith('(*)'))).slice(0, 2 + d(3)));
-    if (d(3) > 1) intereses.add(uno(['Combatir (Pelea)', 'Armas de fuego (Arma corta)', 'Armas de fuego (Fusil/Escopeta)', 'Esquivar']));
-    intereses.add(resuelta(hueco(uno(['Otras lenguas (*)', 'Arte/Artesanía (*)', 'Ciencia (*)']))));
+    // Intereses: unas pocas útiles, y siempre algo con que defenderse
+    const intereses = new Set(elegirPeso(libresAzar().filter(n => !n.endsWith('(*)')), 2 + d(2), n => utilidad(n) ** 3));
+    intereses.add(uno(['Combatir (Pelea)', 'Combatir (Pelea)', 'Armas de fuego (Arma corta)', 'Armas de fuego (Fusil/Escopeta)']));
+    if (d(2) === 1) intereses.add('Esquivar');
+    if (d(4) === 1) intereses.add(resuelta(hueco('Otras lenguas (*)')));
     repartirAzar(A.interes, f.INT * 2, [...intereses], sin(A.interes), 75);
 
     A.tras = trasfondoAzar(persona);
