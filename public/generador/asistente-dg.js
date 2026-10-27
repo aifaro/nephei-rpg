@@ -487,7 +487,7 @@
 
   // ------------------------------------------------------------ de aquí a la ficha
   const DOS_LINEAS = ['Arte', 'Ciencia', 'Ciencia militar', 'Oficio', 'Pilotaje'];
-  function crearFicha() {
+  function crearFicha(azar) {
     const A = asis.A, f = finales(), dv = derivados(), v = valores(), p = profesion(), a = agencia(), u = unidad(), D = A.datos;
     const cp = {};
     const pon = (n, x) => { if (x != null && x !== '') cp[n] = String(x); };
@@ -549,9 +549,145 @@
     pon('Detalles', det.join('\n'));
 
     Generador.crear('dg', { campos: cp });
+    if (azar === true) return;
     if (confirm('Ficha creada. ¿Vaciar el asistente para crear otro agente más adelante?')) asis.reiniciar();
     document.querySelector('#d-asistente').close();
   }
 
+  // ------------------------------------------------------------ agente al azar
+  // Recorre los pasos del asistente eligiendo al azar entre lo que permiten las reglas y comprueba cada
+  // paso con su ok(). El estado guardado del asistente no se toca.
+  const uno = xs => xs[d(xs.length) - 1];
+  const barajar = xs => { const r = [...xs]; for (let i = r.length - 1; i > 0; i--) { const j = d(i + 1) - 1; [r[i], r[j]] = [r[j], r[i]]; } return r; };
+  // Una especialidad para 'Familia (*)' que no dé una habilidad que ya está en `usadas`
+  function espAzar(n, usadas) {
+    if (!libre(n)) return '';
+    let e = '';
+    for (let i = 0; i < 20; i++) { e = uno(ESPECIALIDADES_DG[n.slice(0, -4)]); if (!usadas || !usadas.has(resolver(n, e))) break; }
+    return e;
+  }
+  function lazoAzar(tipo, cultura) {
+    const x = personaAlAzar(null, cultura), F = x.g === 'F', otro = () => personaAlAzar(null, cultura).nombre;
+    return {
+      'Cónyuge o excónyuge': `${x.nombre}, ${F ? uno(['su esposa', 'su exmujer']) : uno(['su marido', 'su exmarido'])}`,
+      'Hijo o hija': `${x.nombre}, ${F ? 'su hija' : 'su hijo'}`,
+      'Padre, madre o abuelo preferido': `${x.nombre}, ${F ? uno(['su madre', 'su abuela']) : uno(['su padre', 'su abuelo'])}`,
+      'Mejor amigo': `${personaAlAzar(x.g).completo}, ${F ? 'su mejor amiga' : 'su mejor amigo'}`,
+      'Compañero de trabajo': `${personaAlAzar(x.g).completo}, ${F ? 'compañera' : 'compañero'} de trabajo`,
+      'Psicólogo o terapeuta': `${F ? 'La doctora' : 'El doctor'} ${personaAlAzar(x.g).apellido}, su terapeuta`,
+      'Cónyuge e hijos': `Su familia: ${x.nombre} y ${d(2) === 1 ? `su ${uno(['hijo', 'hija'])} ${otro()}` : `los niños, ${otro()} y ${otro()}`}`,
+      'Padres': `Sus padres, ${personaAlAzar('M', cultura).nombre} y ${personaAlAzar('F', cultura).nombre}`,
+      'Hermanos': `Sus hermanos, ${otro()} y ${otro()}`,
+      'Compañeros de un trabajo muy duro': uno(['Los de su antigua unidad', 'Su vieja brigada', 'Los compañeros de la plataforma petrolífera', 'Su antiguo equipo de urgencias']),
+      'Iglesia o grupo de apoyo': uno(['Su parroquia', 'Su grupo de apoyo de los jueves', 'Su congregación', 'Alcohólicos Anónimos']),
+      'Supervivientes de un trauma compartido': uno(['Los otros supervivientes del accidente', 'Los que salieron con vida del incendio', 'Los rehenes del banco']),
+    }[tipo] || tipo;
+  }
+  function descripcionAzar(F) {
+    const o = F ? 'a' : 'o';
+    return `${uno(['Alt', 'Baj', 'Delgad', 'Corpulent', 'Fibros', 'Robust', 'Desgarbad'])}${o}, pelo ${uno(['castaño', 'negro', 'rubio', 'canoso', 'pelirrojo'])} ${uno(['corto', 'largo', 'rapado', 'recogido', 'ralo'])}; ` +
+      uno(['gafas de montura metálica', 'una cicatriz en la barbilla', 'ojeras permanentes', 'la ropa siempre arrugada', 'un tatuaje en el antebrazo', 'voz grave y pausada', 'sonrisa fácil', 'mirada cansada', 'manos de trabajador']) + '.';
+  }
+
+  function generarAzar() {
+    asis.A = inicial();
+    const A = asis.A;
+    // Agencia y unidad; de vez en cuando, otra de las que menciona el manual
+    if (d(10) === 1) {
+      A.agencia = 'otra';
+      A.otraAgencia = uno(OTRAS_AGENCIAS_DG)[0];
+      A.profesion = uno(PROFESIONES_DG.filter(x => !x.adicional || d(3) === 1)).n;
+    } else {
+      const a = uno(AGENCIAS_DG);
+      A.agencia = a.sigla;
+      A.unidad = d(a.unidades.length) - 1;
+      if (!unidadPropia()) A.profesion = uno(profesionesPosibles());
+    }
+    const p = profesion(), usadas = new Set();
+    p.hab.forEach((x, i) => {
+      if (x.uno) A.alt[i] = d(x.uno.length) - 1;
+      const n = x.uno ? x.uno[A.alt[i]][0] : x[0];
+      if (libre(n)) A.esp['h' + i] = espAzar(n, usadas);
+      usadas.add(resolver(n, A.esp['h' + i]));
+    });
+    if (p.elige) {
+      const ops = barajar(p.elige.de.map((_, j) => j)).filter(j => !(p.elige.nuevas && !libre(p.elige.de[j][0]) && usadas.has(p.elige.de[j][0])));
+      A.eleccion = ops.slice(0, p.elige.n);
+      for (const j of A.eleccion) if (libre(p.elige.de[j][0])) A.esp['e' + j] = espAzar(p.elige.de[j][0], usadas);
+    }
+
+    // Características: lo más alto, en las recomendadas para la profesión
+    const orden = [...barajar(p.stats || []), ...barajar(CARS.filter(k => !(p.stats || []).includes(k)))];
+    A.metodo = uno(['tiradas', 'tiradas', 'tiradas', 'conjunto', 'conjunto', 'puntos']);
+    if (A.metodo === 'puntos') {
+      const v = Object.fromEntries(CARS.map(k => [k, 12]));
+      for (let i = 0; i < 20; i++) {
+        const de = uno(orden.slice(-3).filter(k => v[k] > 6)), a = uno(orden.slice(0, 3).filter(k => v[k] < 17).concat(CARS.filter(k => v[k] < 15)));
+        if (de && a && de !== a) { v[de]--; v[a]++; }
+      }
+      A.puntos = v;
+    } else {
+      if (A.metodo === 'tiradas') A.tiradas = Array.from({ length: 6 }, () => { const dados = [d(6), d(6), d(6), d(6)]; return { dados, total: suma(dados) - Math.min(...dados) }; });
+      else A.conjunto = d(DG.conjuntos.length) - 1;
+      const vals = valoresAsignables();
+      const porValor = vals.map((x, i) => i).sort((i, j) => vals[j] - vals[i]);
+      orden.forEach((k, i) => { A.asig[k] = porValor[i]; });
+    }
+    const c = caracteristicas();
+    for (const k of CARS) {
+      const i = c[k] <= 4 ? 0 : c[k] <= 8 ? 1 : c[k] >= 17 ? 3 : c[k] >= 13 ? 2 : null;
+      if (i != null) A.rasgos[k] = DG.rasgos[k][i];
+    }
+
+    // Ocho bonificaciones: el paquete o las sugeridas por la unidad, y el resto entre las de la profesión y las demás
+    const u = unidad(), pq = d(4) === 1 ? uno(PAQUETES_DG) : null;
+    let primeras = [];
+    if (pq) { A.paquete = pq.n; primeras = pq.hab.map(x => typeof x === 'string' ? x : uno(x.uno)); }
+    else if (u && d(3) > 1) primeras = barajar(u.bonus);
+    const deProfesion = habProfesion().map(x => x.n);
+    A.bonus.forEach((b, i) => {
+      const ops = [primeras[i], ...barajar((pq && pq.elige && pq.elige.de) || []), ...(d(2) === 1 ? barajar(deProfesion) : []), ...barajar(opcionesBonus())].filter(Boolean);
+      for (const sel of ops) {
+        const ya = libre(sel) && deProfesion.find(n => familia(n) === sel.slice(0, -4));  // mejor subir una especialidad que ya tiene
+        A.bonus[i] = { sel, esp: ya && d(2) === 1 ? ya.slice(familia(ya).length + 2, -1) : espAzar(sel) };
+        if (Object.values(valores({ sinVeterano: true })).every(x => x <= DG.maximoInicial)) break;
+      }
+    });
+
+    // Lo que le trajo a Delta Green
+    A.veterano = uno(['nuevo', 'nuevo', 'nuevo', 'violencia', 'cautiverio', 'dura', 'cosas']);
+    if (A.veterano === 'dura') {
+      const ya = new Set();
+      A.dura = barajar(opcionesBonus()).slice(0, 5).map(sel => { const esp = espAzar(sel, ya); ya.add(resolver(sel, esp)); return { sel, esp }; });
+    }
+    if (A.veterano === 'cosas') A.trastorno = uno(TRASTORNOS_DG);
+
+    // Datos personales, Lazos y motivaciones
+    const yo = personaAlAzar();
+    A.datos = Object.assign(A.datos, { Nombre: `${yo.apellido}, ${yo.nombre}`, genero: yo.g, edad: String(25 + d(10) + d(10) + d(10)), descripcion: descripcionAzar(yo.g === 'F') });
+    A.datos.nacimiento = `${String(d(28)).padStart(2, '0')}/${String(d(12)).padStart(2, '0')}/${new Date().getFullYear() - A.datos.edad - 1}`;
+    A.lazos = barajar(LAZOS_DG).slice(0, numLazos()).map(([t]) => ({ n: lazoAzar(t, yo.cultura) }));
+    A.motivaciones = barajar(MOTIVACIONES_DG).slice(0, Math.min(1 + d(3), A.veterano === 'cosas' ? 4 : 5)).concat(['', '', '', '', '']).slice(0, 5);
+
+    // Equipo: el de la unidad y armas según sus habilidades
+    if (u && (u.equipo || u.equipoExtra)) A.equipo = [u.equipo && EQUIPO_DG[u.equipo], u.equipoExtra].filter(Boolean).join('\n');
+    const v = valores(), arma = n => ARMAS_DG.findIndex(x => x[0] === n);
+    if ((agencia() && agencia().arma.startsWith('Sí')) || v['Armas de fuego'] >= 40) A.armas.push(arma(uno(['Pistola mediana', 'Pistola mediana', 'Pistola pesada', 'Revólver (mediano)'])));
+    if (v['Armas de fuego'] >= 50 && d(2) === 1) A.armas.push(arma(uno(['Fusil ligero o carabina', 'Escopeta (perdigones)', 'Subfusil'])));
+    if (v['Armas cuerpo a cuerpo'] >= 40) A.armas.push(arma(uno(['Cuchillo grande o daga de combate', 'Porra o defensa'])));
+    return PASOS.every(x => x.ok() === true);
+  }
+  async function alAzar() {
+    await Generador.listo;
+    const guardado = asis.A;
+    try {
+      let bien = false;
+      for (let i = 0; i < 30 && !bien; i++) bien = generarAzar();
+      if (bien) crearFicha(true);
+      else alert('No ha salido un agente válido; vuelve a intentarlo.');
+    } finally { asis.A = guardado; }
+  }
+
   const asis = AsisComun.marco({ clave: 'nephei-generador-asistente-dg-v1', inicial, pasos: () => PASOS, titulo: () => 'Asistente · Delta Green' });
+  document.querySelector('#b-azar').addEventListener('click', alAzar);
 })();

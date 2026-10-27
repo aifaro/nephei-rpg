@@ -528,16 +528,8 @@ const Asistente = (() => {
     if (t.mejoras) {
       c.append(h('h4', null, 'Tiradas de mejora de EDU'));
       if (!A.mejoras) {
-        c.append(h('button', { type: 'button', class: 'gen-boton principal', onclick: () => {
-          let edu = eduPrevia();
-          A.mejoras = [];
-          for (let i = 0; i < t.mejoras; i++) {
-            const t100 = d(100), sube = t100 > edu ? Math.min(d(10), 99 - edu) : 0;
-            A.mejoras.push({ d100: t100, edu, sube });
-            edu += sube;
-          }
-          guardar(); pintar();
-        } }, t.mejoras === 1 ? 'Tirar la mejora' : `Tirar las ${t.mejoras} mejoras`));
+        c.append(h('button', { type: 'button', class: 'gen-boton principal', onclick: () => { tirarMejoras(); guardar(); pintar(); } },
+          t.mejoras === 1 ? 'Tirar la mejora' : `Tirar las ${t.mejoras} mejoras`));
       } else {
         c.append(h('ul', { class: 'asis-dados' }, A.mejoras.map(m => h('li', null,
           `1D100 = ${m.d100} contra EDU ${m.edu}: ` + (m.sube ? `sube ${m.sube} (1D10).` : (m.d100 > m.edu ? 'ya está en 99.' : 'no sube.'))))));
@@ -564,6 +556,15 @@ const Asistente = (() => {
       z.textContent = '';
       for (const k of CARS) z.append(h('div', { class: 'asis-car' }, h('b', null, k), h('span', { class: 'v' }, f[k]),
         h('small', null, `½ ${Math.floor(f[k] / 2)} · ⅕ ${Math.floor(f[k] / 5)}`)));
+    }
+  }
+  function tirarMejoras() {
+    let edu = eduPrevia();
+    A.mejoras = [];
+    for (let i = 0; i < tramo().mejoras; i++) {
+      const t100 = d(100), sube = t100 > edu ? Math.min(d(10), 99 - edu) : 0;
+      A.mejoras.push({ d100: t100, edu, sube });
+      edu += sube;
     }
   }
   function okAjustes() {
@@ -967,7 +968,7 @@ const Asistente = (() => {
     });
   }
 
-  function crearFicha() {
+  function crearFicha(azar) {
     const def = Generador.ficha(sis().ficha);
     const rect = Object.fromEntries(def.campos.map(c => [c.n, c]));
     const f = finales(), v = valores(), cp = {}, tam = {};
@@ -1046,8 +1047,151 @@ const Asistente = (() => {
     Generador.opciones().epoca = A.epoca;
     $('#o-epoca').value = A.epoca;
     Generador.crear(sis().ficha, { campos: cp, tam, foto: A.foto });
+    if (azar === true) return;
     if (confirm(`Ficha creada. ¿Vaciar el asistente para empezar otro ${sis().quien} más adelante?`)) { A = inicial(); guardar(); }
     $('#d-asistente').close();
+  }
+
+  // ------------------------------------------------------------ personaje al azar
+  // Hace lo mismo que el asistente con el método de tiradas, eligiendo al azar entre lo que permiten las
+  // reglas, y comprueba cada paso con su ok(). El estado guardado del asistente no se toca.
+  const uno = xs => xs[d(xs.length) - 1];
+  const barajar = xs => { const r = [...xs]; for (let i = r.length - 1; i > 0; i--) { const j = d(i + 1) - 1; [r[i], r[j]] = [r[j], r[i]]; } return r; };
+  // Especialidades habituales, para no sacar a cada investigador con lanzallamas o motosierra
+  const ESP_AZAR = {
+    'Armas de fuego': ['Arma corta', 'Arma corta', 'Fusil/Escopeta', 'Fusil/Escopeta', 'Subfusil', 'Arco'],
+    'Combatir': ['Pelea', 'Pelea', 'Pelea', 'Espada', 'Hacha', 'Lanza', 'Látigo', 'Cable'],
+    'Conocimiento': ['Los sueños', 'Los vampiros', 'Los hombres lobo', 'El antiguo Egipto', 'Las sectas', 'El folclore de Nueva Inglaterra'],
+    'Arte/Artesanía': ['Fotografía', 'Pintura', 'Escritura', 'Interpretación', 'Cocina', 'Carpintería', 'Danza', 'Caligrafía', 'Escultura', 'Instrumento'],
+    'Supervivencia': ['Bosque', 'Desierto', 'Montaña', 'Alta mar', 'Ártico', 'Selva'],
+  };
+  function especialidadAzar(fam) {
+    if (fam === 'Otras lenguas') return uno(ESPECIALIDADES[fam].concat(['Español', 'Ruso', 'Chino', 'Japonés', 'Portugués', 'Hebreo']).filter(x => x !== A.datos.lengua));
+    const l = ESP_AZAR[fam] || (ESPECIALIDADES[fam] || []).map(x => Array.isArray(x) ? x[0] : x);
+    return uno(l.length ? l : ['General']);
+  }
+  const hueco = sel => ({ sel, esp: sel.endsWith('(*)') ? especialidadAzar(sel.slice(0, -4)) : '' });
+  // Lo que se puede elegir «a tu elección»; las habilidades raras, solo de vez en cuando
+  const libresAzar = () => opcionesHabilidad().filter(n => !HABILIDADES.some(x => x.rara && (x.n === n || `${x.n} (*)` === n)) || d(6) === 1);
+  // Reparte `total` puntos de 5 en 5 entre `nombres`, sin pasar de `tope`, cargando más unas que otras
+  function repartirAzar(reparto, total, nombres, actual, tope) {
+    const peso = Object.fromEntries(nombres.map(n => [n, d(6) * d(6)]));
+    let quedan = total;
+    while (quedan > 0) {
+      const p = Math.min(5, quedan);
+      const libres = nombres.filter(n => actual(n) + (reparto[n] || 0) + p <= tope);
+      if (!libres.length) break;
+      let r = d(libres.reduce((s, n) => s + peso[n], 0));
+      const n = libres.find(x => (r -= peso[x]) <= 0);
+      reparto[n] = (reparto[n] || 0) + p;
+      quedan -= p;
+    }
+  }
+  function ocupacionAzar() {
+    const ops = sis().ocup.filter(x => !x.actual || A.epoca === 'actual');
+    const a = arquetipo();
+    if (a && d(4) > 1) {  // en Pulp, casi siempre una de las que sugiere el arquetipo
+      const sug = a.ocupaciones.toLowerCase().split(/,\s*/).map(x => x.split(/[ /]/)[0]);
+      const afines = ops.filter(o => sug.includes(o.n.toLowerCase().split(/[ /]/)[0]));
+      if (afines.length) return uno(afines).n;
+    }
+    return uno(ops).n;
+  }
+  // [lo que sale, ejemplos] de las tablas de trasfondo → una frase con uno de los ejemplos
+  function textoTabla(x) {
+    if (!x[1] || /^(elige|pide|habla)/.test(x[1])) return x[0] + '.';
+    const ej = uno(x[1].replace(/…$/, '').split(/,\s*|\s+o\s+/)).trim();
+    if (x[0].includes('¿')) return x[0].replace(/\.?\s*¿[^?]*\?\s*$/, '') + ': ' + ej + '.';
+    return `${x[0]} (${ej}).`;
+  }
+  const FEMENINO = { Padre: 'Madre', Abuelo: 'Abuela', Hermano: 'Hermana', Hijo: 'Hija', Pareja: 'Pareja' };
+  function trasfondoAzar(persona) {
+    const P = pulp(), T = P ? TRASFONDO_PULP : TRASFONDO, a = arquetipo();
+    const desc = P ? [uno(T.descripcion[persona.g === 'F' ? 'Femenino' : 'Masculino']), uno(T.descripcion.Unisex)] : barajar(TRASFONDO.descripcion).slice(0, 2);
+    const quien = uno(T.allegadosQuien);
+    let otra = personaAlAzar(null, persona.cultura);
+    while (otra.nombre === persona.nombre) otra = personaAlAzar(null, persona.cultura);
+    const allegado = quien[0] in FEMENINO ? `${otra.g === 'F' ? FEMENINO[quien[0]] : quien[0]}, ${otra.nombre}.` : textoTabla(quien);
+    const mayus = t => t.replace(/^./, c => c.toUpperCase());
+    return {
+      descripcion: mayus(desc.join(', ').toLowerCase()),
+      ideologia: textoTabla(uno(T.ideologia)),
+      allegados: `${allegado} ${textoTabla(uno(TRASFONDO.allegadosPorque))}`,
+      lugares: textoTabla(uno((P && T.lugares) || TRASFONDO.lugares)),
+      posesiones: textoTabla(uno((P && T.posesiones) || TRASFONDO.posesiones)),
+      rasgos: P ? mayus(a && d(2) === 1 ? uno(a.rasgos) : uno(uno(T.rasgos))) + '.' : textoTabla(uno(TRASFONDO.rasgos)),
+    };
+  }
+  const RESIDENCIAS = ['Arkham, Massachusetts', 'Boston', 'Nueva York', 'Providence', 'Chicago', 'Londres', 'París', 'Madrid', 'Barcelona', 'Berlín', 'El Cairo', 'Buenos Aires', 'San Francisco'];
+
+  function generarAzar(sistema) {
+    A = Object.assign(inicial(), { sistema, metodo: 'tiradas' });
+    const persona = personaAlAzar();
+    const nacio = uno(persona.cultura.ciudades);
+    A.datos = { Nombre: persona.completo, Jugador: '', Género: persona.g === 'F' ? 'Femenino' : 'Masculino',
+      Nacimiento: nacio, Residencia: d(2) === 1 ? nacio : uno(RESIDENCIAS), lengua: persona.cultura.lengua };
+    if (pulp()) {
+      const a = uno(ARQUETIPOS);
+      A.arquetipo = a.n;
+      A.principal = uno(a.principal);
+      A.edad = 18 + d(12) + d(12) + d(12);
+    } else A.edad = 15 + d(20) + d(20) + d(6);  // de 18 a 61, casi siempre entre 25 y 50
+    A.tiradas = Object.fromEntries(CARS.map(k => [k, tirar(dadosDe(k))]));
+    if (pulp()) {
+      A.suerte = [tirar('2D6+6')];
+      const a = arquetipo(), tablas = Object.keys(TALENTOS);
+      if (a.talento) A.talentos.push(a.talento);
+      while (A.talentos.length < 2) { const x = TALENTOS[tablas[d(4) - 1]][d(10) - 1][0]; if (!A.talentos.includes(x)) A.talentos.push(x); }
+      if (A.talentos.includes('Poder psíquico')) A.talentoExtra.psiquico = uno(PULP.psiquicos);
+      if (A.talentos.includes('Erudición')) A.talentoExtra.erudicion = uno(ESP_AZAR.Conocimiento).toLowerCase();
+      if (A.talentos.includes('Recarga rápida')) A.talentoExtra.recarga = uno(['Arma corta', 'Fusil/Escopeta']);
+    } else {
+      const t = tramo();
+      for (let q = t.resta; q > 0; q -= 5) {  // de 5 en 5, entre las que pueden bajar sin quedarse a cero
+        const pueden = t.entre.filter(j => base(j) - (A.ajuste[j] || 0) - 5 >= 1);
+        const k = uno(pueden.length ? pueden : t.entre);
+        A.ajuste[k] = (A.ajuste[k] || 0) + Math.min(5, q);
+      }
+      if (t.mejoras) tirarMejoras();
+      A.suerte = [tirar('3D6'), tirar('3D6')];
+    }
+
+    A.ocupacion = ocupacionAzar();
+    huecosDef().forEach((hd, i) => {
+      const usadas = new Set(A.huecos.map(resuelta));
+      for (let intento = 0; intento < 40; intento++) {
+        const hu = hueco(typeof hd !== 'string' ? uno(hd) : hd === 'interpersonal' ? uno(INTERPERSONALES) : hd === 'cualquiera' ? uno(libresAzar()) : hd);
+        if (!usadas.has(resuelta(hu))) { A.huecos[i] = hu; break; }
+      }
+    });
+    const o = ocupacion(), f = finales(), ocup = habOcupacion();
+    const cr = o.cr[0] + Math.round((o.cr[1] - o.cr[0]) * (d(6) + d(6) - 2) / 10);  // más cerca del centro del margen
+    A.ocupPuntos['Crédito'] = cr;
+    const sin = reparto => n => (valores()[n] ?? bh(n, f)) - (reparto[n] || 0);
+    repartirAzar(A.ocupPuntos, puntosOcupacion() - cr, ocup, sin(A.ocupPuntos), 80);
+    if (pulp()) {
+      const ops = opcionesArquetipo().map(n => n.endsWith('(*)') ? (ocup.find(x => x.startsWith(n.slice(0, -3))) || resuelta(hueco(n))) : n);
+      repartirAzar(A.arqPuntos, PULP.puntosArquetipo, barajar(ops).slice(0, 2 + d(3)), sin(A.arqPuntos), 90);
+    }
+    const intereses = new Set(barajar(libresAzar().filter(n => !n.endsWith('(*)'))).slice(0, 2 + d(3)));
+    if (d(3) > 1) intereses.add(uno(['Combatir (Pelea)', 'Armas de fuego (Arma corta)', 'Armas de fuego (Fusil/Escopeta)', 'Esquivar']));
+    intereses.add(resuelta(hueco(uno(['Otras lenguas (*)', 'Arte/Artesanía (*)', 'Ciencia (*)']))));
+    repartirAzar(A.interes, f.INT * 2, [...intereses], sin(A.interes), 75);
+
+    A.tras = trasfondoAzar(persona);
+    A.vinculo = uno(['ideologia', 'allegados', 'lugares', 'posesiones']);
+    return pasos().every(p => p.ok() === true);
+  }
+  async function alAzar(sistema) {
+    await Generador.listo;
+    leer();
+    const guardado = A;
+    try {
+      let bien = false;
+      for (let i = 0; i < 30 && !bien; i++) bien = generarAzar(sistema);
+      if (bien) crearFicha(true);
+      else alert('No ha salido un personaje válido; vuelve a intentarlo.');
+    } finally { A = guardado; }
   }
 
   // ------------------------------------------------------------ marco del diálogo
@@ -1096,5 +1240,7 @@ const Asistente = (() => {
     $('#d-asistente').showModal();
   }
   document.querySelector('#b-asistente').addEventListener('click', abrir);
-  return { abrir };
+  document.querySelector('#b-azar-coc').addEventListener('click', () => alAzar('coc'));
+  document.querySelector('#b-azar-pulp').addEventListener('click', () => alAzar('pulp'));
+  return { abrir, alAzar };
 })();

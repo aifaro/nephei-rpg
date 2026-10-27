@@ -493,7 +493,7 @@
   }
 
   // ------------------------------------------------------------ de aquí a la ficha
-  function crearFicha() {
+  function crearFicha(azar) {
     const A = asis.A, cl = clase(), o = orden(), t = trasfondo(), e = especie(), f = finales(), m = magia(), cp = {};
     const pon = (n, x) => { if (x != null && x !== '') cp[n] = String(x); };
     pon('Nombre', A.datos.Nombre); pon('Trasfondo', t.n); pon('Clase', cl.n); pon('Especie', nombreEspecie());
@@ -553,9 +553,123 @@
     ].filter(Boolean).join('\n\n'));
 
     Generador.crear('dnd24', { campos: cp, foto: A.foto });
+    if (azar === true) return;
     if (confirm('Ficha creada. ¿Vaciar el asistente para crear otro personaje más adelante?')) asis.reiniciar();
     document.querySelector('#d-asistente').close();
   }
 
+  // ------------------------------------------------------------ personaje al azar
+  // Recorre los pasos del asistente eligiendo al azar entre lo que permiten las reglas (con las puntuaciones
+  // más altas donde la clase las necesita) y comprueba cada paso con su ok(). El estado guardado del
+  // asistente no se toca.
+  const uno = xs => xs[d(xs.length) - 1];
+  const barajar = xs => { const r = [...xs]; for (let i = r.length - 1; i > 0; i--) { const j = d(i + 1) - 1; [r[i], r[j]] = [r[j], r[i]]; } return r; };
+  const PRIORIDAD = { 'Bárbaro': ['FUE', 'CON', 'DES'], 'Bardo': ['CAR', 'DES', 'CON'], 'Brujo': ['CAR', 'CON', 'DES'], 'Clérigo': ['SAB', 'CON', 'FUE'],
+    'Druida': ['SAB', 'CON', 'DES'], 'Explorador': ['DES', 'SAB', 'CON'], 'Guerrero': ['FUE', 'CON', 'DES'], 'Hechicero': ['CAR', 'CON', 'DES'],
+    'Mago': ['INT', 'CON', 'DES'], 'Monje': ['DES', 'SAB', 'CON'], 'Paladín': ['FUE', 'CAR', 'CON'], 'Pícaro': ['DES', 'CON', 'INT'] };
+  const IDIOMA_ESPECIE = { 'Dracónido': 'Dracónico', 'Enano': 'Enano', 'Elfo': 'Élfico', 'Gnomo': 'Gnomo', 'Goliat': 'Gigante', 'Mediano': 'Mediano', 'Orco': 'Orco' };
+  const mejorMental = () => ['INT', 'SAB', 'CAR'].reduce((a, b) => (mod(b) > mod(a) ? b : a));
+
+  function doteAzar(D, nombre, listaFija) {  // lo que pide elegir una dote de origen
+    const x = dote(nombre);
+    if (x.magia) {
+      D.lista = listaFija || uno(['Clérigo', 'Druida', 'Mago']);
+      D.aptitud = mejorMental();
+      D.trucos = barajar(listaConjuros(D.lista, 0)).slice(0, 2);
+      D.conjuro = uno(listaConjuros(D.lista, 1));
+    }
+    if (x.habilidades) D.habs = barajar(Object.keys(DND.habilidades).filter(n => !habilidadesFijas().has(n))).slice(0, 3);
+    if (x.herramientas) D.herrs = barajar(DND.artesano).slice(0, 3);
+    if (nombre === 'Músico') D.herrs = barajar(DND.instrumentos).slice(0, 3);
+  }
+
+  function generarAzar() {
+    asis.A = inicial();
+    const A = asis.A;
+    // Clase, con sus elecciones; un guerrero de cada tres, arquero
+    const cl = uno(CLASES_DND);
+    A.clase = cl.n;
+    const arquero = cl.n === 'Guerrero' && d(3) === 1;
+    if (cl.orden) A.orden = uno(cl.orden.opciones).n;
+    if (cl.estilo) A.estilo = arquero ? 'Tiro con arco' : uno(ESTILOS_DND.filter(x => x[0] !== 'Tiro con arco'))[0];
+    if (cl.invocaciones) A.invocacion = uno(INVOCACIONES_DND)[0];
+    // Trasfondo y especie
+    const t = uno(TRASFONDOS_DND), e = uno(ESPECIES_DND);
+    A.trasfondo = t.n;
+    A.especie = e.n;
+    A.tam = uno(e.tam);
+    if (e.opciones) A.opcion = uno(e.opciones).n;
+
+    // Puntuaciones: lo más alto en lo que pide la clase, y el +2 y el +1 del trasfondo donde más luzcan
+    const prio = arquero ? ['DES', 'CON', 'FUE'] : PRIORIDAD[cl.n];
+    const orden = [...prio, ...barajar(CARS.filter(k => !prio.includes(k)))];
+    A.metodo = d(5) <= 3 ? 'estandar' : 'tiradas';
+    if (A.metodo === 'tiradas') A.tiradas = Array.from({ length: 6 }, () => { const dados = [d(6), d(6), d(6), d(6)]; return { dados, total: suma(dados) - Math.min(...dados) }; });
+    const vals = A.metodo === 'tiradas' ? A.tiradas.map(x => x.total) : DND.estandar;
+    const porValor = vals.map((_, i) => i).sort((i, j) => vals[j] - vals[i]);
+    orden.forEach((k, i) => { A.asig[k] = porValor[i]; });
+    if (d(4) === 1) A.reparto = '111';
+    else { const [a, b] = [...t.car].sort((x, y) => orden.indexOf(x) - orden.indexOf(y)); A.mas2 = a; A.mas1 = b; }
+
+    if (t.herramienta.startsWith('?')) A.herrTras = uno({ '?artesano': DND.artesano, '?instrumento': DND.instrumentos, '?juego': DND.juegos }[t.herramienta]);
+    doteAzar(A.doteTras, t.dote, t.listaMagia);
+    if (e.aptitudLibre) A.aptitudEspecie = mejorMental();
+    if (e.aptitud) A.aptitudEspecie = e.aptitud;
+    if (e.habilidadDe) A.habEspecie = uno(e.habilidadDe.filter(n => !t.habilidades.includes(n)));
+    if (e.habilidadLibre) A.habEspecie = uno(Object.keys(DND.habilidades).filter(n => !habilidadesFijas().has(n)));
+    if (e.doteOrigen) {
+      A.doteHumano = Object.assign(doteVacia(), { n: uno(DOTES_ORIGEN_DND.filter(x => x.n !== t.dote)).n });
+      doteAzar(A.doteHumano, A.doteHumano.n);
+    }
+
+    // Equipo (casi siempre el de la opción A, que trae armas) y maestría con las armas que lleva
+    A.equipo = arquero ? 1 : d(4) > 1 ? 0 : d(cl.equipo.length) - 1;
+    cl.equipo[A.equipo].items.forEach((x, i) => { if (x === '?instrumento') A.elecciones[`c${i}`] = uno(DND.instrumentos); });
+    if (cl.herramientaElegir) A.herrMonje = uno([...DND.artesano, ...DND.instrumentos]);
+    A.equipoTras = d(5) > 1 ? 'A' : 'B';
+    if (cl.maestria) {
+      const ops = ARMAS_DND.filter(a => competenteArma(a) && (cl.n !== 'Bárbaro' || a[1][1] === 'c')).map(a => a[0]);
+      const lleva = objetos().res.map(o => o.n).filter(n => ops.includes(n));
+      A.maestrias = [...new Set([...barajar(lleva), ...barajar(ops)])].slice(0, cl.maestria);
+    }
+
+    // Habilidades, pericia e idiomas
+    const deClase = cl.habilidades.de === 'todas' ? Object.keys(DND.habilidades) : cl.habilidades.de;
+    A.habClase = barajar(deClase.filter(n => !habilidadesFijas().has(n))).slice(0, cl.habilidades.n);
+    if (cl.pericia) A.pericia = barajar([...competentes()]).slice(0, cl.pericia);
+    const propio = IDIOMA_ESPECIE[e.n];
+    A.idiomas = [...new Set([propio, ...barajar(DND.idiomas)].filter(Boolean))].slice(0, numIdiomas());
+
+    // Conjuros
+    const m = magia();
+    if (m) {
+      const ya = new Set(conjurosAparte().map(x => x[0]));
+      A.trucos = barajar(listaConjuros(m.lista, 0).filter(n => !ya.has(n))).slice(0, numTrucos());
+      if (m.libro) {
+        A.libro = barajar(listaConjuros(m.lista, 1)).slice(0, m.libro);
+        A.preparados = barajar(A.libro).slice(0, m.preparados);
+      } else A.preparados = barajar(listaConjuros(m.lista, 1).filter(n => !ya.has(n))).slice(0, m.preparados);
+    }
+
+    // Personalidad y nombre
+    const P = PERSONALIDAD_DND;
+    A.alineamiento = uno(DND.alineamientos.filter(x => !/malvado/.test(x) || d(4) === 1));
+    A.personalidad = barajar(P.rasgos).slice(0, 2);
+    A.ideal = uno(P.ideales); A.vinculo = uno(P.vinculos); A.defecto = uno(P.defectos);
+    A.datos.Nombre = uno(NOMBRES_DND[e.n]);
+    return PASOS.every(x => x.ok() === true);
+  }
+  async function alAzar() {
+    await Generador.listo;
+    const guardado = asis.A;
+    try {
+      let bien = false;
+      for (let i = 0; i < 30 && !bien; i++) bien = generarAzar();
+      if (bien) crearFicha(true);
+      else alert('No ha salido un personaje válido; vuelve a intentarlo.');
+    } finally { asis.A = guardado; }
+  }
+
   const asis = AsisComun.marco({ clave: 'nephei-generador-asistente-dnd24-v1', inicial, pasos: () => PASOS, titulo: () => 'Asistente · Dungeons & Dragons (2024)' });
+  document.querySelector('#b-azar').addEventListener('click', alAzar);
 })();

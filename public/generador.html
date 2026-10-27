@@ -37,6 +37,8 @@
     </div>
     <div class="gen-acciones">
       <button type="button" class="gen-boton principal" id="b-asistente">Asistente</button>
+      <button type="button" class="gen-boton" id="b-azar-coc" title="Crea al momento un investigador de 7.ª edición con tiradas y elecciones al azar">Investigador al azar</button>
+      <button type="button" class="gen-boton" id="b-azar-pulp" title="Crea al momento un héroe de Pulp Cthulhu con tiradas y elecciones al azar">Héroe pulp al azar</button>
       <button type="button" class="gen-boton" id="b-nuevo">Nuevo</button>
       <button type="button" class="gen-boton" id="b-lista">Mis personajes</button>
       <button type="button" class="gen-boton" id="b-pdf">Descargar PDF</button>
@@ -73,6 +75,7 @@
       <li><strong>Retrato.</strong> Pulsa la esquina superior derecha de la primera cara para subir una imagen; podrás encuadrarla. Se guarda en el navegador, reducida.</li>
       <li><strong>Descargar PDF.</strong> Sale la ficha oficial con todo relleno, y sigue siendo un PDF con campos: se puede seguir editando en cualquier editor de PDF o en el navegador.</li>
       <li><strong>Asistente.</strong> Crea un investigador de 7.ª edición siguiendo el capítulo 3 del <em>Manual del Guardián</em> (edad, características por tiradas o método rápido, ocupación, intereses particulares, trasfondo, dinero y equipo) o un héroe de <em>Pulp Cthulhu</em> siguiendo el capítulo 2 de su manual (arquetipo, característica principal, talentos, ocupaciones pulp y puntos de arquetipo). Al final lo pasa a una ficha nueva.</li>
+      <li><strong>Al azar.</strong> «Investigador al azar» y «Héroe pulp al azar» hacen lo mismo que el asistente con el método de tiradas, pero eligiéndolo todo al azar entre lo que permiten las reglas: edad, tiradas, ocupación (en Pulp, también arquetipo y talentos), reparto de puntos y trasfondo, con un nombre de una lista de nombres reales de muchas culturas. La ficha aparece al momento como personaje nuevo; lo que tuvieras a medias en el asistente no se toca.</li>
     </ul>
   </section>
 </main>
@@ -116,6 +119,7 @@
 <script src="/generador/datos.js?v=2"></script>
 <script src="/generador/datos-pulp.js?v=2"></script>
 <script src="/generador/editor.js?v=4"></script>
-<script src="/generador/asistente.js?v=3"></script>
+<script src="/generador/nombres.js?v=1"></script>
+<script src="/generador/asistente.js?v=4"></script>
 </body>
 </html>

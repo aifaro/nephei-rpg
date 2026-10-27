@@ -22,6 +22,7 @@ Rellenar en el navegador una ficha oficial, con un asistente de creación paso a
 | `public/generador/asistente-dnd.js`, `datos-dnd.js` | El asistente de D&D con las reglas de 2024 (nivel 1) y sus datos: clases, trasfondos, especies, dotes de origen y de estilo, invocaciones, armas con maestría, armaduras y conjuros de nivel 0 y 1. | Sí, salvo las listas de conjuros del final |
 | `public/generador/datos.js` | Reglas, habilidades, ocupaciones y tablas de trasfondo sacadas del *Manual del Guardián* (Edge), con la página de cada cosa. | Sí |
 | `public/generador/datos-pulp.js` | Arquetipos, talentos, ocupaciones y tablas de trasfondo de *Pulp Cthulhu* (Edge, capítulo 2). | Sí |
+| `public/generador/nombres.js` | Listas de nombres para los personajes al azar: reales por cultura (Cthulhu, Delta Green) y de fantasía por especie (D&D). | Sí |
 | `public/generador/pdf-lib.min.js` | pdf-lib 1.17.1, copiada de cdnjs. Se carga solo al descargar. | No |
 | `public/generador/coc.pdf`, `pulp.pdf`, `dg.pdf`, `dnd24.pdf`, `dnd.pdf` | Las fichas en blanco con campos de formulario. | **No: las genera `preparar.py`** |
 | `public/generador/coc-1.jpg` … `dnd-3.jpg` | El fondo de cada cara, sin campos. | **No: `preparar.py`** |
@@ -65,6 +66,16 @@ Primero se elige el juego. Lo que se haya escrito en el trasfondo se conserva al
 Al final crea un personaje nuevo en el editor. Las especialidades que no vienen impresas van a las líneas en blanco de su familia y, si no caben, a las líneas libres del final de la tercera columna; lo que tampoco cabe se apunta en Notas. En Pulp, los talentos van a su recuadro.
 
 Pendiente, si se quiere: la tabla de armas del manual para elegirlas de una lista.
+
+## Personajes al azar
+
+Cada pestaña tiene un botón que crea un personaje completo al momento: «Investigador al azar» y «Héroe pulp al azar» en la de Cthulhu, «Agente al azar» en la de Delta Green y «Personaje al azar» en la de D&D. No es un generador aparte: cada asistente tiene su `generarAzar()`, que rellena el mismo estado que llenarían sus pasos, eligiendo al azar entre lo que permiten las reglas, y lo da por bueno solo si el `ok()` de todos los pasos dice que sí (si no, lo repite, hasta 30 veces). Luego llama a la misma `crearFicha()`. El estado del asistente que hubiera a medias se aparta y se devuelve tal cual: no se pisa ni se guarda.
+
+- **Cthulhu y Pulp**: método de tiradas; edad de 18 a 61 (casi siempre entre 25 y 50), ajustes y mejoras por edad, ocupación de la época (en Pulp, arquetipo y talentos, y casi siempre una ocupación de las que sugiere el arquetipo), especialidades habituales (más Pelea y Arma corta que Motosierra), Crédito hacia el centro de su margen, puntos de 5 en 5 sin pasar de 80 (90 en los de arquetipo, 75 en los intereses) y una frase de cada tabla de trasfondo con uno de sus ejemplos.
+- **Delta Green**: agencia y unidad (de vez en cuando «otra»), profesión, características con lo más alto en las recomendadas, ocho bonificaciones sin pasar del 80 %, trasfondo de veterano, Lazos con nombre y relación, motivaciones, el equipo de la unidad y armas según sus habilidades.
+- **D&D**: clase, trasfondo y especie con todas sus elecciones; conjunto estándar o tiradas colocadas por prioridad de clase, y el +2/+1 del trasfondo donde más luce; idiomas (el de su especie primero), conjuros, equipo (casi siempre la opción A) y personalidad.
+
+Los nombres salen de `public/generador/nombres.js`: para Cthulhu y Delta Green, nombres reales de unas veinticinco culturas (con su ciudad de nacimiento y su lengua, que va a «Lengua propia»), escogidos para que valgan en los años 20 y hoy; para D&D, nombres de fantasía, ocho o diez por especie.
 
 ## Delta Green
 
