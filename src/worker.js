@@ -12,6 +12,14 @@
 //
 //   GET  /la-marca-del-estrecho/keepers/_entrar  -> pasa por Access y vuelve al libro
 //
+// Y el Cuaderno del Guardián, notas privadas y aventuras ajenas reescritas para
+// uso personal, que vive en la carpeta cuaderno/ del mismo repo privado:
+//
+//   /cuaderno/            -> cuaderno/index.html
+//   /cuaderno/<ruta>      -> cuaderno/<ruta> (+ .html si no lleva extensión)
+//
+// El cuaderno pide SIEMPRE sesión de Access: GUARDIAN_PUBLICO no le afecta.
+//
 // Doble cerrojo: Cloudflare Access protege esas rutas y, además, este worker
 // comprueba la firma del token de Access. Sin un token válido no sirve nada
 // privado, aunque Access se desconfigure o el worker se publique en otro dominio.
@@ -24,13 +32,15 @@
 //   GITHUB_PAT  secreto. Token fine-grained con Contents: Read and write en
 //               ttrpg-resources-private (leer las páginas y guardar el libro).
 //   EDITORES    opcional. Correos que pueden guardar el libro, separados por comas.
-// ACCESS_TEAM, ACCESS_AUD y GUARDIAN_PUBLICO están en wrangler.jsonc.
+// ACCESS_TEAM, ACCESS_AUD y GUARDIAN_PUBLICO están en wrangler.jsonc. ACCESS_AUD
+// admite varias AUD separadas por comas (una por aplicación de Access).
 
 const GITHUB_USER = 'aifaro';
 const PRIVATE_REPO = 'ttrpg-resources-private';
 const GITHUB_BRANCH = 'main';
 
 const PREFIJO = '/la-marca-del-estrecho/keepers';
+const CUADERNO = '/cuaderno';
 const PORTADA = PREFIJO + '/keepers.html';
 
 // El único fichero que se puede escribir desde la web, y la ruta que lo guarda.
@@ -60,6 +70,9 @@ const MIME = {
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
+    if (esCuaderno(url.pathname)) {
+      return cuaderno(request, env, url);
+    }
     if (!esPrivado(url.pathname)) {
       return env.ASSETS.fetch(request);
     }
@@ -96,6 +109,37 @@ export default {
 
 function esPrivado(path) {
   return path === PREFIJO || path.startsWith(PREFIJO + '/');
+}
+
+function esCuaderno(path) {
+  return path === CUADERNO || path.startsWith(CUADERNO + '/');
+}
+
+// El cuaderno: siempre con sesión, solo lectura.
+async function cuaderno(request, env, url) {
+  if (url.pathname === CUADERNO) {
+    return new Response(null, { status: 301, headers: { Location: CUADERNO + '/' } });
+  }
+  const quien = await identidadAccess(request, env);
+  if (!quien) {
+    return pagina(env, 403, 'Privado',
+      '<main class="perdido"><p class="numero">403</p><h1>Privado</h1>'
+      + '<p>Esta parte del sitio necesita iniciar sesión.</p>'
+      + '<p><a href="/">&laquo; rpg.nephei.org</a></p></main>', 'Cuaderno del Guardián');
+  }
+  if (request.method !== 'GET' && request.method !== 'HEAD') {
+    return new Response('Method not allowed', { status: 405, headers: { Allow: 'GET, HEAD' } });
+  }
+  if (!env.GITHUB_PAT) {
+    return new Response('Worker secret GITHUB_PAT is not set.', { status: 500 });
+  }
+  const ext = url.pathname.split('/').pop().split('.').pop().toLowerCase();
+  if (MIME[ext] && url.pathname.includes('.')) {
+    return servirFichero(url.pathname, ext, env);
+  }
+  let ruta = url.pathname === CUADERNO + '/' ? CUADERNO + '/index.html' : url.pathname;
+  if (!ruta.endsWith('.html')) ruta = ruta.replace(/\/$/, '') + '.html';
+  return servirPagina(ruta, env, { titulo: 'Cuaderno del Guardián', inicio: CUADERNO + '/' });
 }
 
 function abierto(env) {
@@ -155,7 +199,8 @@ async function identidadAccess(request, env) {
   if (!firmaOk) return null;
 
   const auds = Array.isArray(carga.aud) ? carga.aud : [carga.aud];
-  if (!auds.includes(env.ACCESS_AUD)) return null;
+  const validas = String(env.ACCESS_AUD || '').split(',').map(a => a.trim()).filter(Boolean);
+  if (!auds.some(a => validas.includes(a))) return null;
   if (carga.iss !== `https://${env.ACCESS_TEAM}`) return null;
   if (typeof carga.exp !== 'number' || carga.exp * 1000 < Date.now()) return null;
   return carga.email || carga.sub || null;
@@ -194,9 +239,12 @@ async function servirFichero(path, ext, env) {
 // Las páginas se leen por la API de contenidos y no por raw.githubusercontent:
 // la CDN de raw tarda unos minutos en ver un commit, y el libro que se acaba de
 // guardar desde la web tiene que verse al recargar.
-async function servirPagina(path, env) {
+async function servirPagina(path, env, seccion) {
+  const sitio = seccion || { titulo: 'La Marca del Estrecho', inicio: PREFIJO + '/' };
   let ruta = path;
-  if (ruta === PREFIJO || ruta === PREFIJO + '/') {
+  if (seccion) {
+    // el cuaderno ya llega con la ruta resuelta
+  } else if (ruta === PREFIJO || ruta === PREFIJO + '/') {
     ruta = PORTADA;
   } else if (!ruta.endsWith('.html')) {
     ruta = ruta.replace(/\/$/, '') + '.html';
@@ -209,11 +257,11 @@ async function servirPagina(path, env) {
   if (r.status === 404) {
     return pagina(env, 404, 'Página no encontrada',
       '<main class="perdido"><p class="numero">404</p><h1>Aquí no hay nada</h1>'
-      + '<p>Esa página no existe en el área del Guardián.</p>'
-      + `<p><a href="${PREFIJO}/">&laquo; Área del Guardián</a></p></main>`);
+      + '<p>Esa página no existe en esta zona privada.</p>'
+      + `<p><a href="${sitio.inicio}">&laquo; Volver</a></p></main>`, sitio.titulo, seccion);
   }
   if (!r.ok) {
-    return pagina(env, 502, 'Error', `<main><h1>Error</h1><p>No se pudo leer la página de GitHub (estado ${r.status}).</p></main>`);
+    return pagina(env, 502, 'Error', `<main><h1>Error</h1><p>No se pudo leer la página de GitHub (estado ${r.status}).</p></main>`, sitio.titulo, seccion);
   }
 
   const bytes = new Uint8Array(await r.arrayBuffer());
@@ -237,18 +285,19 @@ async function servirPagina(path, env) {
   // Un fragmento (portada del Guardián, ayudas, características) va dentro de la
   // cáscara del sitio, la misma que llevan escrita las páginas de public/.
   const h1 = html.match(/<h1[^>]*>([\s\S]*?)<\/h1>/i);
-  const titulo = h1 ? h1[1].replace(/<[^>]+>/g, '').trim() : 'Área del Guardián';
-  return pagina(env, 200, titulo, html);
+  const titulo = h1 ? h1[1].replace(/<[^>]+>/g, '').trim() : sitio.titulo;
+  return pagina(env, 200, titulo, html, sitio.titulo, seccion);
 }
 
-function pagina(env, status, titulo, contenido) {
+function pagina(env, status, titulo, contenido, sufijo, privadoSiempre) {
+  const indexar = abierto(env) && !privadoSiempre && sufijo !== 'Cuaderno del Guardián';
   const html = `<!doctype html>
 <html lang="es">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>${titulo} · La Marca del Estrecho</title>
-${abierto(env) ? '' : '<meta name="robots" content="noindex, nofollow">\n'}<meta name="theme-color" content="#16130f">
+<title>${titulo} · ${sufijo || 'La Marca del Estrecho'}</title>
+${indexar ? '' : '<meta name="robots" content="noindex, nofollow">\n'}<meta name="theme-color" content="#16130f">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>

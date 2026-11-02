@@ -13,7 +13,7 @@
 | `public/` | Todo lo público, servido tal cual como assets estáticos. La URL espeja la ruta: `/la-marca-del-estrecho/players` es `public/la-marca-del-estrecho/players.html`. |
 | `public/style.css` | La hoja única del sitio, también la del Libro del Guardián. Si cambias el bloque «SITIO», sube el `?v=` de las páginas de `public/` y la constante `HOJA` de `src/worker.js`. |
 | `public/generador.html`, `public/generador/` | El generador de personajes. Las fichas en blanco, sus fondos y `fichas.json` los genera `herramientas/generador/preparar.py`. |
-| `src/worker.js` | Solo atiende `/la-marca-del-estrecho/keepers/…`: lee las páginas del repo privado, verifica el token de Cloudflare Access y guarda el libro desde su modo edición. |
+| `src/worker.js` | Solo atiende las zonas privadas, `/la-marca-del-estrecho/keepers/…` y `/cuaderno/…`: lee las páginas del repo privado, verifica el token de Cloudflare Access y guarda el libro desde su modo edición. |
 | `wrangler.jsonc` | Configuración del Worker `nephei-rpg`. |
 
 ## Las fichas de los pregenerados
@@ -39,6 +39,14 @@ Necesita, en *Settings → Variables and Secrets* del worker:
 
 - `GITHUB_PAT` (secreto): token *fine-grained* con **Contents: Read and write** sobre `ttrpg-resources-private`.
 - `EDITORES` (opcional): correos que pueden guardar el libro, separados por comas. Por defecto, solo el del autor.
+
+## El Cuaderno del Guardián (`/cuaderno`)
+
+Notas privadas y aventuras publicadas por otros, reescritas para uso personal (por ejemplo, *Azul miedo, rojo nival*, de *La Piel de Toro 1936*). **No se publica nunca**: vive en la carpeta `cuaderno/` del repo privado y el worker la sirve solo con sesión de Access, aunque `GUARDIAN_PUBLICO` valga `"si"`. Ni el contenido ni los mapas pasan por este repo público.
+
+- `/cuaderno/` es `cuaderno/index.html` (fragmento con la cáscara del sitio); `/cuaderno/<nombre>` es `cuaderno/<nombre>.html`.
+- Cloudflare Access debe cubrir `rpg.nephei.org/cuaderno`. Lo más sencillo es añadirlo como destino a la aplicación de Access que ya protege `/keepers`. Si se crea una aplicación aparte, su AUD se añade a `ACCESS_AUD` en `wrangler.jsonc`, separada por una coma: el worker rechaza cualquier token cuya AUD no esté en esa lista.
+- `public/robots.txt` lo excluye y las páginas llevan `noindex`.
 
 ## Abrir el área del Guardián
 
