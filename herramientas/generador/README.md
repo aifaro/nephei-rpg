@@ -2,7 +2,7 @@
 
 Rellenar en el navegador una ficha oficial, con un asistente de creación paso a paso, y descargarla en PDF rellenable. Tres pestañas, cada una con su página y su estilo:
 
-- [/generador](https://rpg.nephei.org/generador): *La llamada de Cthulhu* 7.ª edición (años 20) y *Pulp Cthulhu*.
+- [/generador](https://rpg.nephei.org/generador): *La llamada de Cthulhu* 7.ª edición (años 20 o época actual, cada una con su ficha) y *Pulp Cthulhu*.
 - [/generador/delta-green](https://rpg.nephei.org/generador/delta-green): agentes de *Delta Green* (hoja de Devir en español), con aire de expediente clasificado.
 - [/generador/dnd](https://rpg.nephei.org/generador/dnd): *Dungeons & Dragons* con las reglas de 2024 (hoja oficial de 2024, en inglés), en pergamino y rojo dragón.
 
@@ -24,14 +24,14 @@ Rellenar en el navegador una ficha oficial, con un asistente de creación paso a
 | `public/generador/datos-pulp.js` | Arquetipos, talentos, ocupaciones y tablas de trasfondo de *Pulp Cthulhu* (Edge, capítulo 2). | Sí |
 | `public/generador/nombres.js` | Listas de nombres para los personajes al azar: reales por cultura (Cthulhu, Delta Green) y de fantasía por especie (D&D). | Sí |
 | `public/generador/pdf-lib.min.js` | pdf-lib 1.17.1, copiada de cdnjs. Se carga solo al descargar. | No |
-| `public/generador/coc.pdf`, `pulp.pdf`, `dg.pdf`, `dnd24.pdf`, `dnd.pdf` | Las fichas en blanco con campos de formulario. | **No: las genera `preparar.py`** |
+| `public/generador/coc.pdf`, `coc-actual.pdf`, `pulp.pdf`, `dg.pdf`, `dnd24.pdf`, `dnd.pdf` | Las fichas en blanco con campos de formulario. | **No: las genera `preparar.py`** |
 | `public/generador/coc-1.jpg` … `dnd-3.jpg` | El fondo de cada cara, sin campos. | **No: `preparar.py`** |
 | `public/generador/fichas.json` | Posición, letra y alineación de cada campo, el hueco del retrato y qué campo es cada habilidad. | **No: `preparar.py`** |
 | `herramientas/generador/preparar.py` | Saca todo lo anterior de los generadores de pregenerados. | Solo si cambia la geometría |
 
 ## De dónde salen las fichas
 
-Las fichas en blanco de Cthulhu son exactamente las de `herramientas/fichas-linares` (7.ª edición) y `herramientas/fichas-marca` (Pulp); las de Delta Green y D&D salen de `herramientas/fichas-dg`, `herramientas/fichas-dnd24` (2024) y `herramientas/fichas-dnd` (2014), que solo existen para el generador. `preparar.py` importa sus `generar.py` y llama a su `rellenar(…, None)`. Si se toca la geometría de una ficha (posiciones, nombres de campos), hay que volver a ejecutar:
+Las fichas en blanco de Cthulhu son exactamente las de `herramientas/fichas-linares` (7.ª edición, años 20) y `herramientas/fichas-marca` (Pulp), más la de época actual de `herramientas/fichas-actual`, que se rellena con el código de la de los años 20 porque solo cambian las habilidades impresas; las de Delta Green y D&D salen de `herramientas/fichas-dg`, `herramientas/fichas-dnd24` (2024) y `herramientas/fichas-dnd` (2014), que solo existen para el generador. `preparar.py` importa sus `generar.py` y llama a su `rellenar(…, None)`. Si se toca la geometría de una ficha (posiciones, nombres de campos), hay que volver a ejecutar:
 
 ```
 cd herramientas/generador
@@ -50,7 +50,7 @@ Con la casilla «Calcular solo…» del menú «Más» activada (lo normal):
 - Puntos de Vida: (CON+TAM)/10, o /5 en Pulp. Puntos de Magia: POD/5. Cordura inicial: POD; máxima: 99 − Mitos de Cthulhu.
 - MOV (con el descuento por edad), Bonificación al daño y Corpulencia, Esquivar = DES/2, Lengua propia = EDU.
 - Desarmado = Combatir (Pelea); Esquivar del recuadro de combate = Esquivar.
-- Nivel de gasto, dinero y bienes según el Crédito (tabla de los años 20 o actual, en dólares o en pesetas a 5 por dólar).
+- Nivel de gasto, dinero y bienes según el Crédito (tabla de los años 20 o actual, en dólares o en pesetas a 5 por dólar). La ficha de época actual usa siempre la tabla actual; en las otras dos se elige en «Más».
 - Rodea en las pistas los PV, PM y la Cordura iniciales.
 
 Un valor calculado se recalcula mientras nadie lo toque; si se escribe a mano algo distinto, se respeta (el editor recuerda el último valor que puso él, en `auto`).
@@ -59,7 +59,7 @@ Un valor calculado se recalcula mientras nadie lo toque; si se escribe a mano al
 
 Primero se elige el juego. Lo que se haya escrito en el trasfondo se conserva al cambiar de juego; las tiradas y elecciones, no.
 
-**La llamada de Cthulhu 7.ª edición** sigue el capítulo 3 del *Manual del Guardián*: edad, características (tiradas o método rápido, opción 5), ajustes por edad con las tiradas de mejora de EDU y la Suerte, atributos derivados, ocupación (las 25 ocupaciones de ejemplo de las págs. 42-43), puntos de ocupación o valores del método rápido (con el exceso de Crédito), intereses particulares, trasfondo con las tablas de las págs. 45-48, retrato, dinero y equipo.
+**La llamada de Cthulhu 7.ª edición** sigue el capítulo 3 del *Manual del Guardián*: edad, características (tiradas o método rápido, opción 5), ajustes por edad con las tiradas de mejora de EDU y la Suerte, atributos derivados, ocupación (las 25 ocupaciones de ejemplo de las págs. 42-43), puntos de ocupación o valores del método rápido (con el exceso de Crédito), intereses particulares, trasfondo con las tablas de las págs. 45-48, retrato, dinero y equipo. La época elegida decide la ficha: años 20 o época actual. Pulp solo tiene la suya.
 
 **Pulp Cthulhu** sigue el capítulo 2 de su manual: arquetipo (22, con su característica principal, que se tira con 1D6+13×5 o vale 90 en la creación rápida), edad sin modificadores, Suerte 2D6+6×5, dos talentos (elegidos o al azar, con los obligatorios de Despiadado y Místico), PV = (CON+TAM)/5, MOV sin descuento por edad, las 68 ocupaciones pulp (págs. 26-36), 100 puntos de arquetipo, intereses particulares y las tablas de trasfondo de Pulp. El manual de Pulp en español no trae tabla de Lugares significativos: se usa la del *Manual del Guardián*. Las reglas opcionales del Pulpómetro (PV /10, más o menos talentos) no están.
 
@@ -69,7 +69,7 @@ Pendiente, si se quiere: la tabla de armas del manual para elegirlas de una list
 
 ## Personajes al azar
 
-Cada pestaña tiene un botón que crea un personaje completo al momento: «Investigador al azar» y «Héroe pulp al azar» en la de Cthulhu, «Agente al azar» en la de Delta Green y «Personaje al azar» en la de D&D. No es un generador aparte: cada asistente tiene su `generarAzar()`, que rellena el mismo estado que llenarían sus pasos, eligiendo al azar entre lo que permiten las reglas, y lo da por bueno solo si el `ok()` de todos los pasos dice que sí (si no, lo repite, hasta 30 veces). Luego llama a la misma `crearFicha()`. El estado del asistente que hubiera a medias se aparta y se devuelve tal cual: no se pisa ni se guarda.
+Cada pestaña tiene un botón que crea un personaje completo al momento: «Investigador al azar» (años 20), «Investigador actual al azar» y «Héroe pulp al azar» en la de Cthulhu, «Agente al azar» en la de Delta Green y «Personaje al azar» en la de D&D. No es un generador aparte: cada asistente tiene su `generarAzar()`, que rellena el mismo estado que llenarían sus pasos, eligiendo al azar entre lo que permiten las reglas, y lo da por bueno solo si el `ok()` de todos los pasos dice que sí (si no, lo repite, hasta 30 veces). Luego llama a la misma `crearFicha()`. El estado del asistente que hubiera a medias se aparta y se devuelve tal cual: no se pisa ni se guarda.
 
 Se busca un personaje **típico y jugable**, no uno cualquiera de los posibles: todo sigue siendo legal, pero se descartan los extremos y no se gastan puntos en lo que casi nunca se tira.
 

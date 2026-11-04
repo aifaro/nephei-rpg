@@ -92,7 +92,7 @@ COMPANEROS = [(43.0, 433.2), (154.6, 433.2), (266.1, 433.2), (43.0, 486.4),
 
 
 # ----------------------------------------------------------------- relleno
-def rellenar(doc, n_pag, p, prefijo='', todos=()):
+def rellenar(doc, n_pag, p, prefijo='', todos=(), habilidades=HABILIDADES):
     f = Ficha(doc, n_pag, prefijo)
     p1, p2 = f.p1, f.p2
     numeros_pistas = pistas(p1, 185)  # antes de añadir campos, que también tienen texto
@@ -137,7 +137,7 @@ def rellenar(doc, n_pag, p, prefijo='', todos=()):
                               ('Armas de fuego (Arma corta)', 'Armas de fuego (Fusil/Escopeta)', 'Combatir (Pelea)'))
                   for fam in ('Armas de fuego', 'Arte/Artesanía', 'Ciencia', 'Combatir', 'Otras lenguas', 'Pilotar', 'Supervivencia')}
     usadas = set()
-    for c, (col, filas) in enumerate(zip(COLUMNAS, HABILIDADES)):
+    for c, (col, filas) in enumerate(zip(COLUMNAS, habilidades)):
         for i, (nombre, base, mejora) in enumerate(filas):
             y = FILA0 + i * PASO
             if base == '':

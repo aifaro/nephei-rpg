@@ -63,7 +63,7 @@ const Asistente = (() => {
     return pulp()
       ? { ficha: 'pulp', nombre: 'Pulp Cthulhu', quien: 'héroe', ocup: OCUPACIONES_PULP, rapido: PULP.rapido,
           rapidoHab: PULP.rapidoHabilidades, manual: 'manual de Pulp Cthulhu' }
-      : { ficha: 'coc', nombre: 'La llamada de Cthulhu', quien: 'investigador', ocup: OCUPACIONES, rapido: REGLAS.rapido,
+      : { ficha: A.epoca === 'actual' ? 'coc-actual' : 'coc', nombre: 'La llamada de Cthulhu', quien: 'investigador', ocup: OCUPACIONES, rapido: REGLAS.rapido,
           rapidoHab: REGLAS.rapidoHabilidades, manual: 'Manual del Guardián' };
   }
   // En Pulp no hay modificadores por edad (pág. 23): ningún tramo.
@@ -246,7 +246,7 @@ const Asistente = (() => {
       h('p', null, `El asistente sigue ${pulp() ? 'el capítulo 2 del manual de Pulp Cthulhu' : 'el capítulo 3 del Manual del Guardián'}. Puedes ir y volver entre los pasos: lo que tires y elijas queda guardado en este navegador hasta que crees la ficha.`),
       h('h4', null, 'Juego'),
       radios('sistema', [
-        ['coc', 'La llamada de Cthulhu', '7.ª edición. Investigadores corrientes; ficha de los años 20.'],
+        ['coc', 'La llamada de Cthulhu', '7.ª edición. Investigadores corrientes, con la ficha de su época.'],
         ['pulp', 'Pulp Cthulhu', 'Héroes más duros y capaces: arquetipos, talentos y el doble de Puntos de Vida.'],
       ], v => {
         if (v === A.sistema) return;
@@ -264,8 +264,8 @@ const Asistente = (() => {
       ], v => { if (v !== A.metodo) { A.metodo = v; reiniciar(); } }),
       h('h4', null, 'Época'),
       radios('epoca', [
-        ['20', pulp() ? 'Años 20 o 30' : 'Años 20', pulp() ? 'La tabla de dinero de los años 30 de Pulp tiene los mismos importes que la de los años 20.' : 'La de la ficha. Dinero según la tabla de los años 20.'],
-        ['actual', 'Época actual', 'Añade las habilidades y ocupaciones marcadas como actuales y usa la tabla de dinero actual.'],
+        ['20', pulp() ? 'Años 20 o 30' : 'Años 20', pulp() ? 'La tabla de dinero de los años 30 de Pulp tiene los mismos importes que la de los años 20.' : 'Ficha de los años 20. Dinero según la tabla de los años 20.'],
+        ['actual', 'Época actual', pulp() ? 'Añade las ocupaciones marcadas como actuales y usa la tabla de dinero actual. Pulp solo tiene una ficha: se queda la suya.' : 'Ficha de época actual, con Electrónica e Informática. Añade las ocupaciones marcadas como actuales y usa la tabla de dinero actual.'],
       ]));
   }
   function radios(clave, ops, alCambiar) {
@@ -1044,8 +1044,8 @@ const Asistente = (() => {
     if (pulp() && arquetipo() && arquetipo().especial) notas.push(arquetipo().especial);
     if (notas.length) pon('Notas', notas.join('\n'));
 
-    Generador.opciones().epoca = A.epoca;
-    $('#o-epoca').value = A.epoca;
+    // La ficha de época actual ya lleva su tabla de dinero; las otras dos usan la opción de «Más»
+    if (sis().ficha !== 'coc-actual') { Generador.opciones().epoca = A.epoca; $('#o-epoca').value = A.epoca; }
     Generador.crear(sis().ficha, { campos: cp, tam, foto: A.foto });
     if (azar === true) return;
     if (confirm(`Ficha creada. ¿Vaciar el asistente para empezar otro ${sis().quien} más adelante?`)) { A = inicial(); guardar(); }
@@ -1150,8 +1150,8 @@ const Asistente = (() => {
   }
   const RESIDENCIAS = ['Arkham, Massachusetts', 'Boston', 'Nueva York', 'Providence', 'Chicago', 'Londres', 'París', 'Madrid', 'Barcelona', 'Berlín', 'El Cairo', 'Buenos Aires', 'San Francisco'];
 
-  function generarAzar(sistema) {
-    A = Object.assign(inicial(), { sistema, metodo: 'tiradas' });
+  function generarAzar(sistema, epoca) {
+    A = Object.assign(inicial(), { sistema, metodo: 'tiradas' }, epoca && { epoca });
     const persona = personaAlAzar();
     const nacio = uno(persona.cultura.ciudades);
     A.datos = { Nombre: persona.completo, Jugador: '', Género: persona.g === 'F' ? 'Femenino' : 'Masculino',
@@ -1210,13 +1210,13 @@ const Asistente = (() => {
     A.vinculo = uno(['ideologia', 'allegados', 'lugares', 'posesiones']);
     return pasos().every(p => p.ok() === true);
   }
-  async function alAzar(sistema) {
+  async function alAzar(sistema, epoca) {
     await Generador.listo;
     leer();
     const guardado = A;
     try {
       let bien = false;
-      for (let i = 0; i < 30 && !bien; i++) bien = generarAzar(sistema);
+      for (let i = 0; i < 30 && !bien; i++) bien = generarAzar(sistema, epoca);
       if (bien) crearFicha(true);
       else alert('No ha salido un personaje válido; vuelve a intentarlo.');
     } finally { A = guardado; }
@@ -1268,7 +1268,8 @@ const Asistente = (() => {
     $('#d-asistente').showModal();
   }
   document.querySelector('#b-asistente').addEventListener('click', abrir);
-  document.querySelector('#b-azar-coc').addEventListener('click', () => alAzar('coc'));
+  document.querySelector('#b-azar-coc').addEventListener('click', () => alAzar('coc', '20'));
+  document.querySelector('#b-azar-actual').addEventListener('click', () => alAzar('coc', 'actual'));
   document.querySelector('#b-azar-pulp').addEventListener('click', () => alAzar('pulp'));
   return { abrir, alAzar };
 })();

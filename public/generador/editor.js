@@ -75,9 +75,17 @@ const Generador = (() => {
     e.style.height = (r[3] - r[1]) / pg.h * 100 + '%';
   }
 
+  // La ficha de época actual lleva siempre su tabla de dinero; en las otras se elige en «Más».
+  const epocaDeLaFicha = () => pj.ficha === 'coc-actual' ? 'actual' : almacen.opciones.epoca;
+  function selectorEpoca() {
+    const s = $('#o-epoca');
+    if (s) { s.value = epocaDeLaFicha(); s.disabled = pj.ficha === 'coc-actual'; }
+  }
+
   function pintar() {
     def = FICHAS[pj.ficha];
     nombres = new Set(def.campos.map(c => c.n));
+    selectorEpoca();
     const cont = $('#hojas');
     cont.textContent = '';
     cont.style.setProperty('--letra-ficha', LETRAS[def.letra][0]);
@@ -239,7 +247,7 @@ const Generador = (() => {
     poner('Arma 1 normal', num('Combatir (Pelea)') ?? '');
     const cr = num('Crédito');
     if (cr != null) {
-      const d = dinero(cr, almacen.opciones.epoca);
+      const d = dinero(cr, epocaDeLaFicha());
       poner('Nivel de gasto', `${importe(d.gasto)} (${d.nivel.toLowerCase()})`);
       poner('Dinero', importe(d.dinero));
       poner('Bienes', importe(d.bienes));
@@ -583,11 +591,12 @@ const Generador = (() => {
 
   const listo = (async () => {
     leer();
-    FICHAS = await (await fetch('/generador/fichas.json?v=3')).json();
+    FICHAS = await (await fetch('/generador/fichas.json?v=4')).json();
     const recientes = Object.values(almacen.personajes).filter(deAqui).sort((a, b) => b.actualizado - a.actualizado);
     pj = [almacen.personajes[almacen.actuales[FAMILIA]]].find(deAqui) || recientes[0] || nuevoPj(fichaInicial());
     pintar();
     enlazar();
+    selectorEpoca();
   })();
 
   // Para el asistente: crea un personaje nuevo con estos campos y lo abre.

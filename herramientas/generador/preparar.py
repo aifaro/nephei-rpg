@@ -5,9 +5,9 @@
 
 El generador funciona entero en el navegador: pinta la ficha oficial de fondo, pone encima un campo
 por cada campo del PDF rellenable y, al descargar, rellena ese mismo PDF con pdf-lib. Este programa
-saca de los generadores de fichas (fichas-linares, fichas-marca, fichas-dg y fichas-dnd) lo que necesita:
+saca de los generadores de fichas (fichas-linares, fichas-actual, fichas-marca, fichas-dg y fichas-dnd) lo que necesita:
 
-    public/generador/coc.pdf, pulp.pdf, dg.pdf, dnd.pdf   las fichas en blanco con campos de formulario
+    public/generador/coc.pdf, coc-actual.pdf, pulp.pdf, dg.pdf, dnd.pdf   las fichas en blanco con campos de formulario
     public/generador/coc-1.jpg … dnd-3.jpg                el fondo de cada cara, sin campos
     public/generador/fichas.json                posición, letra y alineación de cada campo, el hueco
                                                 del retrato y qué campo es cada habilidad
@@ -30,6 +30,9 @@ FICHAS = {
     'coc': dict(carpeta='fichas-linares', plantilla='coc-7ed-1920.pdf',
                 titulo='La llamada de Cthulhu · 7.ª edición (años 20)', familia='cthulhu', letra='Times', sub='Ocupación',
                 foto=(0, (416, 22, 546, 127))),   # recuadro de la esquina superior derecha, sobre el logo
+    'coc-actual': dict(carpeta='fichas-actual', plantilla='coc-7ed-actual.pdf',
+                       titulo='La llamada de Cthulhu · 7.ª edición (época actual)', familia='cthulhu', letra='Times', sub='Ocupación',
+                       foto=(0, (416, 22, 546, 127))),
     'pulp': dict(carpeta='fichas-marca', plantilla='pulp-cthulhu-ficha.pdf',
                  titulo='Pulp Cthulhu', familia='cthulhu', letra='Times', sub='Ocupación',
                  foto=(0, (416, 22, 566, 129))),
@@ -70,7 +73,7 @@ def habilidades(clave, mod):
             h = {'fila': fila, 'mejora': bool(mejora)}
             if base is None:  # línea en blanco para una especialidad, o para cualquier otra habilidad
                 h['familia'] = nombre
-                if clave == 'coc':
+                if clave in ('coc', 'coc-actual'):
                     h['nombre'], h['valor'] = f'Habilidad {fila}', f'{nombre or "Habilidad"} [{fila}]'
                 else:
                     h['nombre'], h['valor'] = f'Habilidad {fila} (nombre)', f'Habilidad {fila}'
