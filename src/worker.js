@@ -25,8 +25,12 @@
 // privado, aunque Access se desconfigure o el worker se publique en otro dominio.
 //
 // Abrir el área al público: GUARDIAN_PUBLICO = "si" en wrangler.jsonc. Entonces
-// leer ya no pide sesión, pero guardar sigue pidiéndola (el README explica cómo
-// dejar Access solo en _guardar y _entrar).
+// se pueden leer sin sesión las páginas de PUBLICAS, y nada más; guardar sigue
+// pidiéndola (el README explica cómo dejar Access solo en _guardar y _entrar).
+//
+// Con el repo privado detrás, una ruta como keepers/..%2f..%2fcuaderno/x.pdf
+// saldría de su zona: raw.githubusercontent la resuelve. rutaSegura las rechaza
+// siempre, con sesión o sin ella.
 //
 // Configuración (Settings -> Variables and Secrets del worker):
 //   GITHUB_PAT  secreto. Token fine-grained con Contents: Read and write en
@@ -50,6 +54,17 @@ const RUTA_GUARDAR = PREFIJO + '/_guardar';
 // la sesión iniciada para que el modo edición pueda guardar.
 const RUTA_ENTRAR = PREFIJO + '/_entrar';
 
+// Lo único que se lee sin sesión con el área abierta (rutas sin .html). El
+// manuscrito archivado y imagenes/ quedan fuera a propósito: los mapas no se
+// publican hasta aclarar sus derechos. Lo nuevo se añade aquí expresamente.
+const PUBLICAS = new Set([
+  PREFIJO,
+  PORTADA.replace(/\.html$/, ''),
+  LIBRO.replace(/\.html$/, ''),
+  PREFIJO + '/ayudas',
+  PREFIJO + '/stats',
+]);
+
 // Versión de /style.css que enlaza la cáscara de las páginas del Guardián.
 // Súbela junto con la de las páginas de public/ cuando cambie la hoja.
 const HOJA = '20261016b';
@@ -70,16 +85,21 @@ const MIME = {
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
+    if (!esCuaderno(url.pathname) && !esPrivado(url.pathname)) {
+      return env.ASSETS.fetch(request);
+    }
+    if (!rutaSegura(url.pathname)) {
+      return pagina(env, 404, 'Página no encontrada',
+        '<main class="perdido"><p class="numero">404</p><h1>Aquí no hay nada</h1>'
+        + '<p><a href="/">&laquo; rpg.nephei.org</a></p></main>', 'rpg.nephei.org', true);
+    }
     if (esCuaderno(url.pathname)) {
       return cuaderno(request, env, url);
-    }
-    if (!esPrivado(url.pathname)) {
-      return env.ASSETS.fetch(request);
     }
 
     const quien = await identidadAccess(request, env);
     const pideSesion = url.pathname === RUTA_GUARDAR || url.pathname === RUTA_ENTRAR;
-    if (!quien && (pideSesion || !abierto(env))) {
+    if (!quien && (pideSesion || !abierto(env) || !esPublica(url.pathname))) {
       return pagina(env, 403, 'Solo para el Guardián',
         '<main class="perdido"><p class="numero">403</p><h1>Solo para el Guardián</h1>'
         + '<p>Esta parte del sitio necesita iniciar sesión.</p>'
@@ -113,6 +133,29 @@ function esPrivado(path) {
 
 function esCuaderno(path) {
   return path === CUADERNO || path.startsWith(CUADERNO + '/');
+}
+
+function esPublica(path) {
+  return PUBLICAS.has(path.replace(/\/$/, '').replace(/\.html$/, ''));
+}
+
+// Falso si la ruta, descodificada las veces que haga falta, lleva barras
+// codificadas, barras invertidas o segmentos «.» o «..».
+function rutaSegura(path) {
+  let actual = path;
+  for (let i = 0; i < 5; i++) {
+    if (/%(2f|5c)/i.test(actual) || actual.includes('\\')) return false;
+    if (actual.split('/').some(s => s === '.' || s === '..')) return false;
+    let siguiente;
+    try {
+      siguiente = decodeURIComponent(actual);
+    } catch (err) {
+      return false;
+    }
+    if (siguiente === actual) return true;
+    actual = siguiente;
+  }
+  return false;
 }
 
 // El cuaderno: siempre con sesión, solo lectura.

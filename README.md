@@ -63,7 +63,7 @@ Notas privadas y aventuras publicadas por otros, reescritas para uso personal (p
 
 Cuando La Marca del Estrecho esté lista para publicarse, el área del Guardián se puede abrir igual que la de Linares sin mover nada de sitio: las páginas siguen leyéndose del repo privado y el libro se sigue guardando desde la web.
 
-1. En `wrangler.jsonc`, `"GUARDIAN_PUBLICO": "si"`. Leer deja de pedir sesión; guardar la sigue pidiendo (token de Access válido y correo en la lista de editores), y las páginas dejan de llevar `noindex`.
+1. En `wrangler.jsonc`, `"GUARDIAN_PUBLICO": "si"`. Sin sesión solo se leen la portada, el libro, las ayudas y las características (la lista `PUBLICAS` de `src/worker.js`; el manuscrito archivado y `imagenes/` quedan fuera hasta añadirlos ahí). Guardar sigue pidiendo sesión (token de Access válido y correo en la lista de editores). Las páginas con la cáscara del sitio dejan de llevar `noindex`, pero el libro lo lleva escrito en su `<head>` y hay que quitárselo a mano.
 2. En Cloudflare Access, la aplicación «La Marca del Estrecho Keepers Section» pasa a cubrir solo `rpg.nephei.org/la-marca-del-estrecho/keepers/_guardar` y `…/keepers/_entrar`, en vez de todo `/keepers`.
 3. En `public/robots.txt`, quitar la línea `Disallow`.
 4. Quitar el candado del botón «Keeper's area» de la portada.
