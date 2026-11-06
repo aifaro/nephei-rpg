@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Generador de personajes de Vieja Escuela · rpg.nephei.org</title>
+<meta name="description" content="Crea personajes de Vieja Escuela: el juego de rol sobre su hoja oficial en A5: rellénala en el navegador, usa el asistente o sácalos al azar, y descárgala en PDF rellenable. No se guarda nada en ningún servidor.">
+<meta name="theme-color" content="#111111">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=UnifrakturMaguntia&display=swap">
+<link rel="stylesheet" href="/style.css?v=20261016b">
+<link rel="stylesheet" href="/generador/generador.css?v=7">
+</head>
+<body class="sitio generador tema-ve" data-familia="ve">
+<nav class="barra"><a class="marca" href="/">rpg<span>·</span>nephei</a><a href="https://nephei.org">nephei.org</a></nav>
+
+<div class="container">
+<main>
+  <nav class="gen-pestanas" aria-label="Juego">
+    <a href="/generador">La llamada de Cthulhu<small>7.ª edición · Pulp</small></a>
+    <a href="/generador/delta-green">Delta Green<small>agentes</small></a>
+    <a href="/generador/dnd">Dungeons &amp; Dragons<small>reglas de 2024</small></a>
+    <a href="/generador/vieja-escuela" aria-current="page">Vieja Escuela<small>el juego de rol</small></a>
+  </nav>
+  <header class="gen-cabecera">
+    <p class="sello"><a href="/utilidades" style="color:inherit;border:0">Utilidades</a> · <a href="/vieja-escuela" style="color:inherit;border:0">Vieja Escuela</a></p>
+    <h1>Generador de personajes</h1>
+    <p class="entradilla">Tres dados, seis atributos, tres clases y a la mazmorra. Rellena la hoja aquí mismo, deja que el asistente te lleve paso a paso o saca un aventurero al azar. Al terminar, descárgalo en PDF rellenable.</p>
+    <p class="gen-privacidad">Todo se queda en este navegador: los personajes se guardan solos en su almacenamiento local y nada viaja a ningún servidor. Si borras los datos del sitio o cambias de navegador, no estarán; para llevártelos, usa «Copia de seguridad».</p>
+  </header>
+
+  <div class="gen-barra" role="toolbar" aria-label="Personaje">
+    <div class="gen-quien">
+      <span class="gen-ficha" id="rotulo-ficha"></span>
+      <strong id="rotulo-nombre">Sin nombre</strong>
+      <span class="gen-guardado" id="guardado" aria-live="polite"></span>
+    </div>
+    <div class="gen-acciones">
+      <button type="button" class="gen-boton principal" id="b-asistente">Asistente</button>
+      <button type="button" class="gen-boton" id="b-azar" title="Crea al momento un aventurero de Nivel 1 con tiradas y elecciones al azar">Aventurero al azar</button>
+      <button type="button" class="gen-boton" id="b-nuevo">Nuevo</button>
+      <button type="button" class="gen-boton" id="b-lista">Mis personajes</button>
+      <button type="button" class="gen-boton" id="b-pdf">Descargar PDF</button>
+      <details class="gen-mas">
+        <summary class="gen-boton">Más</summary>
+        <div class="gen-menu">
+          <label class="gen-opcion"><input type="checkbox" id="o-auto" checked> Calcular solo modificadores, MOV, ATQ, INS, POD y DEF base</label>
+          <button type="button" class="gen-boton" id="b-retrato">Cambiar retrato</button>
+          <button type="button" class="gen-boton" id="b-vaciar">Vaciar esta ficha</button>
+        </div>
+      </details>
+    </div>
+  </div>
+
+  <div id="hojas" class="gen-hojas"></div>
+
+  <section class="gen-ayuda">
+    <h2>Cómo funciona</h2>
+    <ul>
+      <li><strong>La hoja.</strong> Es la de la edición revisada de <em>Vieja Escuela: el juego de rol</em>. La original trae dos fichas en un A4; aquí se trabaja con una, y el PDF sale en A5 apaisado. Para sacar dos en un folio, imprime dos a la vez eligiendo «2 páginas por hoja».</li>
+      <li><strong>Escribir en la ficha.</strong> Con los atributos salen los modificadores (de −2 a +2: no es la tabla de D&amp;D). Con la raza, el MOV. Con la clase y el Nivel, el ATQ, los Instintos y el POD de la tabla de avance, y a Nivel 1 los PV. La DEF empieza en 10 más DES; si llevas armadura, escribe el total. Lo que escribas a mano se respeta.</li>
+      <li><strong>ATQ.</strong> En la casilla va el bono de la tabla. FUE (cuerpo a cuerpo), DES (proyectiles) y lo que den los talentos se suman en la tirada: el asistente deja el total de cada arma en sus notas.</li>
+      <li><strong>Retrato y ambiciones.</strong> Pulsa la mitad de arriba del recuadro de la derecha para subir una imagen. En la mitad de abajo caben las ambiciones del aventurero, que el manual pide y la hoja no tiene dónde poner.</li>
+      <li><strong>Asistente.</strong> Sigue el capítulo I del manual: 3d6 siete veces, raza, clase, 4 puntos de habilidad, trasfondo, compra de equipo con sus 3d6 × 10 monedas de oro, y últimos toques. Se puede empezar por encima de Nivel 1 si tu máster lo pide.</li>
+      <li><strong>Aventurero al azar.</strong> Hace lo mismo tirando los dados por ti: pone los valores altos donde su clase los pide, gasta primero en armas y armadura y luego en lo básico para explorar. La ficha aparece al momento como personaje nuevo; lo que tuvieras a medias en el asistente no se toca.</li>
+      <li><strong>Las reglas.</strong> Tienes un <a href="/vieja-escuela">resumen, con lo que cambia si vienes de D&amp;D 2024</a>.</li>
+      <li><strong>Licencia.</strong> <em>Vieja Escuela: el juego de rol</em> es de Javier «cabohicks» García, publicado por <a href="https://grapasymapas.com">grapas&amp;mapas</a>. La hoja y las reglas se usan bajo CC BY-SA 4.0; aquí se ha recortado la hoja a una sola ficha y se le han añadido campos de formulario.</li>
+    </ul>
+  </section>
+</main>
+</div>
+
+<input type="file" id="f-retrato" accept="image/*" hidden>
+<input type="file" id="f-importar" accept="application/json,.json" hidden>
+
+<dialog id="d-lista" class="gen-dialogo">
+  <form method="dialog" class="gen-dialogo-cab"><h2>Mis personajes</h2><button class="gen-cerrar" aria-label="Cerrar">×</button></form>
+  <ul id="lista-personajes" class="gen-lista"></ul>
+  <div class="gen-dialogo-pie">
+    <button type="button" class="gen-boton" id="b-exportar">Copia de seguridad (descargar)</button>
+    <button type="button" class="gen-boton" id="b-importar">Recuperar una copia</button>
+  </div>
+</dialog>
+
+<dialog id="d-retrato" class="gen-dialogo estrecho">
+  <form method="dialog" class="gen-dialogo-cab"><h2>Encuadra el retrato</h2><button class="gen-cerrar" aria-label="Cerrar">×</button></form>
+  <p class="gen-nota">Arrastra la imagen para moverla y usa la barra para acercarla.</p>
+  <div class="gen-recorte"><canvas id="c-retrato"></canvas></div>
+  <label class="gen-opcion">Zoom <input type="range" id="r-zoom" min="1" max="4" step="0.01" value="1"></label>
+  <div class="gen-dialogo-pie">
+    <button type="button" class="gen-boton" id="b-quitar-retrato">Quitar retrato</button>
+    <button type="button" class="gen-boton" id="b-otra-imagen">Otra imagen</button>
+    <button type="button" class="gen-boton principal" id="b-poner-retrato">Ponerlo</button>
+  </div>
+</dialog>
+
+<dialog id="d-asistente" class="gen-dialogo ancho"></dialog>
+
+<script src="/generador/datos-ve.js?v=1"></script>
+<script src="/generador/editor.js?v=6"></script>
+<script src="/generador/asis-comun.js?v=2"></script>
+<script src="/generador/nombres.js?v=1"></script>
+<script src="/generador/asistente-ve.js?v=1"></script>
+</body>
+</html>

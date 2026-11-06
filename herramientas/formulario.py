@@ -76,7 +76,8 @@ class Ficha:
     """Añade campos a las páginas n y n+1 de un documento; `prefijo` hace únicos los nombres."""
 
     def __init__(self, doc, n_pag, prefijo='', letra=LETRA, metrica=METRICA, tinta=TINTA):
-        self.doc, self.p1, self.p2, self.pre = doc, doc[n_pag], doc[n_pag + 1], prefijo
+        self.doc, self.p1, self.pre = doc, doc[n_pag], prefijo
+        self.p2 = doc[n_pag + 1] if n_pag + 1 < len(doc) else None  # la hoja de Vieja Escuela tiene una sola cara
         self.letra, self.metrica, self.tinta = letra, metrica, tinta  # otras fichas usan Courier o Helvetica
         self.anillos = []
 

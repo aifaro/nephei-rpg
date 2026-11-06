@@ -1,14 +1,14 @@
 // Editor de la ficha: pinta la ficha oficial de fondo, pone encima un campo por cada campo del PDF
 // rellenable (fichas.json, que sale de herramientas/generador/preparar.py), calcula lo derivado,
 // guarda los personajes en el almacenamiento local del navegador y descarga el PDF relleno con pdf-lib.
-// Cada pestaña (body[data-familia]: cthulhu, dg o dnd) enseña solo los personajes de sus fichas;
+// Cada pestaña (body[data-familia]: cthulhu, dg, dnd o ve) enseña solo los personajes de sus fichas;
 // todos comparten el mismo almacén.
 'use strict';
 
 const Generador = (() => {
   const CLAVE = 'nephei-generador-v1';
   const FAMILIA = document.body.dataset.familia || 'cthulhu';
-  const QUIEN = { cthulhu: 'investigador', dg: 'agente', dnd: 'personaje' }[FAMILIA];
+  const QUIEN = { cthulhu: 'investigador', dg: 'agente', dnd: 'personaje', ve: 'aventurero' }[FAMILIA];
   const CARS = ['FUE', 'CON', 'TAM', 'DES', 'APA', 'INT', 'POD', 'EDU'];
   const LETRAS = {  // la letra de cada ficha: en la página y en el PDF (de las 14 estándar)
     Times: ['"Times New Roman", Times, serif', 'TimesRoman'],
@@ -219,6 +219,7 @@ const Generador = (() => {
   function recalcular() {
     if (pj.ficha === 'dg') return recalcularDG();
     if (pj.ficha === 'dnd' || pj.ficha === 'dnd24') return recalcularDnD();
+    if (pj.ficha === 've') return recalcularVE();
     const c = {};
     for (const k of CARS) c[k] = num(k);
     const edad = num('Edad') || 0;
@@ -318,6 +319,40 @@ const Generador = (() => {
     poner('Modificador de conjuros', ma != null ? conSigno(ma) : '');
     poner('CD de conjuros', ma != null && comp ? 8 + comp + ma : '');
     poner('Ataque de conjuros', ma != null && comp ? conSigno(comp + ma) : '');
+  }
+
+  // Vieja Escuela: modificadores (de -2 a +2), MOV según la raza y ATQ, INS y POD de la tabla de avance según
+  // clase y nivel (manual, págs. 3-7). A nivel 1, los PV: el máximo del Dado de Aguante más CON; a partir de ahí
+  // van tirados, así que los escribe cada cual. DEF: 10 + DES si nadie ha escrito otra cosa (la armadura la suma el asistente).
+  const sinAcentos = s => String(s || '').trim().normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
+  const modVE = v => v <= 3 ? -2 : v <= 6 ? -1 : v <= 14 ? 0 : v <= 17 ? 1 : 2;
+  function recalcularVE() {
+    const m = {};
+    for (const k of APTITUDES) {
+      const v = num(k);
+      m[k] = v == null ? null : modVE(v);
+      poner(k + ' mod', m[k] == null ? '' : conSigno(m[k]));
+    }
+    const raza = sinAcentos(pj.campos['Raza']);
+    if (/^(elf|human)/.test(raza)) poner('MOV', 12);
+    else if (/^(enan|median)/.test(raza)) poner('MOV', 9);
+    if (m.DES != null) poner('DEF', 10 + m.DES);
+    const cl = sinAcentos(pj.campos['Clase']);
+    const clave = /^guerr/.test(cl) ? 'guerrero' : /^hechic/.test(cl) ? 'hechicero' : /^brib/.test(cl) ? 'bribon' : null;
+    const nivel = num('Nivel');
+    if (!clave || !nivel || typeof AVANCE_VE === 'undefined') return;
+    const fila = AVANCE_VE[clave][Math.min(Math.max(nivel, 1), 14) - 1];
+    poner('ATQ', conSigno(fila[0]));
+    const adaptable = /adaptable/.test(sinAcentos(`${pj.campos['Talentos 1']} ${pj.campos['Talentos 2']}`));
+    poner('INS', conSigno(fila[2] + (adaptable ? 1 : 0)));
+    const pod = Math.max(0, fila[1] + (fila[1] && m.INT != null ? m.INT : 0));  // el modificador de INT solo cuenta si hay magia
+    poner('POD totales', pod);
+    poner('POD actuales', pod);
+    if (nivel === 1 && m.CON != null) {
+      const pv = Math.max(1, { guerrero: 8, hechicero: 4, bribon: 6 }[clave] + m.CON);
+      poner('PV totales', pv);
+      poner('PV actuales', pv);
+    }
   }
 
   // ------------------------------------------------------------ PDF
@@ -591,7 +626,7 @@ const Generador = (() => {
 
   const listo = (async () => {
     leer();
-    FICHAS = await (await fetch('/generador/fichas.json?v=4')).json();
+    FICHAS = await (await fetch('/generador/fichas.json?v=5')).json();
     const recientes = Object.values(almacen.personajes).filter(deAqui).sort((a, b) => b.actualizado - a.actualizado);
     pj = [almacen.personajes[almacen.actuales[FAMILIA]]].find(deAqui) || recientes[0] || nuevoPj(fichaInicial());
     pintar();

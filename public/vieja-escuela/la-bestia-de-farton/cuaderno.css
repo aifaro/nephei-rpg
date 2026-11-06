@@ -1,0 +1,591 @@
+/* =====================================================================
+   La maldición del Palacio de Linares
+   Maquetación inspirada en las Reglas de inicio rápido de La llamada
+   de Cthulhu (7.ª ed.): hojas a dos columnas, notas para el máster
+   en gris, textos para leer en voz alta en cursiva, ayudas de juego
+   a máquina de escribir.
+   ===================================================================== */
+:root{
+  --mesa:#2c2b28;
+  --hoja:#f6f3ec;
+  --hoja-borde:#d9d4c8;
+  --tinta:#1b1a18;
+  --tinta-2:#3a3833;
+  --gris:#6c6a64;
+  --nota:#d9d7d1;
+  --nota-borde:#4a4844;
+  --regla:#9d988c;
+  --rojo:#6e1a14;
+  --papel-ayuda:#efe6cf;
+  --papel-ayuda-2:#e6d9b8;
+  --f-texto:'Crimson Pro','Minion Pro','Georgia',serif;
+  --f-titulo:'IM Fell English','Alegreya','Georgia',serif;
+  --f-epigrafe:'Oranienbaum','Alegreya SC','Georgia',serif;
+  --f-cabecera:'Marcellus SC','Alegreya SC','Georgia',serif;
+  --f-sala:'Alegreya Sans SC','Alegreya Sans',sans-serif;
+  --f-negrita:'Crimson Pro','Georgia',serif;
+  --f-caja:'Alegreya Sans','Myriad Pro','Segoe UI',sans-serif;
+  --f-caja-sc:'Alegreya Sans SC','Alegreya Sans',sans-serif;
+  --f-maquina:'Special Elite','Courier Prime','Courier New',monospace;
+  --f-impreso:'Courier Prime','Courier New',monospace;
+}
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{
+  margin:0;
+  background:var(--mesa) radial-gradient(ellipse at 50% 0%,#46443f,transparent 70%);
+  color:var(--tinta);
+  font-family:var(--f-texto);
+  font-size:1.08rem;
+  line-height:1.42;
+  hyphens:auto;-webkit-hyphens:auto;
+  font-kerning:normal;
+  text-rendering:optimizeLegibility;
+}
+a{color:var(--rojo);text-decoration:none;border-bottom:1px solid rgba(110,26,20,.3)}
+a:hover{border-bottom-color:currentColor}
+p{margin:0 0 .62em}
+strong{font-weight:700}
+
+/* ---------------------------------------------------------- barra superior */
+.barra{
+  max-width:60rem;margin:0 auto;padding:1rem 1rem .4rem;
+  display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap;
+  font-family:var(--f-caja);font-size:.9rem;color:#bdb8ad;
+}
+.barra a{color:#e4dccb;border-bottom-color:rgba(228,220,203,.3)}
+
+/* ------------------------------------------------------------------ hojas */
+.hoja{
+  position:relative;
+  max-width:60rem;
+  margin:1.4rem auto 2.4rem;
+  padding:3.6rem 3.4rem 3.4rem;
+  background:
+    radial-gradient(ellipse at 50% 45%, rgba(255,255,255,0) 62%, rgba(120,112,98,.20) 100%),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='r'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .35  0 0 0 0 .32  0 0 0 0 .27  0 0 0 .07 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23r)'/%3E%3C/svg%3E"),
+    var(--hoja);
+  box-shadow:0 20px 50px -20px rgba(0,0,0,.75), 0 0 0 1px rgba(0,0,0,.25);
+}
+/* cabecera corrida, como en el libro */
+.hoja::before{
+  content:attr(data-cabecera);
+  position:absolute;top:1.25rem;left:3.4rem;right:3.4rem;
+  text-align:center;
+  font-family:var(--f-cabecera);font-weight:400;font-size:.9rem;letter-spacing:.12em;
+  color:var(--tinta-2);
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 600 10%22 preserveAspectRatio=%22none%22%3E%3Cpath d=%22M0 3.8 L74 3.6%22 stroke=%22%232a2825%22 stroke-width=%221.9%22 opacity=%220.69%22/%3E%3Cpath d=%22M74 3.8 L96 4.4%22 stroke=%22%232a2825%22 stroke-width=%221.3%22 opacity=%220.48%22/%3E%3Cpath d=%22M96 3.8 L163 4.4%22 stroke=%22%232a2825%22 stroke-width=%221.7%22 opacity=%220.70%22/%3E%3Cpath d=%22M164 3.8 L247 4.4%22 stroke=%22%232a2825%22 stroke-width=%221.7%22 opacity=%220.76%22/%3E%3Cpath d=%22M249 3.8 L276 4.3%22 stroke=%22%232a2825%22 stroke-width=%221.9%22 opacity=%220.52%22/%3E%3Cpath d=%22M276 3.8 L382 3.8%22 stroke=%22%232a2825%22 stroke-width=%222.1%22 opacity=%220.83%22/%3E%3Cpath d=%22M389 3.8 L501 3.7%22 stroke=%22%232a2825%22 stroke-width=%222.2%22 opacity=%220.59%22/%3E%3Cpath d=%22M517 3.8 L600 3.2%22 stroke=%22%232a2825%22 stroke-width=%221.0%22 opacity=%220.47%22/%3E%3Cpath d=%22M0 4.7 L83 4.4%22 stroke=%22%232a2825%22 stroke-width=%221.7%22 opacity=%220.56%22/%3E%3Cpath d=%22M83 4.7 L161 4.9%22 stroke=%22%232a2825%22 stroke-width=%222.4%22 opacity=%220.73%22/%3E%3Cpath d=%22M162 4.7 L268 5.5%22 stroke=%22%232a2825%22 stroke-width=%222.0%22 opacity=%220.44%22/%3E%3Cpath d=%22M270 4.7 L387 5.4%22 stroke=%22%232a2825%22 stroke-width=%221.8%22 opacity=%220.74%22/%3E%3Cpath d=%22M388 4.7 L492 4.8%22 stroke=%22%232a2825%22 stroke-width=%221.3%22 opacity=%220.38%22/%3E%3Cpath d=%22M507 4.7 L600 4.1%22 stroke=%22%232a2825%22 stroke-width=%222.2%22 opacity=%220.58%22/%3E%3Cpath d=%22M0 4.1 L97 4.7%22 stroke=%22%232a2825%22 stroke-width=%220.9%22 opacity=%220.69%22/%3E%3Cpath d=%22M97 4.1 L189 3.8%22 stroke=%22%232a2825%22 stroke-width=%222.4%22 opacity=%220.89%22/%3E%3Cpath d=%22M189 4.1 L309 3.8%22 stroke=%22%232a2825%22 stroke-width=%220.9%22 opacity=%220.68%22/%3E%3Cpath d=%22M309 4.1 L349 3.9%22 stroke=%22%232a2825%22 stroke-width=%221.9%22 opacity=%220.44%22/%3E%3Cpath d=%22M349 4.1 L456 3.8%22 stroke=%22%232a2825%22 stroke-width=%222.5%22 opacity=%220.84%22/%3E%3Cpath d=%22M462 4.1 L528 4.1%22 stroke=%22%232a2825%22 stroke-width=%222.0%22 opacity=%220.68%22/%3E%3Cpath d=%22M542 4.1 L600 4.8%22 stroke=%22%232a2825%22 stroke-width=%221.7%22 opacity=%220.59%22/%3E%3Cpath d=%22M0 3.8 L50 4.6%22 stroke=%22%232a2825%22 stroke-width=%221.7%22 opacity=%220.65%22/%3E%3Cpath d=%22M50 3.8 L112 4.0%22 stroke=%22%232a2825%22 stroke-width=%220.8%22 opacity=%220.69%22/%3E%3Cpath d=%22M112 3.8 L138 4.0%22 stroke=%22%232a2825%22 stroke-width=%221.6%22 opacity=%220.72%22/%3E%3Cpath d=%22M138 3.8 L229 4.2%22 stroke=%22%232a2825%22 stroke-width=%220.8%22 opacity=%220.38%22/%3E%3Cpath d=%22M231 3.8 L347 3.4%22 stroke=%22%232a2825%22 stroke-width=%221.6%22 opacity=%220.68%22/%3E%3Cpath d=%22M349 3.8 L405 3.5%22 stroke=%22%232a2825%22 stroke-width=%221.5%22 opacity=%220.68%22/%3E%3Cpath d=%22M410 3.8 L467 4.3%22 stroke=%22%232a2825%22 stroke-width=%220.8%22 opacity=%220.66%22/%3E%3Cpath d=%22M482 3.8 L533 3.4%22 stroke=%22%232a2825%22 stroke-width=%222.2%22 opacity=%220.48%22/%3E%3Cpath d=%22M538 3.8 L600 4.2%22 stroke=%22%232a2825%22 stroke-width=%221.0%22 opacity=%220.53%22/%3E%3Cpath d=%22M0 6.5 L64 7.0%22 stroke=%22%232a2825%22 stroke-width=%221.1%22 opacity=%220.54%22/%3E%3Cpath d=%22M64 6.5 L172 6.4%22 stroke=%22%232a2825%22 stroke-width=%221.2%22 opacity=%220.42%22/%3E%3Cpath d=%22M173 6.5 L212 7.0%22 stroke=%22%232a2825%22 stroke-width=%222.3%22 opacity=%220.45%22/%3E%3Cpath d=%22M213 6.5 L313 6.7%22 stroke=%22%232a2825%22 stroke-width=%222.3%22 opacity=%220.54%22/%3E%3Cpath d=%22M314 6.5 L363 6.9%22 stroke=%22%232a2825%22 stroke-width=%221.3%22 opacity=%220.54%22/%3E%3Cpath d=%22M368 6.5 L430 6.3%22 stroke=%22%232a2825%22 stroke-width=%222.5%22 opacity=%220.44%22/%3E%3Cpath d=%22M430 6.5 L544 7.1%22 stroke=%22%232a2825%22 stroke-width=%222.6%22 opacity=%220.59%22/%3E%3Cpath d=%22M565 6.5 L600 6.0%22 stroke=%22%232a2825%22 stroke-width=%222.1%22 opacity=%220.81%22/%3E%3C/svg%3E") left center/27% 9px no-repeat,
+    url("data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 600 10%22 preserveAspectRatio=%22none%22%3E%3Cpath d=%22M0 3.8 L116 3.2%22 stroke=%22%232a2825%22 stroke-width=%222.1%22 opacity=%220.40%22/%3E%3Cpath d=%22M116 3.8 L236 3.3%22 stroke=%22%232a2825%22 stroke-width=%222.0%22 opacity=%220.60%22/%3E%3Cpath d=%22M237 3.8 L306 3.3%22 stroke=%22%232a2825%22 stroke-width=%222.3%22 opacity=%220.40%22/%3E%3Cpath d=%22M308 3.8 L330 3.4%22 stroke=%22%232a2825%22 stroke-width=%221.5%22 opacity=%220.85%22/%3E%3Cpath d=%22M334 3.8 L365 3.4%22 stroke=%22%232a2825%22 stroke-width=%222.6%22 opacity=%220.38%22/%3E%3Cpath d=%22M374 3.8 L431 4.1%22 stroke=%22%232a2825%22 stroke-width=%221.4%22 opacity=%220.73%22/%3E%3Cpath d=%22M439 3.8 L524 4.4%22 stroke=%22%232a2825%22 stroke-width=%221.8%22 opacity=%220.43%22/%3E%3Cpath d=%22M526 3.8 L600 3.8%22 stroke=%22%232a2825%22 stroke-width=%221.1%22 opacity=%220.87%22/%3E%3Cpath d=%22M0 6.0 L108 5.7%22 stroke=%22%232a2825%22 stroke-width=%221.4%22 opacity=%220.83%22/%3E%3Cpath d=%22M108 6.0 L205 5.4%22 stroke=%22%232a2825%22 stroke-width=%222.0%22 opacity=%220.74%22/%3E%3Cpath d=%22M206 6.0 L310 6.0%22 stroke=%22%232a2825%22 stroke-width=%221.2%22 opacity=%220.43%22/%3E%3Cpath d=%22M313 6.0 L384 5.3%22 stroke=%22%232a2825%22 stroke-width=%222.4%22 opacity=%220.63%22/%3E%3Cpath d=%22M392 6.0 L434 5.6%22 stroke=%22%232a2825%22 stroke-width=%220.8%22 opacity=%220.54%22/%3E%3Cpath d=%22M439 6.0 L501 5.8%22 stroke=%22%232a2825%22 stroke-width=%222.3%22 opacity=%220.84%22/%3E%3Cpath d=%22M505 6.0 L564 5.5%22 stroke=%22%232a2825%22 stroke-width=%222.0%22 opacity=%220.89%22/%3E%3Cpath d=%22M570 6.0 L600 5.7%22 stroke=%22%232a2825%22 stroke-width=%220.8%22 opacity=%220.77%22/%3E%3Cpath d=%22M0 3.5 L64 3.1%22 stroke=%22%232a2825%22 stroke-width=%221.5%22 opacity=%220.60%22/%3E%3Cpath d=%22M64 3.5 L142 3.2%22 stroke=%22%232a2825%22 stroke-width=%221.0%22 opacity=%220.40%22/%3E%3Cpath d=%22M142 3.5 L215 3.3%22 stroke=%22%232a2825%22 stroke-width=%222.3%22 opacity=%220.63%22/%3E%3Cpath d=%22M216 3.5 L334 2.8%22 stroke=%22%232a2825%22 stroke-width=%220.8%22 opacity=%220.43%22/%3E%3Cpath d=%22M336 3.5 L414 3.9%22 stroke=%22%232a2825%22 stroke-width=%221.4%22 opacity=%220.88%22/%3E%3Cpath d=%22M414 3.5 L517 3.1%22 stroke=%22%232a2825%22 stroke-width=%222.4%22 opacity=%220.37%22/%3E%3Cpath d=%22M537 3.5 L600 4.3%22 stroke=%22%232a2825%22 stroke-width=%221.8%22 opacity=%220.45%22/%3E%3Cpath d=%22M0 4.7 L28 4.9%22 stroke=%22%232a2825%22 stroke-width=%221.7%22 opacity=%220.61%22/%3E%3Cpath d=%22M28 4.7 L61 4.9%22 stroke=%22%232a2825%22 stroke-width=%221.6%22 opacity=%220.42%22/%3E%3Cpath d=%22M61 4.7 L153 5.1%22 stroke=%22%232a2825%22 stroke-width=%221.6%22 opacity=%220.57%22/%3E%3Cpath d=%22M153 4.7 L196 4.3%22 stroke=%22%232a2825%22 stroke-width=%221.6%22 opacity=%220.41%22/%3E%3Cpath d=%22M198 4.7 L289 4.9%22 stroke=%22%232a2825%22 stroke-width=%220.8%22 opacity=%220.55%22/%3E%3Cpath d=%22M291 4.7 L320 5.5%22 stroke=%22%232a2825%22 stroke-width=%222.2%22 opacity=%220.63%22/%3E%3Cpath d=%22M327 4.7 L367 4.3%22 stroke=%22%232a2825%22 stroke-width=%221.7%22 opacity=%220.76%22/%3E%3Cpath d=%22M375 4.7 L396 4.9%22 stroke=%22%232a2825%22 stroke-width=%222.4%22 opacity=%220.76%22/%3E%3Cpath d=%22M411 4.7 L529 4.3%22 stroke=%22%232a2825%22 stroke-width=%221.3%22 opacity=%220.65%22/%3E%3Cpath d=%22M548 4.7 L600 5.4%22 stroke=%22%232a2825%22 stroke-width=%222.3%22 opacity=%220.63%22/%3E%3Cpath d=%22M0 7.0 L98 6.7%22 stroke=%22%232a2825%22 stroke-width=%222.3%22 opacity=%220.46%22/%3E%3Cpath d=%22M98 7.0 L214 7.6%22 stroke=%22%232a2825%22 stroke-width=%221.4%22 opacity=%220.51%22/%3E%3Cpath d=%22M215 7.0 L319 7.3%22 stroke=%22%232a2825%22 stroke-width=%222.5%22 opacity=%220.75%22/%3E%3Cpath d=%22M324 7.0 L404 6.8%22 stroke=%22%232a2825%22 stroke-width=%221.6%22 opacity=%220.62%22/%3E%3Cpath d=%22M411 7.0 L514 6.6%22 stroke=%22%232a2825%22 stroke-width=%220.9%22 opacity=%220.75%22/%3E%3Cpath d=%22M520 7.0 L582 6.4%22 stroke=%22%232a2825%22 stroke-width=%222.3%22 opacity=%220.50%22/%3E%3Cpath d=%22M591 7.0 L600 7.0%22 stroke=%22%232a2825%22 stroke-width=%221.3%22 opacity=%220.84%22/%3E%3C/svg%3E") right center/27% 9px no-repeat;
+}
+.hoja[data-cabecera=""]::before{display:none}
+.folio{
+  position:absolute;bottom:1.1rem;
+  font-family:var(--f-texto);font-size:.9rem;color:var(--gris);
+}
+.hoja:nth-of-type(odd) .folio{left:3.4rem}
+.hoja:nth-of-type(even) .folio{right:3.4rem}
+
+.cols{column-count:2;column-gap:2.4rem;column-fill:balance}
+.cols > *{break-inside:avoid-column}
+.cols p, .cols li{break-inside:auto}
+.cols .corta{break-before:column}
+
+/* ----------------------------------------------------------------- títulos */
+.marco-titulo{
+  position:relative;
+  margin:.6rem 1.2rem 2.6rem;
+  padding:2.4rem 2.4rem 2.2rem;
+  text-align:center;
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='p'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.018 .05' numOctaves='5' seed='7'/%3E%3CfeColorMatrix values='0 0 0 0 .3  0 0 0 0 .3  0 0 0 0 .3  0 0 0 .55 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23p)'/%3E%3C/svg%3E"),
+    linear-gradient(180deg,#e9e7e2,#c9c6bf 55%,#b7b3ab);
+  border:6px solid #2a2926;
+  border-image:linear-gradient(135deg,#6d6a63,#1d1c1a 40%,#4a4844 60%,#121110) 1;
+  box-shadow:inset 0 0 0 2px #a9a59c, inset 0 0 0 4px #1d1c1a, inset 0 0 36px rgba(0,0,0,.5), 0 10px 18px -8px rgba(0,0,0,.65);
+  margin-top:.8rem;
+}
+.marco-titulo::before,.marco-titulo::after{
+  content:"";position:absolute;pointer-events:none;
+  background-repeat:no-repeat;background-size:contain;
+}
+.marco-titulo::before{left:-2.6rem;top:-2.2rem;width:13.5rem;height:10.4rem;}
+.marco-titulo::after{right:-2.4rem;bottom:-2.6rem;width:13.5rem;height:11.6rem;}
+.marco-titulo h1,.marco-titulo h2{
+  margin:0;position:relative;z-index:1;
+  font-family:var(--f-titulo);font-weight:400;letter-spacing:0;-webkit-text-stroke:.018em currentColor;
+  font-size:clamp(2rem,5vw,3.15rem);line-height:1.04;
+  color:#1d1c1a;
+  text-shadow:0 1px 0 rgba(255,255,255,.8), 0 -1px 0 rgba(0,0,0,.35), 0 0 14px rgba(255,255,255,.45);
+}
+.marco-titulo .sub{
+  margin:.6rem 0 0;
+  font-family:var(--f-cabecera);font-weight:700;letter-spacing:.14em;font-size:.95rem;color:#34322e;
+}
+h3.loc, h3.cap{
+  font-family:var(--f-epigrafe);font-weight:400;font-variant:small-caps;
+  -webkit-text-stroke:.022em currentColor;
+  font-size:1.95rem;line-height:1.02;
+  margin:1.1rem 0 .55rem;
+  color:var(--tinta);
+  letter-spacing:.01em;
+  break-after:avoid;
+}
+h4{
+  font-family:var(--f-negrita);font-weight:700;font-size:1.24rem;
+  margin:1rem 0 .35rem;line-height:1.15;color:var(--tinta);break-after:avoid;
+}
+h4.sala{
+  font-family:var(--f-epigrafe);font-weight:400;font-variant:small-caps;font-size:1.38rem;letter-spacing:.01em;
+  -webkit-text-stroke:.02em currentColor;
+  margin:1.15rem 0 .4rem;
+}
+h4.sala b{font-weight:400}
+.subtitulo-loc{font-style:italic;margin-top:-.35rem}
+
+/* capital inicial */
+.capital::first-letter{
+  float:left;font-family:var(--f-epigrafe);font-weight:400;-webkit-text-stroke:.02em currentColor;
+  font-size:3.9em;line-height:.8;margin:.06em .1em 0 0;color:var(--tinta);
+}
+.capital .versal{font-variant:small-caps;letter-spacing:.06em}
+
+/* ------------------------------------------------------- texto para leer */
+.leer{
+  font-family:var(--f-caja);font-style:italic;font-size:.98rem;line-height:1.42;
+  margin:.4rem 0 .9rem;padding:0 0 0 1.3rem;color:var(--tinta-2);
+}
+.leer p{margin:0 0 .5em}
+
+/* ------------------------------------------------- nota para el máster */
+.nota{
+  position:relative;
+  font-family:var(--f-caja);font-size:.96rem;line-height:1.4;
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/%3E%3CfeColorMatrix values='0 0 0 0 .2  0 0 0 0 .2  0 0 0 0 .2  0 0 0 .08 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
+    var(--nota);
+  border-top:4px solid var(--nota-borde);
+  border-bottom:3px solid #2a2926;
+  padding:.7rem 1rem .75rem;
+  margin:.9rem 0 1.1rem;
+  box-shadow:0 4px 10px -6px rgba(0,0,0,.4);
+}
+.nota::before{
+  content:"Nota para el máster";
+  display:block;margin-bottom:.35rem;
+  font-family:var(--f-sala);font-weight:700;font-size:.86rem;letter-spacing:.14em;text-transform:none;
+  color:#2d2c29;
+}
+.nota::after{content:"";position:absolute;right:-.4rem;bottom:-.9rem;width:5.2rem;height:2rem;
+  pointer-events:none}
+.nota.en-linea::after,.dados .nota::after{display:none}
+.nota.rotulo-propio::before{content:attr(data-rotulo)}
+.nota p{margin:0 0 .45em}
+.nota.en-linea::before{display:inline;margin-right:.6rem}
+
+/* -------------------------------------------- utilizar los dados para... */
+.dados{
+  margin:1rem 0;padding:.65rem .9rem .5rem;
+  border:2px solid var(--tinta);
+  background:rgba(255,255,255,.35);
+}
+.dados > .rot{
+  display:block;font-family:var(--f-sala);font-weight:700;letter-spacing:.12em;font-size:.84rem;text-transform:none;
+  border-bottom:1px solid var(--tinta);padding-bottom:.25rem;margin-bottom:.45rem;
+}
+.dados > .rot b{font-family:var(--f-epigrafe);font-weight:400;font-size:1.3rem;letter-spacing:0;text-transform:none;-webkit-text-stroke:.02em currentColor}
+
+/* --------------------------------------------------------------- listas */
+ul.vinetas{list-style:none;padding:0;margin:.3rem 0 .8rem}
+ul.vinetas > li{position:relative;padding-left:1.25rem;margin:0 0 .35rem}
+ul.vinetas > li::before{
+  content:"";position:absolute;left:.15rem;top:.5em;width:.5rem;height:.5rem;
+  background:var(--tinta);transform:rotate(45deg);
+}
+ul.puntos{margin:.25rem 0 .6rem;padding-left:1.2rem}
+ul.puntos li{margin-bottom:.25rem}
+
+/* ---------------------------------------------------- ayudas en el texto */
+.ayuda{
+  position:relative;
+  margin:1rem 0 1.2rem;
+  padding:1.05rem 1.1rem .9rem;
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='a'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.7' numOctaves='3'/%3E%3CfeColorMatrix values='0 0 0 0 .45  0 0 0 0 .36  0 0 0 0 .2  0 0 0 .12 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23a)'/%3E%3C/svg%3E"),
+    radial-gradient(ellipse at 30% 20%,#f6eedb,var(--papel-ayuda) 60%,var(--papel-ayuda-2));
+  border:1px solid #b9a77d;
+  box-shadow:0 8px 16px -10px rgba(0,0,0,.55);
+  font-family:var(--f-impreso);font-size:.9rem;line-height:1.38;color:#24201a;
+  hyphens:manual;
+}
+.ayuda > .rot{
+  display:block;text-align:center;margin:-.15rem 0 .6rem;
+  font-family:var(--f-caja-sc);font-weight:700;font-size:.8rem;letter-spacing:.16em;color:#4a4135;
+}
+.ayuda p{margin:0 0 .5em}
+.ayuda.maquina{font-family:var(--f-maquina);font-size:.92rem}
+.ayuda .sello-dia{display:block;text-align:right;font-style:italic}
+
+/* recorte de prensa */
+.recorte{font-family:var(--f-texto);font-size:.98rem;line-height:1.3;text-align:justify;hyphens:auto}
+.recorte .cab{font-family:'UnifrakturMaguntia',var(--f-titulo);font-size:1.6rem;text-align:center;line-height:1;margin:.1rem 0 .15rem;letter-spacing:.02em}
+.recorte .fecha{font-family:var(--f-caja-sc);font-size:.72rem;letter-spacing:.14em;text-align:center;border-top:1px solid #6b5f4b;border-bottom:1px solid #6b5f4b;padding:.12rem 0;margin-bottom:.45rem}
+.recorte .tit{font-family:var(--f-titulo);font-weight:800;text-align:center;font-size:1.06rem;line-height:1.15;margin:.2rem 0 .4rem;text-transform:uppercase;letter-spacing:.03em}
+.recorte .tachado{text-decoration:line-through;text-decoration-color:rgba(130,20,15,.75);text-decoration-thickness:2px}
+.recorte .lapiz{font-family:var(--f-maquina);color:#8a1d14;font-size:.85rem;display:block;text-align:right;transform:rotate(-2deg);margin-top:.3rem}
+
+/* esquela */
+.esquela{
+  font-family:var(--f-texto);text-align:center;line-height:1.25;
+  border:5px double #111;outline:2px solid #111;outline-offset:-11px;
+  padding:1.1rem 1.1rem .9rem;
+}
+.esquela .cruz{font-size:1.5rem;line-height:1}
+.esquela .rip{font-family:var(--f-cabecera);letter-spacing:.2em;font-size:.82rem}
+.esquela .nombre{font-family:var(--f-titulo);font-weight:800;font-size:1.12rem;text-transform:uppercase;letter-spacing:.04em;margin:.3rem 0}
+.esquela .letra-menuda{font-size:.86rem;text-align:justify;margin-top:.6rem;hyphens:auto}
+
+/* ------------------------------------------------------------ figuras */
+figure{margin:1rem 0 1.2rem}
+figure.ilus{margin:.4rem 0 1.4rem;break-inside:avoid}
+figure.ilus svg{box-shadow:0 6px 16px -10px rgba(0,0,0,.6)}
+.cols figure.ilus{margin:.8rem 0 1.2rem}
+figure svg{display:block;width:100%;height:auto}
+figcaption{font-family:var(--f-caja);font-size:.86rem;font-style:italic;color:var(--gris);margin-top:.35rem}
+.ancho{column-span:none}
+
+/* ------------------------------------------------------- fichas (stats) */
+.ficha{margin:.6rem 0 1rem;font-family:var(--f-caja);font-size:.95rem;line-height:1.38}
+.ficha .nombre{font-family:var(--f-caja);font-weight:800;font-size:1.05rem;text-transform:uppercase;letter-spacing:.03em;margin:0}
+.ficha .epiteto{font-style:italic;margin:0 0 .5rem}
+.ficha table.carac{border-collapse:collapse;margin:.2rem 0 .45rem;font-size:.95rem}
+.ficha table.carac td{padding:.05rem 1.1rem .05rem 0}
+.ficha table.carac b{font-weight:800}
+.ficha .lin{margin:0 0 .18rem}
+.ficha .lin b{font-weight:800}
+.ficha .rot{font-family:var(--f-caja);font-weight:500;text-transform:uppercase;letter-spacing:.05em;margin:.6rem 0 .2rem;font-size:.95rem}
+.ficha .sangria{padding-left:1rem;text-indent:-1rem}
+
+/* --------------------------------------------------------------- tablas */
+table.tabla{width:100%;border-collapse:collapse;font-family:var(--f-caja);font-size:.92rem;margin:.6rem 0 1rem}
+table.tabla th{font-family:var(--f-caja-sc);font-weight:700;letter-spacing:.08em;text-align:left;border-bottom:2px solid var(--tinta);padding:.25rem .4rem}
+table.tabla td{border-bottom:1px solid var(--hoja-borde);padding:.3rem .4rem;vertical-align:top}
+table.tabla td:first-child{white-space:nowrap}
+table.tabla tr:nth-child(even) td{background:rgba(0,0,0,.035)}
+
+/* tabla de locura */
+.locura{border:2px solid var(--tinta);padding:.8rem 1rem .6rem;background:rgba(255,255,255,.4);font-family:var(--f-caja);font-size:.93rem}
+.locura h4{text-align:center;font-family:var(--f-cabecera);font-size:1.18rem;margin:.1rem 0 0}
+.locura .tira{text-align:center;font-style:italic;margin:0 0 .5rem}
+.locura ol{margin:0;padding-left:1.4rem}
+.locura li{margin-bottom:.38rem}
+.locura li b{font-weight:800}
+
+/* recuadro de historia */
+.historia{
+  border:1px solid var(--tinta);border-left:6px solid var(--rojo);
+  padding:.75rem 1rem .55rem;margin:1rem 0;background:rgba(110,26,20,.04);
+  font-size:1rem;
+}
+.historia h4{margin-top:0;font-family:var(--f-cabecera)}
+
+/* índice de la portada */
+.indice{font-family:var(--f-caja);font-size:.95rem;columns:2;column-gap:2rem;margin:.4rem 0 0;padding:0;list-style:none}
+.indice li{break-inside:avoid;border-bottom:1px dotted var(--regla);padding:.2rem 0;display:flex;justify-content:space-between;gap:.5rem}
+.indice a{border:0;color:var(--tinta)}
+.indice a:hover{color:var(--rojo)}
+
+/* ilustración de portada */
+.portada-ilus{margin:0 0 1.4rem;border:2px solid var(--tinta);background:#e9e5dc}
+.portada-ilus svg{display:block;width:100%;height:auto}
+.pie-ilus{font-family:var(--f-caja);font-size:.85rem;font-style:italic;color:var(--gris);text-align:center;margin:.35rem 0 0}
+
+/* tijeras para la sección de ayudas */
+.tijeras{display:flex;align-items:center;gap:.6rem;color:var(--gris);font-family:var(--f-caja);font-size:.8rem;margin:.2rem 0 1rem}
+.tijeras::before,.tijeras::after{content:"";flex:1;border-top:1px dashed var(--regla)}
+
+.control{margin-bottom:1rem}
+.control .pista{font-family:var(--f-caja);font-size:.95rem;margin:.2rem 0 .55rem;line-height:1.7}
+.control .c{display:inline-block;width:1.05em;height:1.05em;border:1.6px solid var(--tinta);margin:0 .18em .12em 0;vertical-align:middle;background:rgba(255,255,255,.5)}
+.control .c.ancha{width:2.6em}
+.control .sep{display:inline-block;width:.5em}
+table.anotar td{height:1.9em}
+.opcional{display:inline-block;vertical-align:middle;margin-left:.4rem;padding:.05rem .45rem;border:1.5px solid currentColor;
+  font-family:var(--f-sala);font-variant:normal;font-weight:700;font-size:.78rem;letter-spacing:.12em;text-transform:none;-webkit-text-stroke:0;color:var(--gris)}
+.pregens{display:grid;grid-template-columns:1fr 1fr;gap:1.1rem}
+.pregens .pregen:last-child:nth-child(odd){grid-column:1 / -1}
+.pregen{border:2px solid var(--tinta);background:rgba(255,255,255,.4);padding:.7rem .9rem .6rem;font-family:var(--f-caja);font-size:.9rem;line-height:1.35;break-inside:avoid}
+.pregen p{margin:0 0 .35rem}
+.pregen .pg-nombre{font-family:var(--f-epigrafe);font-variant:small-caps;-webkit-text-stroke:.02em currentColor;font-size:1.45rem;line-height:1;margin-bottom:.1rem}
+.pregen .pg-oficio{font-family:var(--f-negrita);font-style:italic;font-size:1rem;border-bottom:1px solid var(--tinta);padding-bottom:.25rem}
+.pregen .pg-retrato{font-style:italic}
+.pregen table.carac{border-collapse:collapse;margin:.3rem 0;font-size:.9rem}
+.pregen table.carac td{padding:.05rem .9rem .05rem 0}
+.pregen .pg-der{border-top:1px dotted var(--regla);border-bottom:1px dotted var(--regla);padding:.2rem 0}
+@media screen and (max-width:760px){.pregens{grid-template-columns:1fr}}
+@media print{.pregen{font-size:8pt}.pregens{gap:4mm}}
+.ambiente{font-family:var(--f-caja);font-size:.9rem;line-height:1.36;color:var(--tinta-2);
+  border-left:3px solid var(--regla);padding:.1rem 0 .1rem .65rem;margin:.1rem 0 .6rem}
+.ambiente b{font-family:var(--f-caja-sc);font-weight:700;letter-spacing:.06em;color:var(--tinta)}
+@media print{.ambiente{font-size:8.4pt}}
+.spoilers{max-width:60rem;margin:.4rem auto 0;padding:.7rem 1rem;background:#6e1a14;color:#f6efe2;font-family:var(--f-caja);font-size:.98rem;border:2px solid #2a0c08}
+.spoilers a{color:#fff;border-bottom-color:rgba(255,255,255,.6)}
+@media print{.spoilers{display:none}}
+html.paginado .spoilers{display:none}
+@media screen and (max-width:760px){.spoilers{margin:.4rem 0 0}}
+.creditos{font-family:var(--f-caja);font-size:.86rem;color:var(--tinta-2)}
+.creditos p{margin-bottom:.5em}
+
+/* --------------------------------------------------------------- móvil */
+@media screen and (max-width:760px){
+  body{font-size:1.04rem}
+  .hoja{margin:.6rem 0 1.4rem;padding:2.9rem 1rem 2.8rem}
+  .hoja::before{left:1rem;right:1rem;font-size:.7rem}
+  .hoja:nth-of-type(even) .folio,.hoja:nth-of-type(odd) .folio{left:auto;right:1rem}
+  .cols{column-count:1}
+  .cols .corta{break-before:auto}
+  .marco-titulo{margin:.6rem .4rem 2rem;padding:1.8rem 1rem 1.6rem}
+  .marco-titulo::before{left:-1rem;top:-1.6rem;width:8rem;height:6.2rem}
+  .marco-titulo::after{right:-.9rem;bottom:-1.8rem;width:8rem;height:6.9rem}
+  .indice{columns:1}
+  table.tabla{font-size:.86rem}
+}
+
+/* ---------------------------------------------------------- impresión */
+@page{size:A4;margin:14mm 13mm 14mm;
+  @top-center{content:"VIEJA ESCUELA";font-family:'Alegreya SC',Georgia,serif;font-weight:700;font-size:8pt;letter-spacing:.16em;color:#3a3833}
+}
+@page :left{@bottom-left{content:counter(page);font-family:'Crimson Pro',Georgia,serif;font-size:9pt;color:#6c6a64}}
+@page :right{
+  @top-center{content:"LA BESTIA DE FARTON"}
+  @bottom-right{content:counter(page);font-family:'Crimson Pro',Georgia,serif;font-size:9pt;color:#6c6a64}
+}
+@page :first{@top-center{content:none}@bottom-right{content:none}}
+@media print{
+  body{background:none;font-size:9.6pt;line-height:1.3}
+  .cols{column-gap:7mm}
+  .leer,.nota,.ficha,.locura,table.tabla,.creditos{font-size:8.6pt}
+  .ayuda{font-size:8.2pt}
+  .ayuda.maquina{font-size:8.4pt}
+  h3.loc,h3.cap{font-size:14.5pt}
+  h4{font-size:11pt}
+  h4.sala{font-size:9.8pt}
+  .marco-titulo{margin:11mm 9mm 10mm;padding:7mm 6mm 6mm}
+  #inicio{break-before:page}
+  .bloque{break-inside:avoid}
+  .marco-titulo h1,.marco-titulo h2{font-size:24pt}
+  .indice{columns:1;font-size:8.6pt}
+  .portada-ilus{margin-bottom:3mm}
+  .barra{display:none}
+  .hoja{max-width:none;margin:0;padding:0 0 3mm;box-shadow:none;background:none}
+  .hoja::before,.hoja .folio,.indice li span{display:none}
+  #portada{break-after:page}
+  #ayudas{break-before:page}
+  #plano{break-inside:avoid}
+  #pregenerados,#control{break-before:page}
+  .nota::before,.dados > .rot{font-size:8.4pt}
+  .dados > .rot b{font-size:11pt}
+  .nota,.ayuda,.marco-titulo,.pregen,.dados,.locura,.historia{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  /* sin texturas de ruido al imprimir: pesan mucho y hacen tropezar la vista previa */
+  .nota{background:var(--nota)}
+  .ayuda{background:var(--papel-ayuda)}
+  .marco-titulo{background:linear-gradient(180deg,#e9e7e2,#c9c6bf 55%,#b7b3ab)}
+  /* cortes de página: los recuadros no se parten, los títulos no se quedan solos */
+  .cols > *{break-inside:auto}
+  .nota,.ayuda,figure,.ficha,.locura,table,.pregen,.leer,.ambiente,.historia,.control{break-inside:avoid}
+  h3,h4{break-after:avoid;break-inside:avoid}
+  p,li{orphans:3;widows:3}
+  .descarga{display:none}
+  .grano{display:none}
+  .historia{font-size:8.8pt}
+  .historia h4{font-size:10.5pt}
+  figure.ilus svg{box-shadow:none}
+  a{color:inherit;border:0}
+}
+
+/* ===================== PAGINADO ===================== */
+/* Con ?paginar, paginador.js recompone el libro en páginas A4 fijas. Las mismas medidas
+   rigen en pantalla (para medir) y al imprimir. */
+html.paginado .pregen{font-size:8pt}
+html.paginado .pregens{gap:4mm}
+html.paginado .ambiente{font-size:8.4pt}
+html.paginado body{background:none;font-size:9.6pt;line-height:1.3}
+html.paginado .cols{column-gap:7mm}
+html.paginado .leer, html.paginado .nota, html.paginado .ficha, html.paginado .locura, html.paginado table.tabla, html.paginado .creditos{font-size:8.6pt}
+html.paginado .ayuda{font-size:8.2pt}
+html.paginado .ayuda.maquina{font-size:8.4pt}
+html.paginado h3.loc, html.paginado h3.cap{font-size:14.5pt}
+html.paginado h4{font-size:11pt}
+html.paginado h4.sala{font-size:9.8pt}
+html.paginado .marco-titulo{margin:11mm 9mm 10mm;padding:7mm 6mm 6mm}
+html.paginado #inicio{break-before:page}
+html.paginado .bloque{break-inside:avoid}
+html.paginado .marco-titulo h1, html.paginado .marco-titulo h2{font-size:24pt}
+html.paginado .indice{columns:1;font-size:8.6pt}
+html.paginado .portada-ilus{margin-bottom:3mm}
+html.paginado .barra{display:none}
+html.paginado .hoja{max-width:none;margin:0;padding:0 0 3mm;box-shadow:none;background:none}
+html.paginado .hoja::before, html.paginado .hoja .folio, html.paginado .indice li span{display:none}
+html.paginado #portada{break-after:page}
+html.paginado #ayudas{break-before:page}
+html.paginado #plano{break-inside:avoid}
+html.paginado #pregenerados, html.paginado #control{break-before:page}
+html.paginado .nota::before, html.paginado .dados > .rot{font-size:8.4pt}
+html.paginado .dados > .rot b{font-size:11pt}
+html.paginado .nota, html.paginado .ayuda, html.paginado .marco-titulo, html.paginado .pregen, html.paginado .dados, html.paginado .locura, html.paginado .historia{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+html.paginado .nota{background:var(--nota)}
+html.paginado .ayuda{background:var(--papel-ayuda)}
+html.paginado .marco-titulo{background:linear-gradient(180deg,#e9e7e2,#c9c6bf 55%,#b7b3ab)}
+html.paginado .cols > *{break-inside:auto}
+html.paginado .nota, html.paginado .ayuda, html.paginado figure, html.paginado .ficha, html.paginado .locura, html.paginado table, html.paginado .pregen, html.paginado .leer, html.paginado .ambiente, html.paginado .historia, html.paginado .control{break-inside:avoid}
+html.paginado h3, html.paginado h4{break-after:avoid;break-inside:avoid}
+html.paginado p, html.paginado li{orphans:3;widows:3}
+html.paginado .descarga{display:none}
+html.paginado .grano{display:none}
+html.paginado .historia{font-size:8.8pt}
+html.paginado .historia h4{font-size:10.5pt}
+html.paginado figure.ilus svg{box-shadow:none}
+html.paginado a{color:inherit;border:0}
+html.paginado body{background:#4a4945;margin:0}
+html.paginado .libro{padding:6mm 0}
+html.paginado .pagina{position:relative;width:210mm;height:296.5mm;margin:0 auto 8mm;overflow:hidden;
+  background:#fff;box-shadow:0 10px 30px rgba(0,0,0,.45);page:hoja;break-after:page}
+html.paginado .pagina .area{position:absolute;left:14mm;right:14mm;top:15mm;bottom:16mm}
+html.paginado .banda{display:flow-root;position:relative}
+html.paginado .banda.columnas{display:flex;gap:7mm;align-items:flex-start;overflow:visible}
+html.paginado .banda .col{flex:0 0 calc((100% - 7mm) / 2);display:flow-root;min-width:0}
+html.paginado .col > :first-child,html.paginado .banda.ancha > :first-child{margin-top:0}
+html.paginado .col > :last-child{margin-bottom:0}
+html.paginado .cab{position:absolute;top:7mm;left:14mm;right:14mm;text-align:center;
+  font-family:var(--f-cabecera);font-size:8pt;letter-spacing:.16em;color:var(--tinta-2);
+  border-top:0;background:linear-gradient(var(--regla),var(--regla)) left center/100% 1px no-repeat}
+html.paginado .cab span{background:#fff;padding:0 3mm}
+html.paginado .fol{position:absolute;bottom:8mm;font-family:var(--f-texto);font-size:9pt;color:var(--gris)}
+html.paginado .impar .fol{right:14mm}
+html.paginado .par .fol{left:14mm}
+html.paginado .nota.cont::before,html.paginado .dados.cont > .rot{display:none}
+html.paginado .nota.sigue::after{display:none}
+html.paginado .nota.sigue{border-bottom:0;margin-bottom:0}
+html.paginado .nota.cont{border-top:1px solid var(--nota-borde)}
+html.paginado li.cont{list-style:none}
+html.paginado li.cont::before{display:none}
+html.paginado .indice li span{display:inline}
+html.paginado .descarga{display:none}
+html.paginado .grano{display:none}
+html.paginado figure.ilus svg{box-shadow:none}
+html.paginado .marco-titulo{margin:11mm 9mm 9mm}
+html.paginado .imprimir{position:fixed;right:1.2rem;bottom:1.2rem;z-index:9;padding:.6rem 1.1rem;font:700 1rem var(--f-caja);
+  background:#f6f3ec;border:2px solid #1b1a18;cursor:pointer;box-shadow:0 6px 16px rgba(0,0,0,.4)}
+@media print{
+  html.paginado body{background:none}
+  html.paginado .libro{padding:0}
+  html.paginado .pagina{margin:0;box-shadow:none}
+  html.paginado .imprimir{display:none}
+}
+@page hoja{size:A4;margin:0}
+/* ===================== FIN PAGINADO ===================== */
+
+/* =====================================================================
+   Propio de La Bestia de Farton: blanco, negro y letra gótica, como la hoja
+   de Vieja Escuela. Lo de arriba es la hoja de La maldición del Palacio de
+   Linares; esta parte manda sobre ella.
+   ===================================================================== */
+:root{--f-epigrafe:'UnifrakturMaguntia','Alegreya SC','Georgia',serif;--mesa:#1d1c1a;--nota:#e4e1da;--rojo:#7d1a12}
+.marco-titulo{background:#141312;border:0;border-image:none;box-shadow:none;outline:1px solid #141312;outline-offset:3px;padding:2rem 1.5rem 1.7rem}
+.marco-titulo::before,.marco-titulo::after{display:none}
+.marco-titulo h1,.marco-titulo h2{font-family:'UnifrakturMaguntia','IM Fell English',serif;color:#fff;text-shadow:none;-webkit-text-stroke:0;font-size:clamp(2.6rem,7vw,4.2rem)}
+.marco-titulo .sub{color:#d5d2ca;font-weight:400}
+html.paginado .marco-titulo{background:#141312!important;margin:2mm 0 6mm;padding:6mm;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+html.paginado .marco-titulo h1,html.paginado .marco-titulo h2{font-size:34pt}
+@media print{.marco-titulo{background:#141312!important}}
+h3.loc,h3.cap{font-variant:normal;-webkit-text-stroke:0;font-size:2.35rem}
+h3.loc{border-bottom:2px solid var(--tinta);padding-bottom:.15rem}
+h4.sala{font-family:var(--f-cabecera);font-variant:normal;-webkit-text-stroke:0;font-size:1.2rem}
+.capital::first-letter{-webkit-text-stroke:0;font-size:4.4em;line-height:.74}
+.nota::before{content:"Nota para el máster"}
+.nota::after{display:none}
+.pregen .pg-nombre{font-variant:normal;-webkit-text-stroke:0;font-size:1.7rem}
+.dados > .rot b{-webkit-text-stroke:0;font-size:1.45rem}
+html.paginado h3.loc,html.paginado h3.cap{font-size:18pt}
+html.paginado h4.sala{font-size:10pt}
+html.paginado .pregen .pg-nombre{font-size:15pt}
+html.paginado .dados > .rot b{font-size:12.5pt}
+.cartel{font-family:var(--f-maquina);font-style:normal;white-space:nowrap}
+@media screen and (max-width:560px){.cartel{white-space:normal}}
+
+/* piezas del cuaderno */
+.propuesta{font-family:var(--f-sala);font-weight:700;font-size:.7rem;letter-spacing:.1em;color:#fff;background:#6a6660;padding:.02rem .35rem;vertical-align:.12em;white-space:nowrap;font-style:normal;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.tir{font-family:var(--f-caja);font-weight:700;font-size:.92em}
+.aclara{font-family:var(--f-caja);font-size:.86rem;color:var(--gris);font-style:italic}
+.num-lugar{display:inline-flex;align-items:center;justify-content:center;width:1.45em;height:1.45em;border-radius:50%;background:var(--tinta);color:#fff;font-family:var(--f-caja);font-weight:800;font-size:.8em;margin-right:.4em;vertical-align:.08em;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+table.tabla td:first-child{white-space:normal}
+table.lugares td:first-child,table.rumores td:first-child,table.destino td:first-child,table.bultos td:first-child{white-space:nowrap}
+table.bestias td:nth-child(n+2):nth-child(-n+6),table.bestias th:nth-child(n+2):nth-child(-n+6){white-space:nowrap;text-align:center}
+.piel{border:2px solid var(--tinta);border-left:8px solid var(--tinta);background:rgba(255,255,255,.42);padding:.6rem .9rem .5rem;margin:1rem 0 1.1rem;font-family:var(--f-caja);font-size:.94rem;line-height:1.38}
+.piel > .rot{display:block;font-family:var(--f-sala);font-weight:700;letter-spacing:.12em;font-size:.84rem;border-bottom:1px solid var(--tinta);padding-bottom:.25rem;margin-bottom:.45rem}
+.piel > .rot b{font-family:var(--f-epigrafe);font-weight:400;font-size:1.5rem;letter-spacing:0}
+.piel p{margin:0 0 .42em} .piel p > b:first-child{font-family:var(--f-caja-sc);letter-spacing:.05em}
+.piel .frase,.voces .frase{font-style:italic;padding-left:.8rem;margin-bottom:.3em}
+.voces{font-family:var(--f-caja);font-size:.94rem;line-height:1.38;margin:.5rem 0 1rem;padding:.1rem 0 .1rem .8rem;border-left:3px solid var(--regla)}
+.voces p{margin:0 0 .42em}
+.voces.mesa p > b:first-child{font-family:var(--f-caja-sc);letter-spacing:.04em}
+.ficha .propuesta{font-size:.62rem}
+.notas-mesa .ayuda{margin:.2rem 0 .8rem;padding:.75rem .9rem .6rem}
+.notas-mesa .ayuda p{margin:0}
+.pregen .pg-pdf{font-family:var(--f-caja-sc);font-weight:700;letter-spacing:.06em;font-size:.82rem;margin:.35rem 0 0}
+.pregen{background:rgba(255,255,255,.55)}
+.ogl{font-family:var(--f-caja);font-size:.78rem;line-height:1.3;columns:2;column-gap:1.6rem;margin-top:1rem;color:var(--tinta-2);hyphens:auto}
+.ogl h4{font-family:var(--f-caja-sc);font-size:.86rem;margin:0 0 .3rem}
+.ogl p{margin:0 0 .35rem}
+html.paginado .ogl{font-size:6.4pt;line-height:1.22}
+html.paginado .ogl h4{font-size:7.5pt}
+
+/* imágenes */
+figure img,.hoja img{display:block;max-width:100%;height:auto}
+figure.mapa-fig{margin:1rem auto 1.2rem}
+figure.mapa-fig img{margin:0 auto;width:100%}
+figure.plano-sub{max-width:30rem}
+.portada-foto{border:0;background:none;max-width:24rem;margin:0 auto .4rem}
+.portada-foto img{width:100%;box-shadow:0 8px 18px -10px rgba(0,0,0,.7);border:1px solid var(--tinta)}
+.tesoros{display:flex;gap:.8rem;align-items:center;margin:.3rem 0 .9rem}
+.tesoros figure{margin:0;flex:none}
+.tesoros figure:first-child{width:1.9rem}
+.tesoros figure:last-child{width:6.5rem}
+.tesoros div{flex:1;min-width:0}
+.tesoros p{margin:0 0 .4em}
+html.paginado figure.mapa-fig{max-width:150mm}
+html.paginado figure.plano-sub{max-width:100mm}
+html.paginado .portada-foto{max-width:68mm}
+html.paginado .tesoros figure:first-child{width:6mm}
+html.paginado .tesoros figure:last-child{width:20mm}
+html.paginado .propuesta{font-size:6.2pt}
+html.paginado .aclara{font-size:7.8pt}
+html.paginado .piel,html.paginado .voces{font-size:8.6pt}
+html.paginado .piel > .rot{font-size:8.4pt}
+html.paginado .piel > .rot b{font-size:12.5pt}
+html.paginado .pregen .pg-pdf{display:none}
+html.paginado .control .pista{font-size:8.6pt;line-height:1.9}
+
+/* en el navegador, una sola columna; las dos columnas quedan para el PDF y la versión ?paginar */
+@media screen{
+  html:not(.paginado) .cols{column-count:1}
+  html:not(.paginado) .cols .corta{break-before:auto}
+  html:not(.paginado) .hoja{max-width:48rem}
+  html:not(.paginado) .barra,html:not(.paginado) .spoilers{max-width:48rem}
+}
+@media screen and (max-width:760px){
+  .ogl{columns:1}
+  table.tabla{display:block;overflow-x:auto}
+  .tesoros figure:last-child{width:4.5rem}
+  h3.loc,h3.cap{font-size:2rem}
+}
+
+/* páginas de los jugadores */
+.ficha-vista{display:block;width:100%;height:auto;border:1px solid var(--regla);margin:.5rem 0 .4rem;box-shadow:0 8px 18px -12px rgba(0,0,0,.6)}
+.acciones-ficha{font-family:var(--f-caja);font-size:.95rem;margin:0 0 1.4rem}
+.precios{columns:2;column-gap:1.6rem;font-family:var(--f-caja);font-size:.9rem;margin:.4rem 0 1rem;padding:0;list-style:none}
+.precios li{display:flex;justify-content:space-between;gap:.5rem;border-bottom:1px dotted var(--regla);padding:.12rem 0;break-inside:avoid}
+@media screen and (max-width:560px){.precios{columns:1}}
+.cuadro-pj{margin:0 0 1rem}
+html.paginado .indice{font-size:8pt}
+html.paginado .indice li{padding:.2mm 0;line-height:1.2}

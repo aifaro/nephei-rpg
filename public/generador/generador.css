@@ -245,6 +245,32 @@ textarea.gen-campo{line-height:1.2;padding-top:.2cqw;overflow:auto}
 .tema-dnd .asis-regla{background:#f2e6c4;border-left-color:var(--sangre)}
 .tema-dnd .gen-dialogo{border-top:4px solid var(--sangre)}
 
+/* Vieja Escuela: blanco, negro y letra gótica, como su hoja */
+:root:has(body.tema-ve),body.tema-ve{
+  --papel:#e9e6df;--papel-hoja:#fbfaf6;--papel-oscuro:#d6d2c8;--papel-caja:#efece4;
+  --tinta:#141312;--tinta-2:#2b2a28;--tinta-suave:#65625c;--regla:#8d8a83;--regla-suave:#cfccc4;
+  --ocre:#5c5a55;--ocre-vivo:#7a7770;--amarillo:#bdb9ae;--sangre:#7d1a12;--sangre-suave:#9c2c22;
+  --mar:#141312;--mar-suave:#3a3936;--noche:#0d0d0c;
+}
+.tema-ve .barra{background:#0d0d0c}
+.tema-ve .gen-cabecera{background:#141312;color:#f4f2ec;padding:1.5rem 1.5rem 1.3rem;border-bottom:6px double #f4f2ec;outline:1px solid #141312}
+.tema-ve .gen-cabecera .sello{color:#bdb9ae}
+.tema-ve .gen-cabecera h1{font-family:'UnifrakturMaguntia',var(--f-titulo),serif;font-weight:400;font-size:clamp(2.4rem,6vw,3.6rem);color:#fff}
+.tema-ve .gen-cabecera .entradilla{color:#e4e1d9}
+.tema-ve .gen-privacidad{color:#b4b1a8;border-left-color:#55534e}
+.tema-ve .gen-barra{background:rgba(251,250,246,.97);border-top:3px solid #141312}
+.tema-ve .gen-boton{border-radius:0}
+.tema-ve .gen-boton.principal{background:#141312;border-color:#141312;color:#fff}
+.tema-ve .gen-boton.principal:hover{background:var(--sangre);border-color:var(--sangre)}
+.tema-ve .gen-ayuda h2,.tema-ve .gen-dialogo-cab h2,.tema-ve .asis-cuerpo h3{font-family:'UnifrakturMaguntia',var(--f-titulo),serif;font-weight:400;font-size:1.9rem;color:#141312}
+.tema-ve .asis-regla{background:#efece4;border-left-color:#141312}
+.tema-ve .gen-dialogo{border-top:4px solid #141312}
+.tema-ve .asis-pasos button[aria-current=step]{background:#141312}
+.tema-ve .gen-hoja{max-width:58rem}
+.tema-ve .gen-foto-pon{font-size:1.2cqw}
+/* En Vieja Escuela, el retrato ocupa la mitad de arriba de un recuadro: que se vea dónde pulsar */
+.tema-ve .gen-foto{border-bottom:1px dotted var(--regla)}
+
 /* Piezas de los asistentes de Delta Green y D&D */
 .asis-tarjetas{display:grid;grid-template-columns:repeat(auto-fill,minmax(15rem,1fr));gap:.6rem;margin:0 0 1rem}
 .asis-tarjetas label{display:flex;gap:.5rem;align-items:flex-start;padding:.6rem .75rem;border:1px solid var(--regla);border-radius:3px;background:#fffdf6;cursor:pointer;font-family:var(--f-caja);font-size:.92rem}

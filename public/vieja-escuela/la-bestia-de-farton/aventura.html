@@ -1,0 +1,788 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>La Bestia de Farton · Cuaderno del máster</title>
+<meta name="description" content="Cuaderno del máster de La Bestia de Farton, aventura de iniciación para Vieja Escuela: el juego de rol, con escenas, voces, consejos de dirección y hoja de control. Contiene spoilers.">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=Alegreya:wght@700;800;900&family=Alegreya+SC:wght@700;800&family=Alegreya+Sans:ital,wght@0,400;0,500;0,700;0,800;1,400;1,500&family=Alegreya+Sans+SC:wght@500;700&family=Marcellus+SC&family=Special+Elite&family=Courier+Prime:ital,wght@0,400;0,700;1,400&family=UnifrakturMaguntia&display=swap">
+<link rel="stylesheet" href="cuaderno.css?v=1">
+</head>
+<body>
+<nav class="barra">
+  <a href="master">&laquo; La Bestia de Farton · máster</a>
+  <span><a class="descarga" href="aventura.pdf" download>Descargar en PDF (A4)</a> &middot; <a class="descarga" href="aventura?paginar">Versión para imprimir</a> &middot; <a class="descarga" href="#pregenerados">Pregenerados</a></span>
+</nav>
+
+<div class="spoilers"><strong>Atención: spoilers.</strong> Esto es el cuaderno del máster, con todos los secretos del bosque. Si vas a jugar, <a href="players">tu sitio está aquí</a>.</div>
+
+<!-- ============================================================ PORTADA -->
+<section class="hoja" data-cabecera="" id="portada">
+  <div class="marco-titulo">
+    <h1>La Bestia de Farton</h1>
+    <p class="sub">Cuaderno del máster &middot; Vieja Escuela: el juego de rol</p>
+  </div>
+  <figure class="portada-ilus portada-foto"><img src="img/portada.jpg" width="1100" height="1558" alt="Portada original: un bárbaro, una elfa, un enano y un mediano consultan un mapa con una colina y una torre al fondo."></figure>
+  <p class="pie-ilus">Ilustración de portada de Endyamar para la edición original de grapas&amp;mapas.</p>
+  <div class="cols">
+    <p class="capital"><span class="versal">Un pueblo harto,</span> un ogro con mucha hambre y un bosque que nadie cruza entero desde hace años. El trabajo parece sencillo: ir, matar a la bestia y volver con su cabeza. Lo difícil es llegar, porque hay que elegir por dónde, y debajo de la colina hay algo que ni el propio ogro sabe que existe.</p>
+    <p>Este cuaderno adapta para dirigirla la aventura de iniciación de Iñaki Raya publicada por grapas&amp;mapas. Ordena el material, unifica las dificultades con las del manual, corrige lo que no cuadra y añade lo que le falta a quien la dirige por primera vez: escenas, voces, ejemplos de mesa y una hoja de control. Lo que no está en la aventura original va marcado <span class="propuesta">propuesta</span>, y al final hay una lista de <a href="#erratas">erratas y aclaraciones</a>.</p>
+    <p><b>Vieja Escuela: el juego de rol, edición revisada.</b> De tres a cinco aventureros de Nivel 3 (hay <a href="#pregenerados">cuatro pregenerados</a>). Una sesión de tres o cuatro horas. Exploración, malas decisiones y un ogro.</p>
+    <p class="descarga"><a href="aventura.pdf" download><strong>Descargar el cuaderno en PDF (A4), listo para imprimir.</strong></a> También está la <a href="aventura?paginar">versión para imprimir</a> desde el navegador, y lo que se enseña a los jugadores en <a href="players">su propia página</a>.</p>
+    <div class="bloque"><h4>Contenido</h4>
+    <ul class="indice">
+      <li><a href="#inicio">De un vistazo</a><span></span></li>
+      <li><a href="#mapa">El mapa y las rutas</a><span></span></li>
+      <li><a href="#farton">Farton y la tienda de Podrik</a><span></span></li>
+      <li><a href="#camino">Paradas del camino</a><span></span></li>
+      <li><a href="#bosque">El bosque y los lobos</a><span></span></li>
+      <li><a href="#claro">El Claro de la Piedra</a><span></span></li>
+      <li><a href="#rio">El río y el lago</a><span></span></li>
+      <li><a href="#aranas">El Bosque de las Arañas</a><span></span></li>
+      <li><a href="#colina">La Colina del Ogro</a><span></span></li>
+      <li><a href="#ogro">La Bestia</a><span></span></li>
+      <li><a href="#subterraneos">Los subterráneos de la torre</a><span></span></li>
+      <li><a href="#final">Vuelta a Farton</a><span></span></li>
+      <li><a href="#dirigir">Consejos para dirigir</a><span></span></li>
+      <li><a href="#ejemplos">Cuatro ejemplos de mesa</a><span></span></li>
+      <li><a href="#bestiario">Bestiario</a><span></span></li>
+      <li><a href="#pregenerados">Cuatro aventureros</a><span></span></li>
+      <li><a href="#control">Hoja de control del máster</a><span></span></li>
+      <li><a href="#notas">Notas para repartir</a><span></span></li>
+      <li><a href="#erratas">Erratas y aclaraciones</a><span></span></li>
+      <li><a href="#creditos">Créditos y licencias</a><span></span></li>
+    </ul></div>
+  </div>
+</section>
+
+<!-- ============================================================ DE UN VISTAZO -->
+<section class="hoja" data-cabecera="VIEJA ESCUELA" id="inicio">
+  <div class="cols">
+    <h3 class="cap">De un vistazo</h3>
+    <h4>Lo que saben los jugadores</h4>
+    <p>Son un grupo de aventureros contratado por Farton, un pueblo junto al Bosque del Ogro. La criatura lleva demasiados años saliendo a saquear cuando tiene hambre. Hay que entrar en el bosque y acabar con ella. Quien lleve su cabeza al pueblo cobra. La partida empieza con el trato cerrado, en la tienda del pueblo, comprando lo que van a necesitar.</p>
+    <div class="leer"><p>El pueblo ha juntado lo que ha podido, y os lo ha contado tres veces para que quede claro lo que le cuesta. Ahora estáis en la tienda de Podrik, entre rollos de cuerda y ristras de ajos. Fuera, alguien ha dejado de hablar para miraros por la ventana. Podrik pone las dos manos en el mostrador. «Bueno. ¿Qué se llevan los valientes?»</p></div>
+
+    <h4>El secreto del máster</h4>
+    <p>El ogro es lo de menos. Vive en una cueva de la colina y es un problema que se resuelve a golpes. Lo interesante es que <strong>esa cueva no es una cueva</strong>: es el acceso disfrazado a los sótanos de una torre derrumbada, cuyas ruinas coronan la colina. El ogro la ha ido agrandando a zarpazos y nunca ha reparado en la puerta secreta del fondo.</p>
+    <p>Abajo hay dos cosas: ratas gigantes en las salas de arriba, y en las de abajo un <strong>cubo gelatinoso</strong> que lleva años limpiando. Se ha comido un cofre, pero no lo que había dentro: una daga mágica y un amuleto.</p>
+    <div class="historia">
+      <h4>Dos formas de entrar</h4>
+      <p><strong>Por la puerta:</strong> la cueva, con el ogro dentro o a punto de volver. Es lo que hará casi todo el mundo.</p>
+      <p><strong>Por el tejado:</strong> la trampilla de las ruinas, enterrada bajo los cascotes. Da a las salas de las ratas, y bajando se llega al cubo y a la puerta secreta, que se abre <em>a la espalda del ogro</em>.</p>
+    </div>
+
+    <h4>Cómo se juega</h4>
+    <ul class="vinetas">
+      <li><strong>Farton</strong> (veinte minutos): la compra, los rumores de Podrik y el mapa. Lo que oigan aquí decide la ruta.</li>
+      <li><strong>El camino</strong> (una hora y pico): lobos, arañas, río, lago, piedra. Nadie tiene que pasarlo todo; cada ruta cobra un peaje distinto.</li>
+      <li><strong>La colina</strong> (media hora): rastrear, espiar y decidir cuándo y por dónde.</li>
+      <li><strong>El ogro y los subterráneos</strong> (una hora): la pelea y el botín, en el orden que elijan.</li>
+      <li><strong>Vuelta a Farton</strong> (cinco minutos): la cabeza, el dinero y lo que queda por saber.</li>
+    </ul>
+    <div class="nota rotulo-propio" data-rotulo="La idea que lo sostiene todo">
+      <p>Es una aventura de elegir. No hay trama que seguir ni escena que tenga que ocurrir: hay un mapa, un objetivo y gente que da información a medias, en parte falsa. Tu trabajo es describir, escuchar qué intentan y contestar con honradez, sin salvarlos ni castigarlos. Si se meten en el lago después de leer el cartel, es culpa suya, y se acordarán durante años.</p>
+    </div>
+    <div class="dados">
+      <span class="rot">Las reglas que vas a usar <b>en cada escena</b></span>
+      <ul class="vinetas">
+        <li><strong>Prueba:</strong> 1d20 + los puntos de una habilidad <em>o</em> el modificador de un atributo. Lo normal es superar 11+; 14+ es difícil; 17+, muy difícil. Si no hay riesgo, no se tira.</li>
+        <li><strong>Trasfondo:</strong> si viene a cuento, +2; si viene muy a cuento, ventaja.</li>
+        <li><strong>Instintos:</strong> para resistir o esquivar, 1d20 + INS + el modificador del atributo que digas.</li>
+        <li><strong>Ataque:</strong> 1d20 + ATQ + FUE (cuerpo a cuerpo) o DES (proyectiles) contra la DEF del blanco. 20 natural: crítico, propone el jugador. 1 natural: pifia, le atacan con ventaja hasta su siguiente asalto.</li>
+        <li><strong>Orden:</strong> de mayor a menor DES, sin tirar iniciativa.</li>
+        <li><strong>A 0 PV:</strong> incapacitado; si no sube de 0 en 10 asaltos, muerto. Vendas (una vez por combate): 1d4 PV. Un día entero de descanso: tantos PV como Nivel.</li>
+        <li><strong>Tiempo:</strong> asalto, 10 segundos; turno, 10 minutos. Una antorcha dura 6 turnos.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ MAPA -->
+<section class="hoja" data-cabecera="LA BESTIA DE FARTON" id="mapa">
+  <div class="cols">
+    <h3 class="cap">El mapa y las rutas</h3>
+    <p>El mapa es de Iñaki Raya. A los jugadores enséñales <a href="img/mapa-jugadores.png">el que dibuja Podrik</a>, sin las arañas, sin el claro y sin los vados: lo tienen en la <a href="sinopsis#mapa">sinopsis</a>. Tiene una trampa geográfica que conviene entender antes de empezar: <strong>la colina está al otro lado del agua</strong>. El río baja de norte a sur y en el lago se le une un brazo que viene del este, así que al noreste solo se llega mojándose o por el vado norte, y ese vado sale del Bosque de las Arañas.</p>
+  </div>
+  <figure class="mapa-fig" id="mapa-grande"><img src="img/mapa.png" width="1400" height="1818" alt="Mapa: Farton al suroeste, con la cabaña de los leñadores al norte; el río baja de norte a sur con un lago en el centro; al oeste del lago, el Bosque de las Arañas; al este, el Claro de la Piedra; al noreste, tras un brazo del río, la Colina del Ogro.">
+    <figcaption><b>El Bosque del Ogro.</b> Mapa de Iñaki Raya (CC BY-NC-SA 4.0).</figcaption>
+  </figure>
+  <h4>Las tres formas de llegar a la colina</h4>
+  <table class="tabla">
+    <tr><th>Ruta</th><th>Por dónde</th><th>Qué cuesta</th><th>Tiempo</th></tr>
+    <tr><td><b>El oeste</b></td><td>Farton, cabaña de los leñadores, <a href="#aranas">Bosque de las Arañas</a>, vado norte, colina.</td><td>Telarañas y veneno. A cambio, se cruza sin nadar, y aquí está Pip. Hay que encontrar el vado (<span class="tir">Supervivencia 14+</span>) o que Pip lo enseñe.</td><td>2 jornadas</td></tr>
+    <tr><td><b>El lago</b></td><td>Farton, cabaña o ruinas del puerto, orilla, <a href="#rio">lago</a>, colina.</td><td>Algas. Es lo más corto y lo peor. Si llevan barca, no pasa nada hasta que algo se les enreda en el remo <span class="propuesta">propuesta</span>.</td><td>1 jornada y media</td></tr>
+    <tr><td><b>El este</b></td><td>Farton, posada, puente, <a href="#claro">bosque del claro</a>, brazo del río a nado, colina.</td><td>El claro está de camino, y hay que nadar el brazo: dos éxitos de <span class="tir">FUE 14+</span>. Lobos todo el rato.</td><td>2 jornadas</td></tr>
+  </table>
+  <h4>Distancias <span class="propuesta">propuesta</span></h4>
+  <p class="aclara">La aventura solo dice que el claro está a una jornada de Farton. Todo lo demás se ha medido a partir de ahí; una jornada son unas ocho horas de marcha por camino o sendero.</p>
+  <table class="tabla lugares">
+    <tr><th>De…</th><th>a…</th><th>Tiempo</th><th>Notas</th></tr>
+    <tr><td>Farton</td><td>Posada de Farton</td><td>¼</td><td>Buen camino.</td></tr>
+    <tr><td>Farton</td><td>Cabaña de los leñadores</td><td>½</td><td>Sendero de carros.</td></tr>
+    <tr><td>Posada</td><td>Ruinas del puerto</td><td>¼</td><td>Por la orilla.</td></tr>
+    <tr><td>Posada</td><td>Claro de la Piedra</td><td>¾</td><td>Puente y bosque, sin senda. Con Farton, una jornada exacta.</td></tr>
+    <tr><td>Cabaña</td><td>Linde de las arañas</td><td>¼</td><td>Se acaba lo talado.</td></tr>
+    <tr><td>Linde</td><td>Vado norte</td><td>½</td><td>Por dentro del bosque de arañas.</td></tr>
+    <tr><td>Linde</td><td>Vado sur</td><td>¼</td><td>Por la orilla. Cruza al bosque del claro, no a la colina.</td></tr>
+    <tr><td>Vado norte</td><td>Colina</td><td>½</td><td>Bosque cerrado, territorio de lobos.</td></tr>
+    <tr><td>Claro</td><td>Brazo del río</td><td>¼</td><td>—</td></tr>
+    <tr><td>Brazo del río</td><td>Colina</td><td>½</td><td>—</td></tr>
+  </table>
+  <h4>Qué hay en cada sitio</h4>
+  <table class="tabla lugares">
+    <tr><th>Lugar</th><th>Quién</th><th>Qué se saca</th></tr>
+    <tr><td><a href="#farton">Tienda de Podrik</a></td><td>Podrik</td><td>Equipo y rumores, unos verdaderos y otros no.</td></tr>
+    <tr><td><a href="#camino">Posada de Farton</a></td><td>Nan <span class="propuesta">propuesta</span></td><td>Una cama, una historia y el camino al puente.</td></tr>
+    <tr><td><a href="#camino">Ruinas del puerto</a></td><td>El viento</td><td>Un susto falso y el lugar para acampar.</td></tr>
+    <tr><td><a href="#camino">Cabaña de los leñadores</a></td><td>Nadie</td><td>Leña, mantas y una noche segura.</td></tr>
+    <tr><td><a href="#claro">Claro de la Piedra</a></td><td>Las voces</td><td>El destino de los dioses: bueno o malo, para siempre.</td></tr>
+    <tr><td><a href="#rio">El lago</a></td><td>Las algas</td><td>Un cartel que avisa y un fondo lleno de esqueletos.</td></tr>
+    <tr><td><a href="#aranas">Bosque de las Arañas</a></td><td>Arañas, Pip</td><td>Un guía, una poción y los vados.</td></tr>
+    <tr><td><a href="#colina">Colina del Ogro</a></td><td>La Bestia</td><td>La cabeza y su saco de monedas.</td></tr>
+    <tr><td><a href="#subterraneos">Subterráneos</a></td><td>Ratas, cubo</td><td>Piedra de afilar, poción, daga y amuleto.</td></tr>
+  </table>
+</section>
+
+<!-- ============================================================ FARTON -->
+<section class="hoja" data-cabecera="VIEJA ESCUELA" id="farton">
+  <div class="cols">
+    <h3 class="loc">Farton y la tienda de Podrik</h3>
+    <p class="subtitulo-loc">El pueblo, la mañana de la partida. Unos veinte minutos de juego.</p>
+    <p class="ambiente"><b>Se ve</b> un pueblo de casas bajas entre campos de labor, con las cercas remendadas una y otra vez y un corral vacío del que nadie habla. <b>Huele</b> a humo de leña, a cebolla y a estiércol. <b>Se oye</b> poco: un perro, un martillo, y la conversación que se apaga cuando entráis.</p>
+    <p>La aventura empieza con el trabajo aceptado. No hace falta jugar la negociación: empieza en la tienda, que es donde los jugadores compran, preguntan y se oyen hablar en personaje por primera vez. Lee el texto de <a href="#inicio">«Lo que saben los jugadores»</a> y deja que hablen.</p>
+    <div class="piel">
+      <span class="rot">En la piel de… <b>Podrik, el tendero</b></span>
+      <p><b>Cómo se le ve.</b> Cincuenta y tantos, delantal de cuero, dedos gordos que manejan con cuidado una balanza diminuta. Le falta el lóbulo de una oreja y no piensa explicar por qué <span class="propuesta">propuesta</span>.</p>
+      <p><b>Cómo habla.</b> Todo lo convierte en una venta, y es generoso con los consejos porque le salen gratis. Dice «valientes» a los clientes, con un poco de guasa. Antes de decir algo serio se limpia las manos en el delantal.</p>
+      <p><b>Lo que quiere.</b> Que vuelvan, porque les ha fiado y porque es su pueblo. Ha visto salir a otros. Se acuerda de lo que compraron.</p>
+      <p class="frase">«Cuerda. Lleven cuerda. El último grupo no llevó, y mire.»</p>
+      <p class="frase">«¿Antorchas? Tres por una moneda de cobre… bueno, una por una de cobre, pero se las dejo a precio de amigo si vuelven a por más.»</p>
+      <p class="frase">«Yo no he estado allí, ¿eh? Yo vendo. Lo que le cuento es lo que me cuentan los que vuelven. Que son menos de los que salen.»</p>
+    </div>
+    <h4>Los rumores</h4>
+    <p>Podrik suelta uno gratis con la primera compra. Cada pregunta bien hecha da derecho a una prueba de <span class="tir">Comunicación 11+</span> para otro más; si fallan, se encoge de hombros y les enseña unas botas <span class="propuesta">propuesta</span>. Tira 1d10 o, si quieres, elige el que mejor le venga a la ruta que estén mirando.</p>
+  </div>
+  <table class="tabla rumores">
+    <tr><th>1d10</th><th>Lo que dice Podrik</th><th>La verdad</th></tr>
+    <tr><td>1-2</td><td>«Al este está el embarcadero viejo, de piedra. Aquello se usaba para el comercio, hasta que llegó el ogro y dejaron de venir los botes. Por las noches se oye al viejo Max, que trabajaba allí y se murió de hambre al quedarse sin faena. Yo lo he oído, ¿eh?»</td><td><strong>Falso.</strong> Es el viento entre las ruinas.</td></tr>
+    <tr><td>3-4</td><td>«Hay arañas. Grandes como este mostrador. Si ven telas, den la vuelta y busquen otro camino. La de cazadores y leñadores que han entrado por allí y no han salido…»</td><td><strong>Verdadero.</strong></td></tr>
+    <tr><td>5-6</td><td>«Si les pilla la noche, al suroeste del bosque está la cabaña de los leñadores. Siempre hay leña y mantas: es la costumbre, el que usa repone.»</td><td><strong>Verdadero.</strong></td></tr>
+    <tr><td>7-8</td><td>«Al lago ni acercarse. El agua se come al que se mete. Hay un cartel, ya lo verán: que no es buena idea molestar al agua.»</td><td><strong>Verdadero en parte.</strong> Lo que se come a la gente son las algas carnívoras del fondo.</td></tr>
+    <tr><td>9-10</td><td>«Hay una piedra rara en un claro, al otro lado del río, hacia el sureste. Los bichos no se acercan. Sitio encantado. Mi cuñado fue y volvió… distinto. Ni se les ocurra.»</td><td><strong>Verdadero.</strong> Y aun así, irán.</td></tr>
+  </table>
+  <div class="cols">
+    <table class="tabla sisepregunta">
+      <tr><th>Si preguntan…</th><th>Podrik contesta</th></tr>
+      <tr><td>¿Cómo es el ogro?</td><td>«Tres de mí, a lo alto. Lleva un tronco por porra. Baja cuando tiene hambre y se lleva lo que encuentra: la vaca, la puerta, la despensa entera. Cuando se le oye ya es tarde.»</td></tr>
+      <tr><td>¿Dónde vive?</td><td>«En la colina, al noreste, más allá del río. Se la huele antes de verla.»</td></tr>
+      <tr><td>¿Cómo se cruza el río?</td><td>«Hay un puente abajo, junto a la posada, pero lleva a la otra orilla, no a la colina. Vados dicen que hay. Yo nunca los he visto.»</td></tr>
+      <tr><td>¿Hay lobos?</td><td>«Sí, y este invierno ha sido malo. Con fuego no los espanta usted, no con esa hambre.»</td></tr>
+      <tr><td>¿Quién era el del corral vacío?</td><td>«Los Marsal. Se han ido con la hija a la ciudad. Bueno, lo que quedó.» <span class="propuesta">propuesta</span></td></tr>
+      <tr><td>¿Y el dinero?</td><td>«Cuando traigan la cabeza. Sin cabeza, ni un cobre. Aquí ya nos han engañado.»</td></tr>
+    </table>
+    <h4>Qué se vende</h4>
+    <p>Todo lo del equipo diverso del manual, a su precio. Armas y armaduras, las sencillas: nada de mallas ni de placas, que en Farton no hay quien las haga. Agua sagrada y símbolos de plata, tampoco, salvo que quieras jugar con ello. Los pregenerados llevan <strong>40 mo</strong> cada uno, adelanto del pueblo <span class="propuesta">propuesta</span>; la lista de precios está en la <a href="sinopsis#tienda">sinopsis</a> para que la consulten mientras hablan.</p>
+    <div class="nota rotulo-propio" data-rotulo="Que salgan con el mapa en la cabeza">
+      <p>Al terminar, pon el mapa en la mesa y pregunta por dónde van. Que lo discutan. Si salen sin decidirlo, volverán a Farton a medio camino: cuanto más claro lo tengan aquí, mejor irá el resto de la sesión.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ CAMINO -->
+<section class="hoja" data-cabecera="LA BESTIA DE FARTON" id="camino">
+  <div class="cols">
+    <h3 class="loc">Paradas del camino</h3>
+    <p>La aventura apenas las menciona. No hacen falta, pero son el sitio donde los jugadores recuperan PV y conversan, y el contraste hace mejor lo que viene después. Todo esto es <span class="propuesta">propuesta</span>, salvo lo de la leña y las mantas de la cabaña y el viento de las ruinas.</p>
+    <h4 class="sala">La Posada de Farton</h4>
+    <p>Junto al puente, en el camino que sale hacia el este. Nan, la posadera, tiene pensión a precio del manual y una opinión sobre todo. Sigue abierta porque es tozuda y porque el ogro, dice, «no sabe cruzar puentes, que lo tengo visto». Sabe. Es que nunca ha venido por aquí.</p>
+    <div class="voces">
+      <p class="frase">«Si van a por él, cenen. Lo digo por experiencia: los que cenan vuelven más veces.»</p>
+      <p class="frase">«Al otro lado del puente solo hay árboles y más árboles. Y una piedra de la que no hablo en mi casa.»</p>
+    </div>
+    <h4 class="sala">Las ruinas del puerto</h4>
+    <p class="ambiente"><b>Se ve</b> un muelle de piedra medio caído al río, tres paredes de almacén y una argolla de amarre comida por el óxido. <b>Huele</b> a limo. <b>Se oye</b>, en cuanto se levanta aire, un gemido largo que sube y baja: el viento entre las piedras.</p>
+    <p>Si han oído el rumor de Max, deja que se asusten. Quien se acerque a escuchar y pase una prueba de <span class="tir">Alerta 11+</span> nota que el sonido cambia cuando se tapa cierta grieta con la mano. Sirve para acampar, y es buen momento para que entiendan que Podrik no siempre tiene razón. Conviene que lo aprendan antes de la piedra.</p>
+    <h4 class="sala">La cabaña de los leñadores</h4>
+    <p class="ambiente"><b>Se ve</b> una cabaña de troncos con el tejado bien puesto, leña apilada hasta la ventana y mantas dobladas en una repisa. <b>Huele</b> a resina y a humo viejo. <b>Se oye</b> el bosque, que aquí aún es un bosque normal, con pájaros.</p>
+    <p>Es el último sitio seguro, y es el que los jugadores recordarán cuando les falten PV. Un día entero de descanso aquí devuelve tantos PV como Nivel. En una viga alguien ha ido haciendo muescas, una por cada leñador que no volvió. Hay once, y la última está reciente: es Pip, aunque aún no lo saben.</p>
+  </div>
+</section>
+
+<!-- ============================================================ BOSQUE -->
+<section class="hoja" data-cabecera="VIEJA ESCUELA" id="bosque">
+  <div class="cols">
+    <h3 class="loc">El Bosque del Ogro y los lobos</h3>
+    <p class="ambiente"><b>Se ve</b> un bosque viejo y sin sendas, con la maleza a la cintura. Solo el extremo suroeste ha conocido el hacha. <b>Huele</b> a hoja podrida y, de vez en cuando, a animal. <b>Se oye</b> algo que se mueve a la misma velocidad que vosotros y se para cuando os paráis.</p>
+    <div class="dados">
+      <span class="rot">Utilizar los dados para… <b>no acabar siendo la cena</b></span>
+      <ul class="vinetas">
+        <li>Al entrar en lo salvaje, y luego una vez por jornada <span class="propuesta">propuesta</span>: <span class="tir">Supervivencia 12+</span>, la tira quien vaya delante.</li>
+        <li><strong>Éxito:</strong> rodean las zonas de caza. Ni rastro.</li>
+        <li><strong>Fallo:</strong> los lobos empiezan a seguirlos para sorprenderlos cuando menos se lo esperen. Se lo haces notar: un aullido, huellas sobre las propias huellas. Atacan en el peor momento, normalmente de noche, o justo después de otra pelea.</li>
+        <li><strong>El fuego no los para:</strong> antorchas y hogueras no sirven de mucho. Han pasado un invierno muy duro y se les marcan las costillas. Se arriesgan a que los hieran si con eso comen.</li>
+        <li>Si los descubren, el combate es inevitable.</li>
+      </ul>
+    </div>
+    <div class="ficha">
+      <p class="nombre">Lobo gigante</p>
+      <p class="lin"><b>NIV</b> 0 (1d4 PV) &middot; <b>ATQ</b> +0, mordisco 1d4 <span class="propuesta">propuesta</span> &middot; <b>DEF</b> 12</p>
+      <p class="lin"><b>Derribar:</b> al morder, <span class="tir">Instintos FUE 10+</span> o al suelo. Los ataques contra quien está en el suelo van con ventaja <span class="propuesta">propuesta</span>.</p>
+      <p class="lin"><b>Cuántos:</b> tantos como aventureros, más dos <span class="propuesta">propuesta</span>.</p>
+    </div>
+    <div class="nota rotulo-propio" data-rotulo="Cómo se usa esta pelea">
+      <p>Con 1d4 PV caen de un golpe, y un guerrero con Ataques Múltiples encadena muertes: déjalo lucirse, para eso está el talento. Es el primer combate y sirve para repasar las reglas. El peligro está en cuántos son y en el derribo, y en quién se queda sin compañeros cerca: que dos vayan a por la hechicera. Cuando quede uno o dos, huyen. Si los jugadores les dan carne, los lobos la cogen y se quedan mirando, y al día siguiente siguen ahí.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ CLARO -->
+<section class="hoja" data-cabecera="LA BESTIA DE FARTON" id="claro">
+  <div class="cols">
+    <h3 class="loc">El Claro de la Piedra</h3>
+    <p class="subtitulo-loc">A una jornada de Farton, al este del río.</p>
+    <p class="ambiente"><b>Se ve</b> un menhir enorme lleno de inscripciones que nadie entiende, en medio de una hierba más verde y más fresca que la del resto del bosque. <b>Huele</b> a hierba recién cortada, aunque nadie la ha cortado. <b>No se oye</b> nada: ni aves, ni roedores, ni un insecto. Los lobos no entran aquí.</p>
+    <div class="leer"><p>El bosque se abre sin avisar. Hace un momento había moscas y ahora no. El silencio es tan completo que oís vuestra propia ropa. A medida que os acercáis a la piedra empezáis a oír algo más: un murmullo, voces en una lengua que nadie habla ya, y algo en ellas os hace querer entenderlas mejor.</p></div>
+    <div class="dados">
+      <span class="rot">Utilizar los dados para… <b>resistir las voces</b></span>
+      <ul class="vinetas">
+        <li>Quien se adentre en el claro hacia la piedra oye las voces. Por mucho que se concentre, no las entenderá. Son muy atrayentes.</li>
+        <li>Cada uno tira <span class="tir">Instintos CAR 12+</span>. Si falla, camina con pasos inseguros hacia la piedra.</li>
+        <li>Al llegar, tiene otra oportunidad, igual. Si vuelve a fallar, la toca.</li>
+        <li>Se puede tocar a propósito, claro. Alguien lo hará.</li>
+        <li>Se puede intentar sujetar a un compañero: prueba de <span class="tir">FUE</span> enfrentada, y el que sujeta sigue oyendo las voces <span class="propuesta">propuesta</span>.</li>
+      </ul>
+    </div>
+    <p>Quien toca el menhir se enfrenta al destino de los dioses. Tira 1d12 en secreto.</p>
+  </div>
+  <table class="tabla destino">
+    <tr><th>1d12</th><th>Destino</th><th>Efecto</th><th>Cómo se descubre <span class="propuesta">propuesta</span></th></tr>
+    <tr><td>1</td><td>Débil y escuálido</td><td>−1d6 a CON</td><td>La ropa le queda grande. Las hebillas no llegan al agujero de siempre: le sobran.</td></tr>
+    <tr><td>2-3</td><td>Las piernas consumidas</td><td>−1d6 a MOV</td><td>Se queda atrás sin saber por qué. Las botas le bailan.</td></tr>
+    <tr><td>4-5</td><td>Oye las voces</td><td>Desventaja en Alerta de oído, siempre</td><td>Pregunta quién ha hablado. Nadie ha hablado.</td></tr>
+    <tr><td>6-7</td><td>Tocado por los dioses</td><td>+1 a una característica y −1 a otra</td><td>Una marca que antes no estaba, de nacimiento según él.</td></tr>
+    <tr><td>8-9</td><td>Más fuerte</td><td>Ventaja en tiradas de fuerza bruta</td><td>Rompe el asa de la cantimplora al cogerla.</td></tr>
+    <tr><td>10-11</td><td>Infravisión</td><td>Gana el talento. Si ya lo tenía, ve con normalidad en oscuridad completa</td><td>Las antorchas le molestan. Empieza a verle el calor a la gente.</td></tr>
+    <tr><td>12</td><td>Sensibilidad mágica</td><td>Gana el talento. Si ya lo tenía, dobla sus puntos de Poder</td><td>Se le encienden las yemas de los dedos al estornudar.</td></tr>
+  </table>
+  <div class="cols">
+    <h4>Y después</h4>
+    <p>Se despiertan <strong>fuera del claro</strong>, tras haber quedado inconscientes, sin recordar nada. El menhir ha desaparecido y no serán capaces de volver a encontrarlo. Si alguien que no lo ha tocado les lleva de nuevo, para ellos es intangible: la mano lo atraviesa. Nadie queda marcado dos veces.</p>
+    <div class="nota rotulo-propio" data-rotulo="Cómo contarlo">
+      <p>No digas el resultado. Dale al jugador la <a href="#notas">nota</a> correspondiente, o apúntalo y deja que lo descubra cuando importe. Pide la tirada de Alerta de oído como siempre y dile, sin más, que ha oído algo. El placer de esta escena es que nadie sabe qué le ha pasado hasta que intenta correr, o subir por una cuerda, o acercarse a una antorcha.</p>
+      <p>Los efectos son permanentes y hay más buenos que malos, pero los malos duelen. Los jugadores veteranos lo saben, y aun así tocan la piedra. Es lo que tiene la vieja escuela.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ RIO -->
+<section class="hoja" data-cabecera="VIEJA ESCUELA" id="rio">
+  <div class="cols">
+    <h3 class="loc">El río y el lago</h3>
+    <p class="ambiente"><b>Se ve</b> un río ancho y marrón con bastante corriente, y más arriba, donde se juntan los dos brazos, un lago que parece no moverse. <b>Huele</b> a barro frío. <b>Se oye</b> el agua contra las piedras, y en el lago, nada.</p>
+    <div class="dados">
+      <span class="rot">Utilizar los dados para… <b>cruzar el río</b></span>
+      <ul class="vinetas">
+        <li><strong>A nado:</strong> dos éxitos de <span class="tir">FUE 14+</span>. Quien falla se lo lleva la corriente un trecho. Tras cada fallo, <span class="tir">Instintos CON 14+</span> o pierde 1d6 PV entre el agua tragada y el esfuerzo.</li>
+        <li>Con cuerda y alguien que sujete en la orilla, ventaja <span class="propuesta">propuesta</span>. Con armadura de anillos, mallas o placas, desventaja <span class="propuesta">propuesta</span>. Quitársela y llevarla en un fardo es lo sensato, y por eso es divertido cuando aparece algo mientras están en ropa interior.</li>
+        <li><strong>Buscar un vado:</strong> <span class="tir">Supervivencia 14+</span>. Hay dos, y los dos quedan en la orilla del Bosque de las Arañas. Pip sabe dónde están.</li>
+      </ul>
+    </div>
+    <h4 class="sala">El lago</h4>
+    <div class="leer"><p>Hay un poste clavado en la orilla, con una tabla medio podrida. Alguien grabó las letras a navaja y las repasó con brea: <span class="cartel">«NO ES BUENA IDEA MOLESTAR AL AGUA»</span>.</p></div>
+    <p>El consejo tiene fundamento. En el fondo crecen unas algas carnívoras. Cruzar a nado por aquí parece lo fácil: no hay corriente. Es un error.</p>
+    <div class="ficha">
+      <p class="nombre">Algas atrapadoras</p>
+      <p class="lin"><b>NIV</b> 2 (2d8 PV) &middot; <b>ATQ</b> +2, roce 1 PV y presa &middot; <b>DEF</b> 10 <span class="propuesta">propuesta</span></p>
+      <p class="lin"><b>Presa:</b> FUE enfrentada: 1d20 + FUE contra 1d20 + 2 <span class="propuesta">propuesta</span>. Cada asalto atrapado, prueba de <span class="tir">SAB 11+</span> para mantener la calma. Si falla, se hunde tragando mucha agua: 1d4 PV.</p>
+      <p class="lin"><b>Cuántas:</b> dos matas por cada uno que se meta, y la mitad de los PV les da igual: se sueltan si les cortas el tallo <span class="propuesta">propuesta</span>.</p>
+    </div>
+    <p>El fondo está lleno de los esqueletos de todos los que no hicieron caso del cartel. Los jugadores los ven cuando ya tienen las algas en los tobillos. Si alguien lleva el amuleto de la sirena (lo encontrarán después, así que solo a la vuelta), aquí abajo se respira.</p>
+    <div class="nota rotulo-propio" data-rotulo="El agua y el peligro de verdad">
+      <p>Un personaje de 8 PV puede morir aquí sin que nadie le haya golpeado. Describe bien: que el primero que nota algo pueda gritar, que los de la orilla tengan tiempo de lanzar una cuerda. Es una de las pocas ocasiones donde la mejor jugada es salir corriendo del agua, y en eso consiste la escena.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ ARAÑAS -->
+<section class="hoja" data-cabecera="LA BESTIA DE FARTON" id="aranas">
+  <div class="cols">
+    <h3 class="loc">El Bosque de las Arañas</h3>
+    <p class="ambiente"><b>Se ve</b> telas larguísimas colgando de las ramas altas hasta donde alcanza la vista, y bultos pegados a ellas y a los troncos, envueltos por completo. <b>Huele</b> a cerrado y a carne vieja. <b>Se oye</b> un roce allá arriba, entre las copas, que no es el viento.</p>
+    <div class="leer"><p>La luz llega gris, filtrada por capas y capas de seda. Algo cuelga a la altura de vuestra cara: tiene el tamaño de un zorro, y por la forma en que se mueve despacio, todavía está vivo.</p></div>
+    <div class="dados">
+      <span class="rot">Utilizar los dados para… <b>no quedarse pegado</b></span>
+      <ul class="vinetas">
+        <li><strong>Quien toca la tela:</strong> <span class="tir">FUE 11+</span> para soltarse. Si falla, se lía más: la dificultad sube 1 por cada fallo.</li>
+        <li><strong>Moverse con cuidado:</strong> si describen cómo apartan las telas con una pértiga o cómo rodean la zona, no pidas tirada. Si van deprisa o a oscuras, <span class="tir">Alerta 11+</span> o tocan una <span class="propuesta">propuesta</span>.</li>
+        <li><strong>Trastear con las telas</strong> (abrir bultos, cortar a alguien): cada asalto, 5-6 en 1d6 y las arañas notan la vibración.</li>
+        <li><strong>El fuego:</strong> las telas arden muy deprisa y lo que hay debajo es un bosque. Si queman, se abren camino… y tú decides qué más se quema <span class="propuesta">propuesta</span>.</li>
+      </ul>
+    </div>
+    <h4>Qué hay en los bultos</h4>
+    <p>Huesos y criaturas agonizantes: aves, zorros, roedores. Con un 6 en 1d6, los restos de un cazador o un guardabosques: 1d6 mp y alguna pieza útil de equipo.</p>
+    <table class="tabla bultos">
+      <tr><th>1d6</th><th>Pieza útil <span class="propuesta">propuesta</span></th></tr>
+      <tr><td>1</td><td>Un hacha de leñador, buena (1d8).</td></tr>
+      <tr><td>2</td><td>Un carcaj con 12 flechas.</td></tr>
+      <tr><td>3</td><td>Cuerda, quince metros, pegajosa pero sana.</td></tr>
+      <tr><td>4</td><td>Yesca, pedernal y tres antorchas secas.</td></tr>
+      <tr><td>5</td><td>Vendas para dos heridas y una petaca de aguardiente.</td></tr>
+      <tr><td>6</td><td>Un mapa de cazador con los dos vados marcados.</td></tr>
+    </table>
+    <div class="ficha">
+      <p class="nombre">Araña gigante</p>
+      <p class="lin"><b>NIV</b> 1 (1d8 PV) &middot; <b>ATQ</b> +1, mordisco 1 PV + veneno &middot; <b>DEF</b> 11</p>
+      <p class="lin"><b>Veneno mortal:</b> <span class="tir">Instintos CON 11+</span> o muere. Ver la nota de abajo.</p>
+      <p class="lin"><b>Cuántas:</b> dos al principio, y una más cada dos asaltos que sigan en las telas, hasta tantas como aventureros <span class="propuesta">propuesta</span>.</p>
+    </div>
+    <div class="nota rotulo-propio" data-rotulo="Un veneno que mata de golpe">
+      <p>Es la regla del manual y es lo más letal de la aventura: una tirada fallada y fuera. Con INS +2 y CON +0, un aventurero tiene un 40 % de morir por mordisco. Decide antes de empezar cómo lo quieres, y díselo a la mesa:</p>
+      <ul class="puntos">
+        <li><strong>A la antigua:</strong> muere. Avisa con claridad cuando entren («estas telas son lo que os dijo Podrik; a quien muerden se queda tieso») y que decidan.</li>
+        <li><strong>Con margen <span class="propuesta">propuesta</span>:</strong> cae incapacitado y muere en 10 asaltos, como con 0 PV. Una poción de curación o el conjuro adecuado lo salvan. Pip lleva una, y Pip está justo aquí.</li>
+      </ul>
+    </div>
+    <h4 class="sala">Pip el trampero</h4>
+    <p>En uno de los bultos hay un cazador que ha caído hace poco. Se le oye antes de verlo: una respiración, y un gemido que parece querer ser una palabra.</p>
+    <div class="piel">
+      <span class="rot">En la piel de… <b>Pip</b></span>
+      <p><b>Cómo se le ve.</b> Flaco, sin afeitar, con media cara todavía pegada. Una vez fuera, tiembla un buen rato y luego se pone a hablar sin parar. Cuenta las flechas varias veces al día.</p>
+      <p><b>Cómo habla.</b> Rápido, con muchas disculpas. Llama «señora» o «señor» a todo el mundo, incluido al bárbaro. Cuando se asusta habla de sus trampas.</p>
+      <p><b>Lo que quiere.</b> Salir de aquí, y dar las gracias como pueda. Le da más miedo volver solo que seguir con ellos.</p>
+      <p class="frase">«Gracias, gracias, señor. Tenga. No, tenga, que era para mí y ya no me hace falta. Cura. Bueno, cura algo.»</p>
+      <p class="frase">«Hay dos vados. Uno aquí abajo, que le lleva al bosque de la piedra, y no quiera usted ir. Y el otro al norte, con las piedras en fila. Ese es el suyo.»</p>
+      <p class="frase">«¿El lago? ¿El lago? No, no, no. ¿Han visto el cartel? Lo puse yo. Bueno, mi padre.»</p>
+      <p class="frase">«Puedo ir con ustedes, si quieren. Pero les digo de verdad, peleando no valgo gran cosa. Yo desde atrás. Muy desde atrás.»</p>
+    </div>
+    <div class="ficha">
+      <p class="lin"><b>Pip:</b> NIV 2 (9 PV) &middot; ATQ +2, arco 1d6+1 &middot; DEF 12 <span class="propuesta">propuesta</span>. Siempre en la retaguardia. Regala una <strong>poción de curación</strong> (2d4 + CON). Enseña los vados y avisa de las algas si aún no las conocen. Si se lo piden, les acompaña.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ COLINA -->
+<section class="hoja" data-cabecera="VIEJA ESCUELA" id="colina">
+  <div class="cols">
+    <h3 class="loc">La Colina del Ogro</h3>
+    <p class="ambiente"><b>Se ve</b> una colina pelada, huesos y restos de animales por todas partes, pisadas enormes, una cueva del tamaño de una era en mitad de la ladera, y arriba, cuatro paredes derruidas. <b>Huele</b> a muerto, y se huele de lejos. <b>Se oye</b>, si es de noche, un ronquido que hace temblar la gravilla.</p>
+    <p>Déjales mirar. Es el momento de los planes, y a los jugadores les gusta espiar antes de actuar: si pasan aquí media hora decidiendo, no estás perdiendo el tiempo.</p>
+    <table class="tabla pruebas">
+      <tr><th>Si hacen…</th><th>Prueba</th><th>Descubren…</th></tr>
+      <tr><td>Examinar la cueva de cerca</td><td><span class="tir">Erudición 11+</span></td><td>Parece una cueva, pero la hicieron a propósito para que lo pareciera: es un acceso camuflado. La parte tosca es posterior, de alguien que ha ido agrandándola a golpes. Brom tiene ventaja por Afín a la Piedra.</td></tr>
+      <tr><td>Subir a las ruinas</td><td>Sin tirada</td><td>Cuatro paredes de una torre. Los pisos altos cayeron y están esparcidos por la ladera sur. Quedan unas escaleras que suben al primer piso y acaban en el aire. Dentro, cascotes.</td></tr>
+      <tr><td>Registrar el interior de las ruinas</td><td><span class="tir">Alerta 12+</span></td><td>Una trampilla medio enterrada por las rocas.</td></tr>
+      <tr><td>Despejar la trampilla</td><td><span class="tir">FUE 14+</span></td><td>Se apartan los cascotes lo justo. Pueden ayudarse: cada uno que empuje da +1 <span class="propuesta">propuesta</span>. Hace ruido.</td></tr>
+      <tr><td>Colarse por el hueco</td><td><span class="tir">DES 11+</span></td><td>Unos escalones de piedra bajan hacia la oscuridad. Con armadura grande o mochila, quitársela antes o desventaja <span class="propuesta">propuesta</span>.</td></tr>
+      <tr><td>Rastrear al ogro</td><td><span class="tir">Supervivencia 11+</span></td><td>Sus idas y venidas, y que sale de día <span class="propuesta">propuesta</span>.</td></tr>
+    </table>
+    <h4>El reloj del ogro</h4>
+    <div class="dados">
+      <span class="rot">Utilizar los dados para… <b>saber dónde está la Bestia</b></span>
+      <ul class="vinetas">
+        <li><strong>De noche</strong> duerme en la cueva, roncando a pleno pulmón, pero con el sueño ligero. Pasar por la gravilla de la entrada: <span class="tir">Subterfugio 12+</span>, cada uno. Un fallo y se despierta.</li>
+        <li><strong>De día</strong> ronda por los alrededores cazando. Cada media hora, tira 1d20: con 18-20 vuelve a la cueva.</li>
+        <li>Si vuelve y detecta a los intrusos, <strong>no para hasta capturarlos</strong> para devorarlos. No se aburre y no se distrae con facilidad.</li>
+      </ul>
+    </div>
+    <h4 class="sala">La cueva</h4>
+    <div class="leer"><p>La boca es lo bastante grande para que pase un carro. Al entrar, el suelo está cubierto de gravilla y de roca suelta que cruje a cada paso. El techo es tosco, a golpes, y más adentro el olor es tal que os lloran los ojos. Hay un montículo de huesos que alguien ha ordenado por tamaño, sin demasiada convicción.</p></div>
+    <p>En la cueva hay una enorme porra de madera tallada de un tronco, cuando no la lleva encima, y un <strong>saco de arpillera</strong> con 6d6 mo en calderilla de todo tipo, y más o menos lo mismo en objetos brillantes o preciosos: un candelabro, una hebilla, media corona de una boda de pueblo, lo que le ha llamado la atención en Farton.</p>
+    <p>Al fondo, tras un recodo, está la <strong>puerta secreta</strong> de los subterráneos (PS en el plano). <span class="tir">Alerta 14+</span> si alguien busca, o sin tirada si ya saben que la cueva es artificial y buscan justo ahí <span class="propuesta">propuesta</span>. Da la impresión de no haberse usado en años.</p>
+  </div>
+</section>
+
+<!-- ============================================================ OGRO -->
+<section class="hoja" data-cabecera="LA BESTIA DE FARTON" id="ogro">
+  <div class="cols">
+    <h3 class="loc">La Bestia</h3>
+    <div class="ficha">
+      <p class="nombre">Ogro</p>
+      <p class="lin"><b>NIV</b> 4 (4d8 PV; 18 si no quieres tirar) &middot; <b>ATQ</b> +4, porra 1d8+1 &middot; <b>INS</b> +4 &middot; <b>DEF</b> 14 &middot; <b>DES</b> 9, actúa en mitad del asalto <span class="propuesta">propuesta</span></p>
+    </div>
+    <div class="piel">
+      <span class="rot">En la piel de… <b>la Bestia</b></span>
+      <p><b>Cómo se le ve.</b> Tres metros de carne con una pelambrera sucia, una oreja rota y un collar hecho con hebillas y campanillas de vaca. Se rasca mucho. Tiene los ojos pequeños y atentos de un cerdo listo <span class="propuesta">propuesta</span>.</p>
+      <p><b>Cómo habla.</b> Poco y entendiéndose a medias. Sabe unas cuantas palabras de pueblo, aprendidas a base de oírlas gritar. Se refiere a sí mismo como «Bestia», porque es lo que le llaman <span class="propuesta">propuesta</span>.</p>
+      <p><b>Lo que quiere.</b> Comer. Es lo único que quiere y lo único que le importa, hasta el punto de que una vaca entera le haría dudar un momento. Los aventureros le parecen comida con muchas molestias.</p>
+      <p class="frase">«Tú. Pequeño. Mucho hueso.»</p>
+      <p class="frase">(Olfatea.) «Cebolla. Bestia conoce. Farton.» (Se ríe, y da miedo cómo.)</p>
+      <p class="frase">«No correr. Correr, carne dura.»</p>
+      <p class="frase">(Herido y furioso, arrancando de cuajo un arbolillo para seguir pegando.) «¡MÍO! ¡MI CUEVA! ¡MÍO!»</p>
+    </div>
+    <h4>Cómo pelea <span class="propuesta">propuesta</span></h4>
+    <ul class="vinetas">
+      <li>Va a por quien le ha hecho daño. Si nadie se lo ha hecho, a por el que parece más comestible: el mediano primero.</li>
+      <li>Si un guerrero le aguanta de frente, le lanza una piedra grande al que dispara desde atrás (ATQ +4, 1d6, 20 m). No es tonto del todo.</li>
+      <li>Con menos de un cuarto de sus PV se retira a la cueva a por el saco. Los ogros tienen sus prioridades. Si le cortan el paso, pelea hasta caer.</li>
+      <li>Si le atraen hacia los subterráneos, no cabe por la puerta secreta sin romperla. Lo hará, y hará ruido. Y entonces el cubo gelatinoso tendrá una visita.</li>
+    </ul>
+    <table class="tabla sisepregunta">
+      <tr><th>Si los jugadores…</th><th>Entonces…</th></tr>
+      <tr><td>Le tienden una emboscada a su regreso</td><td>Bien hecho. Subterfugio para esconderse contra su Alerta (usa 1d20+4). Los que le ataquen desprevenido, con Emboscar, suman 1d6. Es la mejor jugada de la aventura.</td></tr>
+      <tr><td>Intentan hablar</td><td>Escucha si le ofrecen comida. No hay trato que dure más de lo que dure la comida.</td></tr>
+      <tr><td>Se cuelan de noche a robar el saco</td><td>Subterfugio 12+, cada uno, a la ida y a la vuelta. Si lo consiguen, se quedan con el dinero y sin la recompensa: que lo decidan.</td></tr>
+      <tr><td>Hacen fuego en la boca de la cueva</td><td>Sale, y sale muy enfadado. Tiene ventaja en el primer ataque <span class="propuesta">propuesta</span>.</td></tr>
+      <tr><td>Salen por la puerta secreta a su espalda</td><td>Un asalto de sorpresa completo. Eso compensa la media hora de ratas y cubo.</td></tr>
+      <tr><td>Huyen</td><td>Los persigue. MOV 12, y no duerme mientras tenga el olor. La única forma de pararlo es cruzar agua o matarlo.</td></tr>
+    </table>
+    <div class="nota rotulo-propio" data-rotulo="Una pelea corta">
+      <p>Con Kurgan y Brom pegando, el ogro dura tres o cuatro asaltos, y a cada golpe suyo se va la mitad de los PV de cualquiera que no sea un guerrero. Que se note: describe las paredes de la cueva temblando, y usa críticos con mala idea (más abajo, <a href="#ejemplos">un ejemplo</a>). Si los jugadores han llegado sanos y con un plan, deja que ganen sin apuros. Se lo han trabajado.</p>
+    </div>
+    <p><strong>La cabeza.</strong> Si acaban con él y la llevan a Farton, cobran. Pesa como un saco de patatas de los grandes, y cuenta como dos bultos <span class="propuesta">propuesta</span>. A los dos días huele tanto que no hay quien se acerque.</p>
+  </div>
+</section>
+
+<!-- ============================================================ SUBTERRÁNEOS -->
+<section class="hoja" data-cabecera="VIEJA ESCUELA" id="subterraneos">
+  <div class="cols">
+    <h3 class="loc">Los subterráneos de la torre</h3>
+    <p>Son poco más que un puñado de salas cubiertas de polvo y telarañas, con una diferencia que los jugadores atentos notarán: las de arriba están sucias y las de abajo, limpísimas. Se entra por la trampilla (arriba) o por la puerta secreta de la cueva (abajo). El plano es de Iñaki Raya; los números se han añadido para este cuaderno.</p>
+  </div>
+  <figure class="mapa-fig plano-sub"><img src="img/subterraneo.png" width="1100" height="1809" alt="Plano de los subterráneos: arriba, la sala de guardia con el almacén y la despensa; escaleras abajo, un pasillo con la sala del cubo y la del cofre; más abajo, una sala de pilares y otra con la puerta secreta que da a la cueva.">
+    <figcaption><b>Los subterráneos.</b> Plano de Iñaki Raya (CC BY-NC-SA 4.0), numerado. La escalera de arriba a la derecha sube a la trampilla de las ruinas.</figcaption>
+  </figure>
+  <div class="cols">
+    <h4 class="sala"><span class="num-lugar">1</span>Sala de guardia</h4>
+    <p class="ambiente"><b>Se ve</b> una mesa volcada a medias con sus taburetes, un barril reventado, un armario sin puertas y polvo de décadas con el rastro de cosas bajas y peludas. <b>Huele</b> a rata y a moho. <b>Se oye</b> un correteo que para cuando hablas.</p>
+    <p>Nada útil. Si hurgan: dos jarras de peltre (2 mp) y un dado de hueso con todas las caras a seis <span class="propuesta">propuesta</span>. Hay huellas de rata hacia las puertas de 2 y 3.</p>
+    <h4 class="sala"><span class="num-lugar">2</span>Almacén</h4>
+    <p>La puerta está arrancada. <strong>Repleto de cajas.</strong> Entre ellas, mantas apolilladas y diverso equipo oxidado y enmohecido, y lo que merece la pena:</p>
+    <ul class="vinetas">
+      <li>Una <strong>piedra de afilar mágica</strong>: quien afila un arma de filo con ella durante seis asaltos tiene ventaja en sus ataques con esa arma hasta que impacte una vez.</li>
+      <li>Una <strong>poción de curación</strong> (2d4 + CON).</li>
+    </ul>
+    <h4 class="sala"><span class="num-lugar">3</span>Despensa</h4>
+    <p>El cubil de las ratas, con lo que queda de unos sacos y un nido de paja y huesos pequeños. Si no se las molesta, ignoran a los aventureros. Son bastante territoriales: en cuanto alguien entra aquí <em>o se pone a revolver en el almacén</em>, atacan, porque para ellas 2 y 3 son la misma casa.</p>
+    <div class="ficha">
+      <p class="nombre">Ratas gigantes</p>
+      <p class="lin"><b>NIV</b> 0 (1d4 PV) &middot; <b>ATQ</b> +0, mordisco 1d4 &middot; <b>DEF</b> 10</p>
+      <p class="lin"><b>Enfermedad:</b> quien recibe un mordisco tira 1d10; con un 1, se le pega. Fiebre: −1 a todas las pruebas hasta completar un día entero de descanso <span class="propuesta">propuesta</span>.</p>
+      <p class="lin"><b>Cuántas:</b> dos por aventurero <span class="propuesta">propuesta</span>. Se alimentan de insectos y raíces, no de oro.</p>
+    </div>
+    <h4 class="sala"><span class="num-lugar">4</span>El corredor limpio</h4>
+    <div class="leer"><p>Bajáis la escalera y algo cambia. Aquí no hay polvo. El suelo brilla. Las paredes relucen como recién lavadas, hasta la altura de vuestros hombros; por encima, la telaraña de siempre, cortada en una raya perfecta y horizontal.</p></div>
+    <div class="dados">
+      <span class="rot">Utilizar los dados para… <b>sospechar a tiempo</b></span>
+      <ul class="vinetas">
+        <li><span class="tir">Alerta 11+</span>: se dan cuenta de que es insólito, porque la puerta secreta llevaba años sin abrirse. Nadie ha entrado a limpiar.</li>
+        <li>Con esa pista, <span class="tir">Supervivencia 15+</span>: sospechan que un cubo gelatinoso habita estos corredores. Tienen la medida exacta: metro y medio de alto.</li>
+        <li>A quien lo diga en voz alta sin tirada («¿y si hay algo que se lo come todo?»), dale la razón con la cara, nada más.</li>
+      </ul>
+    </div>
+    <h4 class="sala"><span class="num-lugar">5</span>La sala del cubo</h4>
+    <p>Aquí empieza, inmóvil y transparente, en medio de un suelo reluciente. Con antorchas, solo se le ve el contorno y algo flotando dentro: una hebilla, un cráneo de rata, una moneda. Dentro hay 2d6 mo sin digerir <span class="propuesta">propuesta</span>.</p>
+    <div class="ficha">
+      <p class="nombre">Cubo gelatinoso</p>
+      <p class="lin"><b>NIV</b> 4 (4d8 PV) &middot; <b>ATQ</b> +4, golpe 2d4 &middot; <b>DEF</b> 11 &middot; <b>MOV</b> 6 <span class="propuesta">propuesta</span></p>
+      <p class="lin"><b>Inmovilizar y disolver:</b> al golpear, <span class="tir">Instintos DES 14+</span> o queda dentro. Dentro no se puede hacer nada, y se pierden 1d6 PV por asalto. Se sale con <span class="tir">FUE 14+</span>, o si lo matan, o tirando de él entre dos. Los que golpeen al cubo no dañan al de dentro <span class="propuesta">propuesta</span>.</p>
+      <p class="lin"><b>Se mueve:</b> cada turno que pasen en las salas 4 a 8, 1d6: con un 1, entra en la sala contigua. Va hacia el ruido y el calor <span class="propuesta">propuesta</span>.</p>
+    </div>
+    <h4 class="sala"><span class="num-lugar">6</span>La sala del cofre</h4>
+    <p>En el suelo limpio, los restos de un cofre del que solo quedan los herrajes. Descansan junto a él dos cosas que el cubo no ha podido digerir:</p>
+    <div class="tesoros">
+      <figure><img src="img/daga.png" width="127" height="858" alt="Grabado de una daga"></figure>
+      <div>
+        <p><strong>Daga mágica.</strong> Salta a la mano de su portador cuando está en peligro, avisándole, y le da ventaja en iniciativa. Como aquí la iniciativa no se tira, <strong>actúa primero del asalto</strong>, sea cual sea su DES. Y que nadie pueda sorprenderle mientras la lleve <span class="propuesta">propuesta</span>.</p>
+        <p><strong>Amuleto de la sirena.</strong> Bronce, con forma de sirena de dos colas. Guarda 1 punto de Poder y permite respirar bajo el agua. Se recarga si un hechicero le transfiere 1 POD <span class="propuesta">propuesta</span>.</p>
+      </div>
+      <figure><img src="img/sirena.png" width="683" height="528" alt="Grabado antiguo de una sirena de dos colas"></figure>
+    </div>
+    <h4 class="sala"><span class="num-lugar">7</span>La sala de los pilares</h4>
+    <p>Grande, vacía y resplandeciente, con cuatro pilares. Es el sitio ideal para que el cubo los pille entre dos puertas, porque desde la escalera no se le ve si está detrás de un pilar.</p>
+    <h4 class="sala"><span class="num-lugar">8</span>El vestíbulo</h4>
+    <p>Limpia, con una puerta al este. En la pared sur, la puerta secreta (PS), bien visible desde este lado: una losa con una anilla. Se abre hacia la cueva, y si se acercan se oye al otro lado si el ogro está en casa.</p>
+    <h4 class="sala"><span class="num-lugar">9</span>La cueva del ogro</h4>
+    <p>Ver <a href="#colina">«La cueva»</a>. Desde aquí se sale justo tras el recodo del fondo, cerca del saco.</p>
+    <div class="nota rotulo-propio" data-rotulo="Por qué dejarles esta parte">
+      <p>Los subterráneos son opcionales, y por tanto un regalo: quien los busque se lleva lo mejor del tesoro y una ventaja contra el ogro. No se los pongas delante si no los han buscado. Si la mesa termina con el ogro y no sospecha de la cueva, una frase basta: «al apoyarte en la pared del fondo, oyes que suena a hueco». Y si dicen que no, pues no. A la vuelta alguien se preguntará qué había allí.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ FINAL -->
+<section class="hoja" data-cabecera="LA BESTIA DE FARTON" id="final">
+  <div class="cols">
+    <h3 class="cap">Vuelta a Farton</h3>
+    <div class="leer"><p>Primero lo huelen los perros. Después, los críos de la cerca grande. Cuando llegáis a la plaza, Podrik ya ha salido de la tienda y se está limpiando las manos en el delantal, muy despacio. Nadie dice nada. Alguien, al fondo, empieza a llorar.</p></div>
+    <p><strong>La recompensa.</strong> La aventura la llama «cuantiosa». Una cifra razonable son <strong>200 mo en total</strong>, en monedas de todos los pueblos y un buen montón de cobre, contada tres veces <span class="propuesta">propuesta</span>. Si llevan el botín del ogro y alguien lo reconoce («esa es la hebilla de mi padre»), dales un problema pequeño y divertido.</p>
+    <p><strong>Experiencia.</strong> El valor normal por sesión son 2 PX. Da 3 si han acabado con el ogro con un plan del que se hablará en la posada. Son 10 PX por Nivel, así que aún queda camino.</p>
+    <h4>Hilos sueltos <span class="propuesta">propuesta</span></h4>
+    <ul class="vinetas">
+      <li><strong>¿Quién levantó la torre?</strong> Y por qué disimuló la entrada. El círculo de oro de Tcimiel tiene un archivo y mucho interés en cualquier cosa con una daga que salta a la mano.</li>
+      <li><strong>La piedra.</strong> Los marcados por el menhir empiezan a encontrarse entre sí. Uno de ellos es el cuñado de Podrik.</li>
+      <li><strong>El agua.</strong> Con el amuleto se puede bajar al lago. Ahí abajo hay muchos esqueletos con todo lo que llevaban encima.</li>
+      <li><strong>El embarcadero.</strong> Sin ogro, los botes pueden volver a subir. Y alguien va a querer ser el dueño de ese muelle.</li>
+    </ul>
+    <h4>Si el ogro no muere <span class="propuesta">propuesta</span></h4>
+    <p>Si los derrotan o se van con el saco sin la cabeza, Farton aguanta otro invierno a duras penas. Podrik les habla con mucha educación y les cobra el doble. Y si tardan más de <strong>tres jornadas</strong> en total, la Bestia baja una noche al pueblo mientras ellos están fuera: otro corral vacío, y esta vez saben de quién.</p>
+  </div>
+</section>
+
+<!-- ============================================================ DIRIGIR -->
+<section class="hoja" data-cabecera="VIEJA ESCUELA" id="dirigir">
+  <div class="cols">
+    <h3 class="cap">Consejos para dirigir</h3>
+    <ul class="vinetas">
+      <li><strong>Primero la descripción, luego los dados.</strong> El manual lo dice sin rodeos: la regla más importante es el sentido común. Pregunta «¿cómo lo haces?». Quien dice «registro la trampilla palpando el borde con el cuchillo» encuentra la trampilla sin tirar, si tiene sentido. Los dados son para cuando el resultado es dudoso y fallar tiene consecuencias.</li>
+      <li><strong>Di lo que hay y deja decidir.</strong> Las telas, el cartel, la raya en la pared. Todos los peligros de esta aventura se pueden ver venir, y eso la hace justa. Cuando muera alguien, tiene que poder decir «lo sabía, es que soy idiota», y reírse.</li>
+      <li><strong>Las dificultades son casi siempre 11+.</strong> Sube a 14+ cuando hay prisa, miedo o mala luz. Lo que ves aquí con 12+ o 15+ viene de la aventura original y no tiene más misterio. Si dudas, 11+ y a seguir.</li>
+      <li><strong>Lleva la cuenta del tiempo y de las antorchas.</strong> Son la presión de esta clase de partidas. Una antorcha son 6 turnos; un turno, explorar con calma una sala. Dilo en voz alta: «segunda antorcha, os quedan dos». Tienes casillas para marcarlo en la <a href="#control">hoja de control</a>.</li>
+      <li><strong>Los trasfondos valen más de lo que parece.</strong> Son la manera de que el jugador te convenza. Kurgan ha cazado mamuts: claro que sabe por dónde atacaría una bestia grande. Da el +2 con alegría y la ventaja cuando te hagan sonreír.</li>
+      <li><strong>Los críticos los propone el jugador.</strong> Puede quitar un arma, bajar la armadura, tirar al enemigo al suelo, moverlo de sitio. Y siempre le queda el daño máximo +1. Pregunta «¿qué le haces?», y da por bueno lo que sea razonable. Cuando un monstruo saca un 20, propones tú: es tu momento.</li>
+      <li><strong>La magia se negocia.</strong> No hay lista de conjuros: Tcimiel dice lo que quiere y le pones precio. Como guía, 1 POD por cada d6 de daño, curación o niveles afectados. Hazlo deprisa y con generosidad, porque 6 POD se gastan enseguida. Si alguien propone algo peligroso, avisa de la pérdida de Salud Mental antes de que lo haga.</li>
+      <li><strong>Que muera alguien no es un fracaso.</strong> A Nivel 3 se rehace en cinco minutos con <a href="/generador/vieja-escuela">el generador</a>, o en dos con el botón del azar. Métele en el siguiente bulto de seda o en la siguiente escena, y no le des más vueltas.</li>
+      <li><strong>Pocas mesas lo verán todo.</strong> Y está bien. Si alguien pregunta al final qué había en el claro, cuéntaselo, o mejor, no.</li>
+    </ul>
+    <h4>Si la partida se atasca</h4>
+    <table class="tabla sisepregunta">
+      <tr><th>Si…</th><th>Prueba con…</th></tr>
+      <tr><td>Llevan media hora en la tienda</td><td>Fuera empieza a gritar alguien: una vaca aparecida a medias en un camino. Hay que irse.</td></tr>
+      <tr><td>No saben por dónde ir</td><td>Pon el mapa delante y pide un voto. Las tres rutas funcionan; solo hay que elegir una.</td></tr>
+      <tr><td>Se sienten perdidos en el bosque</td><td>Un rastro de ogro, inconfundible: árboles rotos y un olor. Los lleva hacia la colina, y también hacia los lobos.</td></tr>
+      <tr><td>Quedan solo 45 minutos</td><td>Es de día, tira un 19 en el reloj: el ogro vuelve a casa. Ya.</td></tr>
+      <tr><td>Han perdido a la mitad antes de llegar</td><td>Pip, o unos leñadores que suben por su cuenta, buscando a los suyos. Dales un PNJ o un personaje nuevo.</td></tr>
+      <tr><td>Quieren volver a descansar cada dos por tres</td><td>Déjalos, pero cuenta las jornadas: la Bestia también come.</td></tr>
+    </table>
+  </div>
+</section>
+
+<!-- ============================================================ EJEMPLOS -->
+<section class="hoja" data-cabecera="LA BESTIA DE FARTON" id="ejemplos">
+  <div class="cols">
+    <h3 class="cap">Cuatro ejemplos de mesa</h3>
+    <p>Para quien dirige por primera vez, o viene de juegos con más reglas. Las voces son de la mesa, y los nombres, los de los pregenerados.</p>
+    <h4>Negociar un conjuro</h4>
+    <div class="voces mesa">
+      <p><b>Jugadora de Tcimiel:</b> Quiero que las telarañas se aparten de nuestro camino. Lo llamo «abrir sendero».</p>
+      <p><b>Máster:</b> ¿Cuánto rato y cuánto camino?</p>
+      <p><b>Jugadora:</b> Lo que tardemos en llegar al vado.</p>
+      <p><b>Máster:</b> Medio día de telas es mucho para un conjuro. Por 2 POD te abro un sendero durante un turno, unos quinientos metros. Si quieres más, cuesta sangre: 1 PV por cada turno extra.</p>
+      <p><b>Jugadora:</b> Dos POD, y Kurgan va delante con la espada para lo demás.</p>
+      <p><b>Máster:</b> Hecho. Las telas se encogen como pelo cerca de una llama. Te quedan 4 POD, y ahora las arañas saben que algo ha pasado.</p>
+    </div>
+    <p class="aclara">No hay respuesta correcta. Lo importante es que hayas dado un precio rápido y una consecuencia.</p>
+    <h4>Un crítico contra el ogro</h4>
+    <div class="voces mesa">
+      <p><b>Jugador de Brom:</b> ¡Veinte natural!</p>
+      <p><b>Máster:</b> Crítico. Primero tira el daño. ¿Qué le haces?</p>
+      <p><b>Jugador:</b> Ocho en total. Le meto el hacha en la mano de la porra para que la suelte.</p>
+      <p><b>Máster:</b> Hecho: la porra cae rodando ladera abajo. Tendrá que pelear con los puños, o ir a por ella. Pero mira cómo te mira.</p>
+    </div>
+    <p class="aclara">Si el jugador no tiene una idea, siempre está el daño máximo + 1. Y si el crítico es del ogro, puedes decidir que Brom sale volando dos metros y pierde el escudo.</p>
+    <h4>Explorar sin tirar</h4>
+    <div class="voces mesa">
+      <p><b>Máster:</b> Los escombros os llegan a la rodilla. Vigas podridas, sillares rotos, un trozo de escalera.</p>
+      <p><b>Jugador de Néstor:</b> Busco algo raro.</p>
+      <p><b>Máster:</b> ¿Cómo buscas?</p>
+      <p><b>Jugador:</b> Me fijo en si hay algún sitio en el que no crezcan hierbas. Si debajo hay un hueco, ahí no agarra tierra.</p>
+      <p><b>Máster:</b> Muy bien. Hay una zona de cuatro palmos, en la esquina, con menos verde que el resto. Debajo de esos bloques suena distinto. No hace falta tirar: la has encontrado.</p>
+    </div>
+    <p class="aclara">Si hubiera dicho solo «busco» y nada más: <span class="tir">Alerta 12+</span>. Los dos caminos valen. El que razona merece el premio.</p>
+    <h4>Usar un trasfondo</h4>
+    <div class="voces mesa">
+      <p><b>Jugador de Kurgan:</b> Oigo a los lobos. Quiero que dejen de seguirnos. Soy cazador de mamuts, sé cómo piensa una manada.</p>
+      <p><b>Máster:</b> Tiene algo que ver. Supervivencia, con +2 por tu trasfondo. ¿Qué haces exactamente?</p>
+      <p><b>Jugador:</b> Dejo el resto del pernil en lo alto de la ladera, y nosotros nos vamos por el arroyo para quitar el rastro.</p>
+      <p><b>Máster:</b> Eso es mucha idea. Con ventaja, en vez de +2. Doce o más.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ BESTIARIO -->
+<section class="hoja" data-cabecera="VIEJA ESCUELA" id="bestiario">
+  <div class="cols">
+    <h3 class="cap">Bestiario</h3>
+    <p>Todo junto y con los mismos rótulos. En el juego, el Nivel es a la vez el bono de ATQ, el de INS y el número de d8 de sus PV. Los números entre paréntesis son la media para no tirar.</p>
+  </div>
+  <table class="tabla bestias">
+    <tr><th>Criatura</th><th>NIV</th><th>PV</th><th>ATQ</th><th>Daño</th><th>DEF</th><th>Lo que importa</th></tr>
+    <tr><td>Lobo gigante</td><td>0</td><td>1d4 (2)</td><td>+0</td><td>1d4</td><td>12</td><td>Derribar: Instintos FUE 10+. No huye del fuego.</td></tr>
+    <tr><td>Rata gigante</td><td>0</td><td>1d4 (2)</td><td>+0</td><td>1d4</td><td>10</td><td>Enfermedad con 1 en 1d10. Territorial.</td></tr>
+    <tr><td>Araña gigante</td><td>1</td><td>1d8 (4)</td><td>+1</td><td>1 PV</td><td>11</td><td>Veneno mortal: Instintos CON 11+.</td></tr>
+    <tr><td>Algas atrapadoras</td><td>2</td><td>2d8 (9)</td><td>+2</td><td>1 PV</td><td>10</td><td>Presa con FUE enfrentada. SAB 11+ cada asalto o 1d4.</td></tr>
+    <tr><td>Pip</td><td>2</td><td>9</td><td>+2</td><td>1d6+1</td><td>12</td><td>Arco, desde muy atrás. Aliado.</td></tr>
+    <tr><td>Ogro</td><td>4</td><td>4d8 (18)</td><td>+4</td><td>1d8+1</td><td>14</td><td>Persigue sin descanso. Piedra: 1d6 a 20 m.</td></tr>
+    <tr><td>Cubo gelatinoso</td><td>4</td><td>4d8 (18)</td><td>+4</td><td>2d4</td><td>11</td><td>Instintos DES 14+ o dentro: 1d6 por asalto; salir, FUE 14+.</td></tr>
+  </table>
+</section>
+
+<!-- ============================================================ PREGENERADOS -->
+<section class="hoja" data-cabecera="LA BESTIA DE FARTON" id="pregenerados">
+  <h3 class="cap" style="margin-top:.2rem">Cuatro aventureros</h3>
+  <p>Son los de la aventura original, recalculados con la edición revisada del manual; los cambios están en <a href="#erratas">las erratas</a>. Sus frases de ambición y las 40 mo son <span class="propuesta">propuesta</span>. Cada uno tiene su ficha en PDF rellenable, y hay lo mismo sin spoilers en la <a href="fichas">página de fichas</a>. Si la mesa prefiere personajes propios, <a href="/generador/vieja-escuela">el generador</a> permite empezar a Nivel 3.</p>
+  <p class="descarga"><a href="aventureros/todos.pdf" download><strong>Descargar las cuatro fichas en un archivo</strong></a> &middot; <a href="aventureros/ficha-en-blanco.pdf" download>ficha en blanco</a></p>
+  <div class="pregens">
+    <div class="pregen">
+      <p class="pg-nombre">Brom Piedrarota</p>
+      <p class="pg-oficio">Enano guerrero, Nivel 3</p>
+      <p class="pg-retrato">Último descendiente del clan Piedrarota de la montaña Rocadura.</p>
+      <table class="carac"><tr><td><b>FUE</b> 16 (+1)</td><td><b>DES</b> 10 (0)</td><td><b>CON</b> 18 (+2)</td></tr><tr><td><b>INT</b> 9 (0)</td><td><b>SAB</b> 15 (+1)</td><td><b>CAR</b> 7 (0)</td></tr></table>
+      <p class="pg-der"><b>PV</b> 22 &middot; <b>MOV</b> 9 &middot; <b>DEF</b> 14 &middot; <b>ATQ</b> +1 &middot; <b>INS</b> +3 &middot; <b>POD</b> 0</p>
+      <p><b>Habilidades:</b> Alerta +3, Erudición +1, Subterfugio +1, Supervivencia +3.</p>
+      <p><b>Talentos:</b> Afín a la Piedra, Infravisión, Ataques Múltiples, Lucha con arma de mano y escudo.</p>
+      <p><b>Armas:</b> hacha de batalla (ATQ +3, 1d8+2), martillo de guerra (ATQ +3, 1d4+2). Escudo, cota de anillos.</p>
+      <p class="pg-pdf"><a href="aventureros/brom-piedrarota.pdf" download>Ficha en PDF</a></p>
+    </div>
+    <div class="pregen">
+      <p class="pg-nombre">Néstor Dedos Ágiles</p>
+      <p class="pg-oficio">Mediano bribón, Nivel 3</p>
+      <p class="pg-retrato">Saqueador profesional del gremio de ladrones de Ketharia.</p>
+      <table class="carac"><tr><td><b>FUE</b> 10 (0)</td><td><b>DES</b> 18 (+2)</td><td><b>CON</b> 15 (+1)</td></tr><tr><td><b>INT</b> 7 (0)</td><td><b>SAB</b> 16 (+1)</td><td><b>CAR</b> 9 (0)</td></tr></table>
+      <p class="pg-der"><b>PV</b> 15 &middot; <b>MOV</b> 9 &middot; <b>DEF</b> 14 &middot; <b>ATQ</b> +1 &middot; <b>INS</b> +2 &middot; <b>POD</b> 0</p>
+      <p><b>Habilidades:</b> Alerta +2, Comunicación +1, Manipulación +3, Subterfugio +2.</p>
+      <p><b>Talentos:</b> Escurridizo, Certero, Emboscar (+1d6 a desprevenidos), Dedos Ágiles.</p>
+      <p><b>Armas:</b> 4 dagas (ATQ +1, 1d4; lanzadas ATQ +4), honda (ATQ +4, 1d4). Armadura de cuero.</p>
+      <p class="pg-pdf"><a href="aventureros/nestor-dedos-agiles.pdf" download>Ficha en PDF</a></p>
+    </div>
+    <div class="pregen">
+      <p class="pg-nombre">Kurgan el Bárbaro</p>
+      <p class="pg-oficio">Humano guerrero, Nivel 3</p>
+      <p class="pg-retrato">Montañés de las cimas heladas del fin del mundo. Cazador de mamuts.</p>
+      <table class="carac"><tr><td><b>FUE</b> 18 (+2)</td><td><b>DES</b> 16 (+1)</td><td><b>CON</b> 15 (+1)</td></tr><tr><td><b>INT</b> 7 (0)</td><td><b>SAB</b> 10 (0)</td><td><b>CAR</b> 9 (0)</td></tr></table>
+      <p class="pg-der"><b>PV</b> 19 &middot; <b>MOV</b> 12 &middot; <b>DEF</b> 13 &middot; <b>ATQ</b> +1 &middot; <b>INS</b> +4 &middot; <b>POD</b> 0</p>
+      <p><b>Habilidades:</b> Alerta +2, Subterfugio +3, Supervivencia +3.</p>
+      <p><b>Talentos:</b> Ímpetu Emprendedor, Adaptable, Ataques Múltiples, Lucha con armas a dos manos.</p>
+      <p><b>Armas:</b> espada a dos manos (ATQ +4, 1d10+3), 2 dagas (ATQ +3, 1d4+2; lanzadas ATQ +2, 1d4). Armadura de cuero.</p>
+      <p class="pg-pdf"><a href="aventureros/kurgan-el-barbaro.pdf" download>Ficha en PDF</a></p>
+    </div>
+    <div class="pregen">
+      <p class="pg-nombre">Tcimiel la Preclara</p>
+      <p class="pg-oficio">Elfa hechicera, Nivel 3</p>
+      <p class="pg-retrato">Hechicera principiante del círculo de oro.</p>
+      <table class="carac"><tr><td><b>FUE</b> 7 (0)</td><td><b>DES</b> 16 (+1)</td><td><b>CON</b> 10 (0)</td></tr><tr><td><b>INT</b> 18 (+2)</td><td><b>SAB</b> 15 (+1)</td><td><b>CAR</b> 9 (0)</td></tr></table>
+      <p class="pg-der"><b>PV</b> 8 &middot; <b>MOV</b> 12 &middot; <b>DEF</b> 11 &middot; <b>ATQ</b> +0 &middot; <b>INS</b> +2 &middot; <b>POD</b> 6</p>
+      <p><b>Habilidades:</b> Alerta +2, Comunicación +2, Manipulación +1, Erudición +2, Subterfugio +1.</p>
+      <p><b>Talentos:</b> Vista Aguda, Infravisión, Sensibilidad Mágica, Transferir Esencia (3 PV = 1 POD).</p>
+      <p><b>Armas:</b> bastón (ATQ +0, 1d6).</p>
+      <p><b>Tres conjuros de ejemplo</b> <span class="propuesta">propuesta</span><b>:</b> <em>proyectil ácido</em> (1 POD por d6 de daño), <em>curar heridas</em> (1 POD por d6), <em>dormir</em> (1 POD por Nivel de blanco). Quien resista tira Instintos contra 13+.</p>
+      <p class="pg-pdf"><a href="aventureros/tcimiel-la-preclara.pdf" download>Ficha en PDF</a></p>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ CONTROL -->
+<section class="hoja" data-cabecera="VIEJA ESCUELA" id="control">
+  <h3 class="cap" style="margin-top:.2rem">Hoja de control del máster</h3>
+  <p>Para imprimirla y tenerla a mano. Todo lo que hay aquí sale de las páginas anteriores.</p>
+  <div class="cols">
+    <div class="control">
+      <h4>El tiempo</h4>
+      <p class="pista">Jornadas: <span class="c"></span><span class="c"></span><span class="c"></span> &nbsp;(con más de 3, la Bestia baja a Farton)</p>
+      <p class="pista">Turnos de 10 minutos: <span class="c"></span><span class="c"></span><span class="c"></span><span class="c"></span><span class="c"></span><span class="c"></span><span class="sep"></span><span class="c"></span><span class="c"></span><span class="c"></span><span class="c"></span><span class="c"></span><span class="c"></span><span class="sep"></span><span class="c"></span><span class="c"></span><span class="c"></span><span class="c"></span><span class="c"></span><span class="c"></span></p>
+      <p>Cada grupo de seis casillas es una antorcha. Una carga de aceite, 24.</p>
+    </div>
+    <div class="control">
+      <h4>La Bestia</h4>
+      <p class="pista">PV (4d8): <span class="c ancha"></span> &nbsp; DEF 14 &middot; ATQ +4 &middot; 1d8+1</p>
+      <p class="pista">De día, cada media hora, 18-20 en 1d20: <span class="c"></span><span class="c"></span><span class="c"></span><span class="c"></span><span class="c"></span><span class="c"></span></p>
+      <p class="pista">De noche: gravilla, Subterfugio 12+.</p>
+      <p class="pista">Saco: 6d6 mo <span class="c ancha"></span> y lo mismo en objetos.</p>
+    </div>
+    <div class="control">
+      <h4>Las pruebas de la colina</h4>
+      <p class="pista">Cueva artificial, Erudición 11+ <span class="c"></span><br>Trampilla, Alerta 12+ <span class="c"></span><br>Despejarla, FUE 14+ <span class="c"></span><br>Colarse, DES 11+ <span class="c"></span><br>Puerta secreta, Alerta 14+ <span class="c"></span></p>
+    </div>
+    <div class="control">
+      <h4>Peajes del camino</h4>
+      <p class="pista">Lobos, Supervivencia 12+ <span class="c"></span><span class="c"></span><span class="c"></span><br>Voces, Instintos CAR 12+ (dos veces)<br>Río, FUE 14+ (dos éxitos); tras fallo, Instintos CON 14+ o 1d6<br>Vado, Supervivencia 14+<br>Telas, FUE 11+ (+1 por fallo)<br>Araña, Instintos CON 11+<br>Algas, SAB 11+ o 1d4</p>
+    </div>
+    <div class="control">
+      <h4>El cubo</h4>
+      <p class="pista">PV (4d8): <span class="c ancha"></span> &nbsp; Está en la sala: 5 <span class="c"></span> 7 <span class="c"></span> 8 <span class="c"></span> 4 <span class="c"></span> 6 <span class="c"></span></p>
+      <p class="pista">Un turno en 4-8: 1 en 1d6, y se mueve.</p>
+    </div>
+    <div class="control">
+      <h4>Lo que han encontrado</h4>
+      <p class="pista">Pip <span class="c"></span> &nbsp; Poción de Pip <span class="c"></span> &nbsp; Poción del almacén <span class="c"></span><br>Piedra de afilar <span class="c"></span> &nbsp; Daga <span class="c"></span> &nbsp; Amuleto <span class="c"></span></p>
+    </div>
+    <table class="tabla anotar">
+      <tr><th>Aventurero</th><th>PV</th><th>INS</th><th>Destino del menhir</th></tr>
+      <tr><td>&nbsp;</td><td></td><td></td><td></td></tr>
+      <tr><td>&nbsp;</td><td></td><td></td><td></td></tr>
+      <tr><td>&nbsp;</td><td></td><td></td><td></td></tr>
+      <tr><td>&nbsp;</td><td></td><td></td><td></td></tr>
+      <tr><td>&nbsp;</td><td></td><td></td><td></td></tr>
+    </table>
+  </div>
+</section>
+
+<!-- ============================================================ NOTAS -->
+<section class="hoja" data-cabecera="LA BESTIA DE FARTON" id="notas">
+  <h3 class="cap" style="margin-top:.2rem">Notas para repartir</h3>
+  <p class="tijeras">recortar y entregar al jugador que toca la piedra, sin comentarios</p>
+  <div class="cols notas-mesa">
+    <div class="ayuda"><p><b>1.</b> Te despiertas con la boca seca. Te notas el cuerpo blando, como tras una semana de fiebre. Resta 1d6 a tu CON. No se lo digas a nadie, si no quieres.</p></div>
+    <div class="ayuda"><p><b>2-3.</b> Tienes las piernas dormidas. Se te pasará, piensas. No se pasa. Resta 1d6 a tu MOV.</p></div>
+    <div class="ayuda"><p><b>4-5.</b> No hay silencio. Ya no. Hay alguien que murmura, muy cerca, siempre, en una lengua que no conoces. Tus pruebas de Alerta de oído son con desventaja desde ahora.</p></div>
+    <div class="ayuda"><p><b>6-7.</b> Hay algo cambiado, algo que eras y ya no eres del todo. Suma 1 a una característica y resta 1 a otra. Elige tú cuáles.</p></div>
+    <div class="ayuda"><p><b>8-9.</b> Te duelen las manos. Las abres y las cierras, y notas una fuerza que antes no estaba ahí. Tienes ventaja en las tiradas de fuerza bruta.</p></div>
+    <div class="ayuda"><p><b>10-11.</b> Las sombras han dejado de ser tan oscuras. Ves el calor de las cosas hasta a 20 metros. Ganas Infravisión. Si ya la tenías, ves con normalidad en la oscuridad completa.</p></div>
+    <div class="ayuda"><p><b>12.</b> Algo se ha encendido en ti, detrás de los ojos. Ganas Sensibilidad Mágica: puedes gastar puntos de Poder en conjuros. Si ya la tenías, tus puntos de Poder se doblan.</p></div>
+    <div class="ayuda maquina"><span class="rot">El cartel del lago</span><p style="text-align:center">NO ES BUENA IDEA<br>MOLESTAR AL AGUA</p></div>
+  </div>
+</section>
+
+<!-- ============================================================ ERRATAS -->
+<section class="hoja" data-cabecera="VIEJA ESCUELA" id="erratas">
+  <div class="cols">
+    <h3 class="cap">Erratas y aclaraciones</h3>
+    <p>La aventura se escribió para una edición anterior del juego, y este cuaderno la ajusta a la edición revisada (v1.1). Esto es lo que se ha cambiado respecto a la aventura original.</p>
+  </div>
+  <table class="tabla">
+    <tr><th>En la aventura</th><th>Aquí</th></tr>
+    <tr><td>Dificultades como «CD 12», «CD 14»; «Instintos (CAR 12)»</td><td>«12+», «14+», como en el manual. Los valores no cambian.</td></tr>
+    <tr><td>El Bosuqe del Ogro; el viejo max</td><td>Bosque. Max.</td></tr>
+    <tr><td>Rumor 9-10: la piedra, «al suroeste del bosque»</td><td>Hacia el <strong>sureste</strong>, al otro lado del río, como en el mapa.</td></tr>
+    <tr><td>Ogro «Nivel 4 (1d8+1 PV)»</td><td>1d8+1 es el daño de su arma (manual, pág. 21). Sus PV son 4d8.</td></tr>
+    <tr><td>Araña «(1 PV + Veneno)»; algas «(1PV + Presa)»; ratas «Mordisco (1d4 PV)»</td><td>Son daños, no PV. PV por Nivel: 1d8, 2d8. Las ratas, de NIV 0, sí tienen 1d4 PV <em>y</em> muerden por 1d4.</td></tr>
+    <tr><td>Lobo gigante sin ataque; algas sin DEF; nada dice cuántos hay</td><td>Valores y cantidades marcados como <span class="propuesta">propuesta</span>.</td></tr>
+    <tr><td>Daga: «ventaja en iniciativa»</td><td>En este juego se actúa por orden de DES y no se tira iniciativa. Con la daga, se actúa primero.</td></tr>
+    <tr><td>Piedra de afilar: «ventaja en el primer ataque que impacte tras usar la piedra […] durante seis asaltos»</td><td>Se tarda seis asaltos en afilar; la ventaja dura hasta el primer ataque que impacte.</td></tr>
+    <tr><td>«Desventaja en Percepción de oído»</td><td>El juego no tiene Percepción: Alerta.</td></tr>
+    <tr><td>El cubil de las ratas, «repleto de cajas»; en el plano, las ratas están en la despensa y las cajas en el almacén</td><td>Las ratas consideran suyas las dos salas.</td></tr>
+    <tr><td>«La cuantiosa recompensa»</td><td>200 mo <span class="propuesta">propuesta</span>.</td></tr>
+    <tr><td>Hacha de mano; espadón; Lucha con Hacha y escudo; transferencia</td><td>Con los nombres del manual: hacha de batalla, espada a dos manos, Lucha con arma de mano y escudo, Transferir Esencia.</td></tr>
+    <tr><td>Kurgan: DEF 12; espadón +2</td><td>DEF 13 (10 + DES +1 + cuero +2). Espada a dos manos +3 (FUE +2, Lucha +1).</td></tr>
+    <tr><td>Néstor: dagas y honda 1d4 +2</td><td>1d4. El modificador de DES se suma al ataque con proyectiles, no al daño; y FUE es +0. A cambio, ATQ +4 al lanzar (+1 de tabla, +2 de DES, +1 de Certero).</td></tr>
+    <tr><td>Tcimiel: MOV 9, POD 4</td><td>MOV 12, por ser elfa. POD 6 (4 de la tabla a Nivel 3, +2 de INT).</td></tr>
+    <tr><td>Fichas sin dinero, y sin frase de ambición</td><td>40 mo de adelanto y una ambición para cada uno <span class="propuesta">propuesta</span>.</td></tr>
+    <tr><td>Sin nivel recomendado</td><td>Nivel 3, que es el de sus pregenerados.</td></tr>
+  </table>
+</section>
+
+<!-- ============================================================ CRÉDITOS -->
+<section class="hoja" data-cabecera="LA BESTIA DE FARTON" id="creditos">
+  <div class="cols creditos">
+    <h3 class="cap">Créditos y licencias</h3>
+    <p><strong>La Bestia de Farton</strong>: escrita por Iñaki Raya, con mapas de Iñaki Raya, ilustración de portada de Endyamar y maquetación de Eneko Palencia. Publicada por <a href="https://grapasymapas.com">grapas&amp;mapas</a>. <strong>Vieja Escuela: el juego de rol</strong>: escrito por Javier «cabohicks» García; <strong>Vieja Escuela</strong>: Eneko Palencia y Eneko Menica.</p>
+    <p><strong>Este cuaderno</strong> es una adaptación de rpg.nephei.org, sin afiliación con los autores ni con la editorial, y sin ánimo de lucro. <strong>Qué se ha cambiado:</strong> se ha reorganizado y reescrito el texto, se han corregido errores y valores, y se han añadido escenas, PNJ, ejemplos, consejos, hojas de control y notas, además de numerar las salas del plano. Lo añadido va marcado como <span class="propuesta">propuesta</span> cuando afecta a las reglas o al mundo.</p>
+    <p><strong>Texto:</strong> todo el texto de este cuaderno es <em>Open Game Content</em> bajo la Open Game License 1.0a, cuya copia va abajo. <strong>Identidad del producto:</strong> los términos «Vieja Escuela» y «Vieja Escuela: el juego de rol», el arte y el estilo de la maquetación original son <em>Product Identity</em> de sus autores, y se usan aquí bajo su licencia Creative Commons <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.es">Reconocimiento-NoComercial-CompartirIgual 4.0</a>. Con esa misma licencia se publican aquí la portada, los mapas y sus versiones modificadas (el de los jugadores y el plano numerado). Los grabados de la daga y de la sirena son de dominio público.</p>
+  </div>
+  <div class="ogl">
+<h4>OPEN GAME LICENSE Version 1.0a</h4>
+<p>The following text is the property of Wizards of the Coast, Inc. and is Copyright 2000 Wizards of the Coast, Inc (“Wizards”). All Rights Reserved.</p>
+<p>1. Definitions: (a)”Contributors” means the copyright and/or trademark owners who have contributed Open Game Content; (b)”Derivative Material” means copyrighted material including derivative works and translations (including into other computer languages), potation, modification, correction, addition, extension, upgrade, improvement, compilation, abridgment or other form in which an existing work may be recast, transformed or adapted; (c) “Distribute” means to reproduce, license, rent, lease, sell, broadcast, publicly display, transmit or otherwise distribute; (d)”Open Game Content” means the game mechanic and includes the methods, procedures, processes and routines to the extent such content does not embody the Product Identity and is an enhancement over the prior art and any additional content clearly identified as Open Game Content by the Contributor, and means any work covered by this License, including translations and derivative works under copyright law, but specifically excludes Product Identity. (e) “Product Identity” means product and product line names, logos and identifying marks including trade dress; artifacts; creatures characters; stories, storylines, plots, thematic elements, dialogue, incidents, language, artwork, symbols, designs, depictions, likenesses, formats, poses, concepts, themes and graphic, photographic and other visual or audio representations; names and descriptions of characters, spells, enchantments, personalities, teams, personas, likenesses and special abilities; places, locations, environments, creatures, equipment, magical or supernatural abilities or effects, logos, symbols, or graphic designs; and any other trademark or registered trademark clearly identified as Product identity by the owner of the Product Identity, and which specifically excludes the Open Game Content; (f) “Trademark” means the logos, names, mark, sign, motto, designs that are used by a Contributor to identify itself or its 143 products or the associated products contributed to the Open Game License by the Contributor (g) “Use”, “Used” or “Using” means to use, Distribute, copy, edit, format, modify, translate and otherwise create Derivative Material of Open Game Content. (h) “You” or “Your” means the licensee in terms of this agreement.</p>
+<p>2. The License: This License applies to any Open Game Content that contains a notice indicating that the Open Game Content may only be Used under and in terms of this License. You must affix such a notice to any Open Game Content that you Use. No terms may be added to or subtracted from this License except as described by the License itself. No other terms or conditions may be applied to any Open Game Content distributed using this License.</p>
+<p>3.Offer and Acceptance: By Using the Open Game Content You indicate Your acceptance of the terms of this License.</p>
+<p>4. Grant and Consideration: In consideration for agreeing to use this License, the Contributors grant You a perpetual, worldwide, royalty-free, non-exclusive license with the exact terms of this License to Use, the Open Game Content.</p>
+<p>5.Representation of Authority to Contribute: If You are contributing original material as Open Game Content, You represent that Your Contributions are Your original creation and/or You have sufficient rights to grant the rights conveyed by this License.</p>
+<p>6.Notice of License Copyright: You must update the COPYRIGHT NOTICE portion of this License to include the exact text of the COPYRIGHT NOTICE of any Open Game Content You are copying, modifying or distributing, and You must add the title, the copyright date, and the copyright holder’s name to the COPYRIGHT NOTICE of any original Open Game Content you Distribute.</p>
+<p>7. Use of Product Identity: You agree not to Use any Product Identity, including as an indication as to compatibility, except as expressly licensed in another, independent Agreement with the owner of each element of that Product Identity. You agree not to indicate compatibility or co-adaptability with any Trademark or Registered Trademark in conjunction with a work containing Open Game Content except as expressly licensed in another, independent Agreement with the owner of such Trademark or Registered Trademark. The use of any Product Identity in Open Game Content does not constitute a challenge to the ownership of that Product Identity. The owner of any Product Identity used in Open Game Content shall retain all rights, title and interest in and to that Product Identity.</p>
+<p>8. Identification: If you distribute Open Game Content You must clearly indicate which portions of the work that you are distributing are Open Game Content.</p>
+<p>9. Updating the License: Wizards or its designated Agents may publish updated versions of this License. You may use any authorized version of this License to copy, modify and distribute any Open Game Content originally distributed under any version of this License.</p>
+<p>10. Copy of this License: You MUST include a copy of this License with every copy of the Open Game Content You Distribute.</p>
+<p>11. Use of Contributor Credits: You may not market or advertise the Open Game Content using the name of any Contributor unless You have written permission from the Contributor to do so.</p>
+<p>12. Inability to Comply: If it is impossible for You to comply with any of the terms of this License with respect to some or all of the Open Game Content due to statute, judicial order, or governmental regulation then You may not Use any Open Game Material so affected.</p>
+<p>13. Termination: This License will terminate automatically if You fail to comply with all terms herein and fail to cure such breach within 30 days of becoming aware of the breach. All sublicenses shall survive the termination of this License.</p>
+<p>14. Reformation: If any provision of this License is held to be unenforceable, such provision shall be reformed only to the extent necessary to make it enforceable.</p>
+<p>15. COPYRIGHT NOTICE<br>Open Game License v 1.0a Copyright 2000, Wizards of the Coast, Inc.<br>Vieja Escuela Copyright 2016, Eneko Palencia y Eneko Menica.<br>Vieja Escuela: el juego de rol Copyright 2017, Javier García “cabohicks”.<br>Vieja Escuela: el juego de rol, edición revisada Copyright 2026, Javier García “cabohicks”.<br>La Bestia de Farton, Iñaki Raya, grapas&amp;mapas.<br>La Bestia de Farton: cuaderno del máster Copyright 2026, rpg.nephei.org.</p>
+  </div>
+</section>
+
+<script src="paginador.js?v=1"></script>
+</body>
+</html>

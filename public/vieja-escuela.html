@@ -1,0 +1,215 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Vieja Escuela: el juego de rol · rpg.nephei.org</title>
+<meta name="description" content="Resumen de las reglas de Vieja Escuela: el juego de rol y qué cambia y qué permanece si vienes de D&amp;D 5.ª edición (2024). Con generador de personajes y aventura de iniciación.">
+<meta name="theme-color" content="#111111">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=UnifrakturMaguntia&display=swap">
+<link rel="stylesheet" href="/style.css?v=20261016b">
+<style>
+.ve h1{font-family:'UnifrakturMaguntia',var(--f-titulo),serif;font-weight:400;font-size:clamp(2.8rem,8vw,4.6rem);line-height:1.02;margin:0 0 .4rem}
+.ve .header .sello{color:var(--sangre)}
+.ve main > h2{font-family:'UnifrakturMaguntia',var(--f-titulo),serif;font-size:2.2rem;letter-spacing:0;text-transform:none;color:var(--tinta)}
+.ve main{font-size:1.06rem}
+.ve h3{font-family:var(--f-caja-sc);font-weight:700;font-size:1.05rem;letter-spacing:.05em;margin:1.5rem 0 .4rem}
+.ve .tabla{width:100%;border-collapse:collapse;font-family:var(--f-caja);font-size:.94rem;margin:.6rem 0 1.2rem;line-height:1.35}
+.ve .tabla th{font-family:var(--f-caja-sc);font-weight:700;letter-spacing:.05em;text-align:left;border-bottom:2px solid var(--tinta);padding:.3rem .45rem;vertical-align:bottom}
+.ve .tabla td{border-bottom:1px solid var(--regla-suave);padding:.35rem .45rem;vertical-align:top}
+.ve .tabla td:first-child{font-weight:700}
+.ve .tabla.avance td,.ve .tabla.avance th{text-align:center;padding:.2rem .3rem}
+.ve .envoltura{overflow-x:auto;-webkit-overflow-scrolling:touch}
+.ve .aviso{font-family:var(--f-caja);font-size:.92rem;line-height:1.4;color:var(--tinta-suave);border-left:3px solid var(--regla);padding-left:.8rem;margin:1rem 0}
+.ve .caja{border:2px solid var(--tinta);padding:.8rem 1rem .5rem;margin:1rem 0 1.4rem;font-family:var(--f-caja);font-size:.97rem;line-height:1.42;background:rgba(255,255,255,.3)}
+.ve .caja h3{margin-top:0}
+.ve .caja p{margin:0 0 .5rem}
+.ve .caja i{color:var(--tinta-2)}
+.ve details{margin:0 0 1rem}
+.ve summary{cursor:pointer;font-family:var(--f-caja);font-weight:700}
+.ve .indice-ve{font-family:var(--f-caja);font-size:.95rem}
+.ve .creditos-ve{font-family:var(--f-caja);font-size:.88rem;line-height:1.42;color:var(--tinta-2);margin-top:2.4rem;padding-top:1rem;border-top:3px double var(--regla)}
+</style>
+</head>
+<body class="sitio ve">
+<nav class="barra"><a class="marca" href="/">rpg<span>·</span>nephei</a><a href="https://nephei.org">nephei.org</a></nav>
+<div class="container">
+<main>
+  <header class="header">
+    <p class="breadcrumb"><a href="/">Inicio</a> &raquo; <a href="/aventuras">Aventuras</a> &raquo; Vieja Escuela</p>
+    <p class="sello">El juego de rol</p>
+    <h1>Vieja Escuela</h1>
+    <p>Un juego de rol de fantasía de pocas páginas y de código abierto, escrito por Javier «cabohicks» García y publicado por <a href="https://grapasymapas.com">grapas&amp;mapas</a>, en la tradición de las primeras ediciones de D&amp;D. Las reglas caben en treinta páginas de bolsillo, y el resto lo pone la mesa.</p>
+  </header>
+
+  <div class="tarjetas">
+    <div class="resource-card destacada">
+      <span class="rotulo">Aventura de iniciación</span>
+      <h3><a href="/vieja-escuela/la-bestia-de-farton/players">La Bestia de Farton</a></h3>
+      <p>Un pueblo, un bosque y un ogro. Adaptada para dirigirla con un cuaderno de máster completo, y con cuatro aventureros en PDF.</p>
+      <div class="enlaces"><a href="/vieja-escuela/la-bestia-de-farton/players">Jugadores &raquo;</a><a href="/vieja-escuela/la-bestia-de-farton/master">Máster (spoilers) &raquo;</a></div>
+    </div>
+    <div class="resource-card destacada">
+      <span class="rotulo">Herramienta</span>
+      <h3><a href="/generador/vieja-escuela">Generador de personajes</a></h3>
+      <p>Hoja rellenable en A5, asistente de creación y aventurero al azar, con descarga en PDF editable.</p>
+      <div class="enlaces"><a href="/generador/vieja-escuela">Abrir el generador &raquo;</a></div>
+    </div>
+    <div class="resource-card">
+      <span class="rotulo">El manual</span>
+      <h3><a href="https://grapasymapas.com">El juego original</a></h3>
+      <p>Este resumen no sustituye al manual, que trae también las tablas de equipo, los objetos mágicos y los monstruos. Se consigue en la web de sus autores.</p>
+      <div class="enlaces"><a href="https://grapasymapas.com">grapas&amp;mapas &raquo;</a><a href="http://viejaescuela.nogarung.com">Vieja Escuela &raquo;</a></div>
+    </div>
+  </div>
+
+  <p class="indice-ve"><a href="#reglas">Las reglas en cinco minutos</a> &middot; <a href="#cambios">Vengo de D&amp;D 2024</a> &middot; <a href="#mesa">Cómo se nota en la mesa</a> &middot; <a href="#traducir">Traducir personajes y monstruos</a></p>
+
+  <h2 id="reglas">Las reglas en cinco minutos</h2>
+
+  <h3>Crear un personaje</h3>
+  <ol>
+    <li><strong>Atributos.</strong> Tira 3d6 siete veces y asigna seis resultados a FUE, DES, CON, INT, SAB y CAR. El modificador es pequeño: 3 da −2; de 4 a 6, −1; de 7 a 14, 0; de 15 a 17, +1; y 18, +2.</li>
+    <li><strong>Raza.</strong> Elfo (Vista Aguda, Infravisión, MOV 12), enano (Afín a la Piedra, Infravisión, MOV 9), mediano (Escurridizo, Certero, MOV 9) o humano (Ímpetu Emprendedor, Adaptable, MOV 12).</li>
+    <li><strong>Clase.</strong> Guerrero (d8, Lucha con X, Ataques Múltiples; todo el equipo), Hechicero (d4, Sensibilidad Mágica, Transferir Esencia; solo dagas, bastones y hondas, sin armadura) o Bribón (d6, Emboscar, Dedos Ágiles; cualquier arma, solo cuero).</li>
+    <li><strong>Habilidades.</strong> 4 puntos entre Alerta, Comunicación, Manipulación, Erudición, Subterfugio y Supervivencia, como mucho 1 en cada una.</li>
+    <li><strong>Trasfondo.</strong> Una frase con lo que hacías antes: «pirata en las costas de Landar».</li>
+    <li><strong>Equipo.</strong> 3d6 × 10 mo para comprar. Cargas tantos bultos como tu FUE.</li>
+    <li><strong>Lo demás.</strong> PV: el máximo de tu dado más CON. DEF: 10 + DES + armadura y escudo. ATQ, INS y POD: de la tabla, más INT al POD si tienes magia.</li>
+  </ol>
+  <details>
+    <summary>La tabla de avance por Nivel</summary>
+    <div class="envoltura"><table class="tabla avance">
+      <tr><th rowspan="2">Nivel</th><th colspan="2">Guerrero</th><th colspan="3">Hechicero</th><th colspan="2">Bribón</th></tr>
+      <tr><th>ATQ</th><th>INS</th><th>ATQ</th><th>POD</th><th>INS</th><th>ATQ</th><th>INS</th></tr>
+      <tr><td>1</td><td>+0</td><td>+1</td><td>+0</td><td>1</td><td>+0</td><td>+0</td><td>+0</td></tr>
+      <tr><td>2</td><td>+1</td><td>+2</td><td>+0</td><td>2</td><td>+1</td><td>+0</td><td>+1</td></tr>
+      <tr><td>3</td><td>+1</td><td>+3</td><td>+0</td><td>4</td><td>+2</td><td>+1</td><td>+2</td></tr>
+      <tr><td>4</td><td>+2</td><td>+4</td><td>+1</td><td>5</td><td>+3</td><td>+1</td><td>+3</td></tr>
+      <tr><td>5</td><td>+2</td><td>+5</td><td>+1</td><td>7</td><td>+4</td><td>+2</td><td>+4</td></tr>
+      <tr><td>6*</td><td>+3</td><td>+6</td><td>+2</td><td>8</td><td>+5</td><td>+2</td><td>+5</td></tr>
+      <tr><td>7</td><td>+4</td><td>+7</td><td>+2</td><td>10</td><td>+6</td><td>+3</td><td>+6</td></tr>
+      <tr><td>8</td><td>+5</td><td>+8</td><td>+3</td><td>12</td><td>+7</td><td>+3</td><td>+7</td></tr>
+      <tr><td>9</td><td>+6</td><td>+9</td><td>+3</td><td>14</td><td>+8</td><td>+4</td><td>+8</td></tr>
+      <tr><td>10</td><td>+7</td><td>+10</td><td>+3</td><td>15</td><td>+9</td><td>+5</td><td>+9</td></tr>
+      <tr><td>11**</td><td>+7</td><td>+11</td><td>+4</td><td>17</td><td>+10</td><td>+5</td><td>+10</td></tr>
+      <tr><td>12</td><td>+8</td><td>+11</td><td>+4</td><td>19</td><td>+10</td><td>+6</td><td>+11</td></tr>
+      <tr><td>13</td><td>+9</td><td>+11</td><td>+4</td><td>20</td><td>+10</td><td>+7</td><td>+11</td></tr>
+      <tr><td>14</td><td>+9</td><td>+11</td><td>+5</td><td>22</td><td>+10</td><td>+7</td><td>+11</td></tr>
+    </table></div>
+    <p class="aviso">* Nuevo talento: Ataque Certero (guerrero), Sirviente Animal (hechicero), Leer Magia (bribón). ** Nuevo trasfondo, ligado a tu fama: Conde de Fronteranorte, Archimago de la torre de Farinoa…</p>
+  </details>
+
+  <h3>Jugar</h3>
+  <ul>
+    <li><strong>Resolver.</strong> Primero el sentido común: el máster decide si hace falta tirar según lo que explicas. Si hace falta, 1d20 + puntos de habilidad <em>o</em> modificador de atributo. Dificultad: 11+ normal, 14+ difícil, 17+ muy difícil, 20+ extrema. El 20 natural siempre tiene éxito y el 1 siempre falla.</li>
+    <li><strong>Trasfondos.</strong> Si tiene que ver con lo que haces, +2. Si tiene mucho que ver, ventaja.</li>
+    <li><strong>Ventaja y desventaja.</strong> Dos d20, y te quedas con el mejor o con el peor.</li>
+    <li><strong>Tiempo.</strong> Un asalto son 10 segundos; un turno, 10 minutos. Una antorcha dura 1 hora.</li>
+    <li><strong>Combate.</strong> Se actúa de mayor a menor DES. Para acertar, 1d20 + ATQ + FUE (cuerpo a cuerpo) o DES (proyectiles) contra DEF. La FUE también se suma al daño.</li>
+    <li><strong>Críticos.</strong> Con 20 natural, el atacante propone una consecuencia (quitarle el arma, abollarle la armadura, moverlo, que pierda su siguiente ataque…) o hace el daño máximo + 1.</li>
+    <li><strong>Pifias.</strong> Con 1 natural, te atacan con ventaja hasta tu siguiente asalto.</li>
+    <li><strong>Muerte.</strong> A 0 PV caes. Si en 10 asaltos no vuelves a tener más de 0, mueres. Vendas: 1d4 PV, una vez por combate. Descansar un día entero: tantos PV como Nivel.</li>
+    <li><strong>Instintos.</strong> Para evitar venenos, trampas o conjuros: 1d20 + INS + el atributo que corresponda.</li>
+    <li><strong>Salud Mental.</strong> Ante un horror, tirada de SAB. Si fallas, pierdes 1d6 puntos de SAB temporales, y con un 6, uno es permanente. Por debajo de 3, enloqueces.</li>
+    <li><strong>Magia.</strong> Pones nombre al conjuro y negocias efecto y coste. Como guía, 1 POD por d6 de daño, curación o niveles afectados. Resistir: Instintos contra 10 + Nivel del lanzador.</li>
+    <li><strong>Subir de Nivel.</strong> Entre 0 y 3 PX por sesión (2 es lo normal). Cada 10 PX, un Nivel: tiras tu dado para los PV y repartes 2 puntos de habilidad.</li>
+    <li><strong>Monstruos.</strong> Su Nivel es su ATQ, su INS y cuántos d8 de PV tienen. Con su DEF, su daño y un talento, ya está.</li>
+  </ul>
+
+  <h2 id="cambios">Vengo de D&amp;D 2024</h2>
+  <p>Son de la misma familia: si sabes jugar a D&amp;D, sabes jugar a esto en diez minutos. La diferencia es que aquí casi todo lo que en D&amp;D está escrito en una regla lo decide la mesa.</p>
+
+  <h3>Lo que permanece</h3>
+  <div class="envoltura"><table class="tabla">
+    <tr><th>Qué</th><th>Cómo</th></tr>
+    <tr><td>Seis características</td><td>Las mismas seis, con 3-18 como escala de partida.</td></tr>
+    <tr><td>La tirada</td><td>1d20 + bono contra un número.</td></tr>
+    <tr><td>Ventaja y desventaja</td><td>Exactamente iguales: dos d20 y el mejor o el peor.</td></tr>
+    <tr><td>Clase y raza</td><td>Sigue habiendo clase, Nivel y especie, que aquí se llama raza. Elfos, enanos, medianos y humanos.</td></tr>
+    <tr><td>CA y PG</td><td>La CA se llama DEF y sigue siendo el número a superar. Los PG se llaman PV. El primer Nivel da el máximo del dado más CON.</td></tr>
+    <tr><td>El 20 natural en un ataque</td><td>Sigue siendo el gran momento, aunque cambia lo que hace.</td></tr>
+    <tr><td>Armas</td><td>Los mismos dados de daño, a grandes rasgos: daga d4, espada larga d8, espadón d10.</td></tr>
+    <tr><td>Monstruos y tesoros</td><td>Goblins, ogros, trols, dragones cromáticos, pociones y pergaminos.</td></tr>
+  </table></div>
+
+  <h3>Lo que cambia</h3>
+  <div class="envoltura"><table class="tabla">
+    <tr><th>Qué</th><th>D&amp;D 2024</th><th>Vieja Escuela</th></tr>
+    <tr><td>Modificadores</td><td>(Puntuación − 10) / 2: un 18 es +4.</td><td>Mucho más planos: un 18 es +2, y de 7 a 14 no dan nada.</td></tr>
+    <tr><td>Crear características</td><td>Conjunto estándar, compra o 4d6; el trasfondo suma.</td><td>3d6 siete veces y te quedas con seis.</td></tr>
+    <tr><td>Competencia</td><td>Un bono único, de +2 a +6.</td><td>No existe. ATQ e INS salen de una tabla por clase y Nivel; las habilidades, de sus puntos.</td></tr>
+    <tr><td>Habilidades</td><td>18, cada una atada a una característica.</td><td>6, independientes. Se tira la habilidad <em>o</em> el atributo, no los dos sumados.</td></tr>
+    <tr><td>Dificultades</td><td>10, 15, 20, 25.</td><td>11+, 14+, 17+, 20+. Y antes de tirar, sentido común.</td></tr>
+    <tr><td>Salvaciones</td><td>Seis, con competencia en dos.</td><td>Una sola: Instintos, más el atributo que toque.</td></tr>
+    <tr><td>Trasfondo</td><td>Paquete con aumentos, dote, habilidades y equipo.</td><td>Una frase, que da +2 o ventaja cuando viene al caso.</td></tr>
+    <tr><td>Clases</td><td>Doce, con subclases.</td><td>Tres, sin subclases.</td></tr>
+    <tr><td>Rasgos</td><td>Una lista larga por Nivel, y dotes.</td><td>Cuatro talentos a Nivel 1 (dos de raza, dos de clase). Uno más a Nivel 6. Y ya.</td></tr>
+    <tr><td>Iniciativa</td><td>1d20 + DES.</td><td>No se tira: de mayor a menor DES.</td></tr>
+    <tr><td>El turno</td><td>Acción, acción adicional, reacción, movimiento.</td><td>Lo que dé tiempo en 10 segundos: normalmente, atacar y moverte hasta tu MOV. El manual no lo detalla más.</td></tr>
+    <tr><td>Críticos</td><td>Se doblan los dados de daño.</td><td>Propones una consecuencia, o daño máximo + 1.</td></tr>
+    <tr><td>Pifias</td><td>El 1 solo falla.</td><td>Además, te atacan con ventaja hasta tu siguiente asalto.</td></tr>
+    <tr><td>Daño</td><td>Característica de ataque al daño, con o sin sutileza.</td><td>FUE en cuerpo a cuerpo. Con proyectiles, DES ayuda a acertar pero no al daño.</td></tr>
+    <tr><td>Armaduras</td><td>Sustituyen a la CA base (placas, CA 18, sin DES).</td><td>Suman a 10 + DES (placas +6, y DES cuenta). Escudo, +1.</td></tr>
+    <tr><td>A 0 puntos</td><td>Salvaciones contra muerte.</td><td>10 asaltos para que te levanten.</td></tr>
+    <tr><td>Descansos</td><td>Corto y largo, con Dados de Golpe; el largo lo devuelve todo.</td><td>Un día entero de descanso cura tantos PV como Nivel. A Nivel 3, 3 PV. La curación escasea de verdad.</td></tr>
+    <tr><td>Magia</td><td>Listas de conjuros, espacios por nivel, trucos, concentración.</td><td>Puntos de Poder, y el conjuro lo negocias con el máster. Sin trucos a voluntad.</td></tr>
+    <tr><td>Quién hace magia</td><td>Media docena de clases.</td><td>Solo el Hechicero. Tampoco hay clérigo: quien cura es él, con POD.</td></tr>
+    <tr><td>Sintonización</td><td>Cualquiera, hasta tres objetos.</td><td>Solo el Hechicero, gastando 1 POD y con tirada de CAR, y a veces sacrificando un punto de característica.</td></tr>
+    <tr><td>Cordura</td><td>Regla opcional.</td><td>Forma parte del juego: se pierde SAB.</td></tr>
+    <tr><td>Experiencia</td><td>Por monstruos o por hitos.</td><td>De 0 a 3 PX por sesión. 10 PX, un Nivel. Sobre cinco sesiones por Nivel.</td></tr>
+    <tr><td>Nivel máximo</td><td>20.</td><td>La tabla llega a 14.</td></tr>
+    <tr><td>Monstruos</td><td>Bloque de estadísticas y Valor de Desafío.</td><td>Una línea: Nivel, ataque, DEF y un talento.</td></tr>
+    <tr><td>Tiempo</td><td>Asalto de 6 segundos; 9 m de movimiento.</td><td>Asalto de 10 segundos; MOV 12 o 9 m, el doble corriendo.</td></tr>
+  </table></div>
+
+  <h3>Lo que desaparece</h3>
+  <p>Dotes, subclases, maestrías de arma, Inspiración heroica, ataques de oportunidad, acciones adicionales y reacciones, concentración, trucos, espacios de conjuro, alineamiento, idiomas, competencia con herramientas, tamaños, condiciones, y la tabla de agotamiento. Si alguna hace falta en una escena, la inventa el máster en voz alta. Lo normal es que sirva con una ventaja o una desventaja.</p>
+
+  <h2 id="mesa">Cómo se nota en la mesa</h2>
+  <ul>
+    <li><strong>Se pregunta más y se tira menos.</strong> «¿Cómo lo buscas?» sustituye a «tira Percepción». Una buena explicación puede resolver la escena sin dados, y no hay hoja donde buscar la respuesta. Hay que hablar.</li>
+    <li><strong>Tu personaje es frágil, y sigue siéndolo.</strong> Con 8 PV a Nivel 1, si tienes suerte, y poca curación. Pelear es una decisión. Rehuir un combate, tender una trampa o pagar son jugadas normales, y es habitual que convenga más.</li>
+    <li><strong>Los números son pequeños.</strong> Un guerrero de Nivel 1 ataca a +1 o +2 contra DEF 12-14. Se falla mucho, y cada +1 o +2 de una ventaja de posición se nota de verdad.</li>
+    <li><strong>Las muertes pasan.</strong> Un veneno mal resistido mata. El personaje se hace en cinco minutos, porque no hay cien opciones que elegir, así que duele menos de lo que parece.</li>
+    <li><strong>El máster arbitra, y tiene que hacerlo.</strong> No hay texto que resuelva los casos raros. Eso le da trabajo, y mucha libertad. Conviene que decida deprisa y que sea coherente, y que escuche al jugador: aquí proponer forma parte de jugar.</li>
+    <li><strong>El dinero sirve.</strong> Las antorchas se acaban, las armaduras buenas cuestan fortunas y cargar demasiado se paga. Vuelve a importar la lista de la compra.</li>
+  </ul>
+
+  <div class="caja">
+    <h3>Un asalto de ejemplo</h3>
+    <p>Kurgan y Tcimiel contra un orco (NIV 2, DEF 13, 1d8+1).</p>
+    <p><b>Máster:</b> <i>El orco se os echa encima por el pasillo. ¿Qué hacéis? Kurgan, DES 16; orco, sin DES conocida, le pongo 10; Tcimiel, 16. Vais primero.</i></p>
+    <p><b>Kurgan:</b> <i>Espadazo. Diecisiete, más cuatro: veintiuno.</i> <b>Máster:</b> <i>Le das. Daño.</i> <b>Kurgan:</b> <i>Cinco más tres, ocho.</i> <b>Máster:</b> <i>Sigue en pie, pero le has roto el hombro.</i></p>
+    <p><b>Tcimiel:</b> <i>Quiero dormirlo. ¿Cuánto cuesta?</i> <b>Máster:</b> <i>Nivel 2, dos POD. Tiene que resistir contra 13+.</i> <b>Tcimiel:</b> <i>Mejor proyectil ácido, 1 POD, 1d6.</i> <b>Máster:</b> <i>Sin tirada de ataque, que está a dos pasos. Tira el dado. Cae humeando.</i></p>
+    <p>Lo de «sin tirada de ataque» es un criterio de ese máster en esa mesa. Otro podría pedirla. Las dos cosas están bien, siempre que se decida rápido y se mantenga.</p>
+  </div>
+
+  <h2 id="traducir">Traducir personajes y monstruos</h2>
+  <p class="aviso">Esto son sugerencias de esta página, no reglas del juego. Sirven para quien quiere pasar una idea de personaje o un monstruo de una mesa a otra sin darle muchas vueltas.</p>
+  <div class="envoltura"><table class="tabla">
+    <tr><th>Si en D&amp;D 2024 eres…</th><th>Aquí serías…</th><th>Y el resto lo pone…</th></tr>
+    <tr><td>Guerrero, bárbaro</td><td>Guerrero</td><td>Lucha con armas a dos manos, y un trasfondo salvaje o soldadesco.</td></tr>
+    <tr><td>Paladín</td><td>Guerrero</td><td>Trasfondo de orden sagrada. Si quieres sanar, pacta con el máster: un símbolo y un pequeño coste.</td></tr>
+    <tr><td>Explorador</td><td>Guerrero o Bribón</td><td>Lucha con armas de proyectiles, puntos en Supervivencia y Alerta.</td></tr>
+    <tr><td>Monje</td><td>Guerrero o Bribón</td><td>Trasfondo de monasterio. Los golpes, como una porra, con +1 de la mesa.</td></tr>
+    <tr><td>Pícaro</td><td>Bribón</td><td>Tal cual: Emboscar es el Ataque furtivo.</td></tr>
+    <tr><td>Bardo</td><td>Bribón</td><td>Puntos en Comunicación. Un trasfondo musical y mucho hablar.</td></tr>
+    <tr><td>Mago, hechicero, brujo</td><td>Hechicero</td><td>Tal cual. Un brujo que hable con seres de fuera perderá SAB.</td></tr>
+    <tr><td>Clérigo, druida</td><td>Hechicero</td><td>Trasfondo religioso o de la naturaleza, y los conjuros que encajen.</td></tr>
+  </table></div>
+  <p><strong>Monstruos.</strong> Para un monstruo de 2024: Nivel = su Valor de Desafío, como mínimo 1 (si es menor, Nivel 0 y 1d4 PV). DEF = su CA, sin pasar de 17-18. Un ataque con su dado de daño principal, sin sumar nada. Un talento: la habilidad por la que se le recuerda. Los PV se tiran por Nivel en d8, de manera que un ogro (Desafío 2 en D&amp;D, Nivel 4 en este manual) acaba siendo más fiero aquí, porque los números son más bajos en todas partes. Si dudas, compáralo con los del manual y ajusta a ojo.</p>
+
+  <div class="creditos-ve">
+    <p><strong>Créditos y licencia.</strong> <em>Vieja Escuela: el juego de rol, edición revisada</em> (v1.1, 2026), escrito por Javier «cabohicks» García, editado por Eneko Menica y Eneko Palencia, publicado por <a href="https://grapasymapas.com">grapas&amp;mapas</a>. El resumen de reglas de esta página reescribe y abrevia su texto bajo la licencia <a href="https://creativecommons.org/licenses/by-sa/4.0/deed.es">CC BY-SA 4.0</a>; las comparaciones y las sugerencias son añadidos propios, y la página entera se distribuye con esa misma licencia. El término «Vieja Escuela: el juego de rol» se usa bajo CC BY-SA 4.0 y «Vieja Escuela» bajo CC BY-NC-SA 4.0. Sin afiliación con sus autores.</p>
+    <p><em>Dungeons &amp; Dragons</em> es una marca de Wizards of the Coast. Se nombra aquí solo para comparar los dos juegos: esta página no es un producto oficial ni indica compatibilidad, y no está patrocinada ni avalada por Wizards of the Coast.</p>
+  </div>
+
+  <p class="pie-sitio"><a href="/aventuras">&laquo; Aventuras</a> &middot; <a href="/generador/vieja-escuela">Generador de personajes</a></p>
+</main>
+</div>
+</body>
+</html>

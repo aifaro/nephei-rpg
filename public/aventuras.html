@@ -4,12 +4,19 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Adventures · rpg.nephei.org</title>
-<meta name="description" content="Original Call of Cthulhu scenarios set in Spain in the 1920s: La Marca del Estrecho (Ceuta, 1921) and La maldición del Palacio de Linares (Madrid, 1920). Free to read, print and play.">
+<meta name="description" content="Original Call of Cthulhu scenarios set in Spain in the 1920s: La Marca del Estrecho (Ceuta, 1921) and La maldición del Palacio de Linares (Madrid, 1920); and La Bestia de Farton for Vieja Escuela. Free to read, print and play.">
 <meta name="theme-color" content="#16130f">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="/style.css?v=20261016b">
+<style>
+.container main > h2.grupo{font-family:var(--f-deco);font-weight:700;font-size:1.5rem;margin:3rem 0 .4rem}
+.container main > h2.grupo.primero{position:relative;z-index:1;margin:clamp(-5.5rem,-8vw,-4rem) 0 .8rem;color:#f1e3bd}
+.container main > h2.grupo.primero::after{border-top-color:rgba(241,227,189,.4)}
+.grupo-nota{font-family:var(--f-caja);font-size:.95rem;color:var(--tinta-suave);margin:0 0 1rem}
+.grupo.primero + .aventuras,.aventuras.siguientes{margin-top:0}
+</style>
 </head>
 <body class="sitio">
 <nav class="barra"><a class="marca" href="/">rpg<span>·</span>nephei</a><a href="https://nephei.org">nephei.org</a></nav>
@@ -24,6 +31,7 @@
 
 <div class="container">
 <main>
+  <h2 class="grupo primero">Call of Cthulhu</h2>
   <div class="aventuras">
 
     <article class="aventura">
@@ -141,6 +149,62 @@
         <p class="resumen">Published scenarios by other authors, rewritten for my table with maps, timelines and running notes. For personal use only, so it stays behind a login.</p>
         <div class="acciones">
           <a class="boton sec" href="/cuaderno/"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><rect x="4" y="11" width="16" height="10" rx="1"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>Open the notebook</a>
+        </div>
+      </div>
+    </article>
+
+  </div>
+
+  <h2 class="grupo">Vieja Escuela</h2>
+  <p class="grupo-nota">A rules-light, open-source fantasy game in the spirit of early D&amp;D. In Spanish.</p>
+  <div class="aventuras siguientes">
+
+    <article class="aventura">
+      <a class="arte" href="/vieja-escuela/la-bestia-de-farton/players" tabindex="-1" aria-hidden="true">
+        <svg viewBox="0 0 620 210">
+          <defs><linearGradient id="b-cielo" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2a2217" stop-opacity="0"/><stop offset="1" stop-color="#8a8576" stop-opacity=".5"/></linearGradient></defs>
+          <rect width="620" height="170" fill="url(#b-cielo)"/>
+          <path d="M170 170 C230 150 262 96 310 92 C358 96 392 150 452 170 Z" fill="#241d14"/>
+          <path d="M292 94 L292 62 L298 56 L300 66 L310 60 L312 54 L322 62 L324 70 L330 66 L330 96 Z" fill="#14110d"/>
+          <path d="M296 148 q14 -16 28 0 Z" fill="#0b0907"/>
+          <g fill="#14110d"><circle cx="50" cy="150" r="30"/><circle cx="96" cy="142" r="34"/><circle cx="146" cy="154" r="28"/><circle cx="476" cy="154" r="28"/><circle cx="524" cy="142" r="34"/><circle cx="574" cy="150" r="30"/></g>
+          <rect y="170" width="620" height="40" fill="#14110d"/>
+          <g stroke="#e9dfc6" stroke-opacity=".3" stroke-width="1"><path d="M60 186 h60 M210 194 h70 M380 188 h50 M500 196 h60"/></g>
+        </svg>
+      </a>
+      <div class="aventura-texto">
+        <p class="sello">Vieja Escuela · Starter adventure</p>
+        <h2><a href="/vieja-escuela/la-bestia-de-farton/players">La Bestia de Farton</a></h2>
+        <span class="estado listo">Ready to play</span>
+        <p class="gancho">A village, a forest, and an ogre that gets hungry. Bring rope.</p>
+        <p class="resumen">A one-session adventure by Iñaki Raya, originally published by grapas&amp;mapas, adapted here with a full game master's notebook: scenes, voices, running advice and table examples. With four pregenerated characters in fillable PDF.</p>
+        <div class="acciones">
+          <a class="boton" href="/vieja-escuela/la-bestia-de-farton/players">For players</a>
+          <a class="boton sec" href="/vieja-escuela/la-bestia-de-farton/master">For the GM (spoilers)</a>
+        </div>
+      </div>
+    </article>
+
+    <article class="aventura">
+      <a class="arte" href="/vieja-escuela" tabindex="-1" aria-hidden="true">
+        <svg viewBox="0 0 620 210">
+          <rect width="620" height="210" fill="#14110d"/>
+          <g fill="none" stroke="#e9dfc6" stroke-width="2.4" stroke-linejoin="round" opacity=".9">
+            <path d="M310 40 L362 70 L362 130 L310 160 L258 130 L258 70 Z"/>
+            <path d="M310 40 L286 136 L334 136 Z M258 70 L286 136 M362 70 L334 136 M258 130 L286 136 M362 130 L334 136 M310 160 L286 136 M310 160 L334 136 M310 40 L334 136 M310 40 L258 70 M310 40 L362 70"/>
+          </g>
+          <text x="310" y="120" text-anchor="middle" font-family="Georgia,serif" font-size="17" fill="#e9dfc6">20</text>
+        </svg>
+      </a>
+      <div class="aventura-texto">
+        <p class="sello">Rules summary · Tools</p>
+        <h2><a href="/vieja-escuela">Vieja Escuela: el juego de rol</a></h2>
+        <span class="estado listo">In Spanish</span>
+        <p class="gancho">Three classes, six attributes, thirty pocket pages. Coming from D&amp;D 2024?</p>
+        <p class="resumen">A summary of the rules, and what stays and what changes if you come from D&amp;D 5th edition (2024), with the character generator: fillable sheet, step-by-step assistant and random adventurers.</p>
+        <div class="acciones">
+          <a class="boton" href="/vieja-escuela">Read the summary</a>
+          <a class="boton sec" href="/generador/vieja-escuela">Character generator</a>
         </div>
       </div>
     </article>

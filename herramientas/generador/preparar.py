@@ -5,9 +5,9 @@
 
 El generador funciona entero en el navegador: pinta la ficha oficial de fondo, pone encima un campo
 por cada campo del PDF rellenable y, al descargar, rellena ese mismo PDF con pdf-lib. Este programa
-saca de los generadores de fichas (fichas-linares, fichas-actual, fichas-marca, fichas-dg y fichas-dnd) lo que necesita:
+saca de los generadores de fichas (fichas-linares, fichas-actual, fichas-marca, fichas-dg, fichas-dnd y fichas-ve) lo que necesita:
 
-    public/generador/coc.pdf, coc-actual.pdf, pulp.pdf, dg.pdf, dnd.pdf   las fichas en blanco con campos de formulario
+    public/generador/coc.pdf, coc-actual.pdf, pulp.pdf, dg.pdf, dnd.pdf, ve.pdf   las fichas en blanco con campos de formulario
     public/generador/coc-1.jpg … dnd-3.jpg                el fondo de cada cara, sin campos
     public/generador/fichas.json                posición, letra y alineación de cada campo, el hueco
                                                 del retrato y qué campo es cada habilidad
@@ -46,6 +46,10 @@ FICHAS = {
     'dnd': dict(carpeta='fichas-dnd', plantilla='dnd-5e.pdf',
                 titulo='Dungeons & Dragons · 5.ª edición (2014)', familia='dnd', letra='Helvetica', sub='Clase y nivel',
                 foto=(1, (36, 134, 209, 352))),   # «Aspecto del personaje»
+    # Vieja Escuela: una sola cara en A5; el retrato ocupa la mitad de arriba de su recuadro y abajo van las ambiciones
+    've': dict(carpeta='fichas-ve', plantilla='vieja-escuela.pdf',
+               titulo='Vieja Escuela: el juego de rol', familia='ve', letra='Times', sub='Clase',
+               foto=(0, (434.5, 28.3, 540.2, 133))),
 }
 ETIQUETA = {'Ocultismo': 'Ciencias ocultas'}  # el campo se llama distinto de lo que pone la ficha
 
@@ -115,7 +119,7 @@ def main():
         blanco = pymupdf.open()
         blanco.insert_pdf(pymupdf.open(plantilla))
         mod.rellenar(blanco, 0, None)
-        quien = {'cthulhu': 'investigador', 'dg': 'agente', 'dnd': 'personaje'}[f['familia']]
+        quien = {'cthulhu': 'investigador', 'dg': 'agente', 'dnd': 'personaje', 've': 'aventurero'}[f['familia']]
         blanco.set_metadata({'title': f'Ficha de {quien} · {f["titulo"]}', 'author': 'rpg.nephei.org',
                              'creator': 'herramientas/generador/preparar.py'})
         blanco.save(os.path.join(SALIDA, clave + '.pdf'), garbage=4, deflate=True)

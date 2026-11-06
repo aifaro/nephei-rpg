@@ -4,6 +4,7 @@
 
 - **La Marca del Estrecho** (Pulp Cthulhu, Ceuta, 1921). En desarrollo. El material del Guardián vive en el repositorio privado `ttrpg-resources-private`.
 - **La maldición del Palacio de Linares** (La llamada de Cthulhu 7.ª ed., Madrid, 1920). Completa.
+- **Vieja Escuela** (`/vieja-escuela`): resumen de reglas y comparación con D&D 2024, y la aventura *La Bestia de Farton*, con jugadores (`/players`) y cuaderno del máster público (`/master`, `/aventura`). El cuaderno se monta con `herramientas/bestia-farton/montar.py` desde `cuerpo.html`; `cuaderno.css` y `paginador.js` se editan directamente en `public/`. Si cambia el cuaderno, regenerar `aventura.pdf` con `python montar.py pdf` (servidor en `public/` en el puerto 8765).
 - **Generador de personajes** (`/generador`): la ficha oficial de 7.ª edición o de Pulp rellenable en el navegador, con asistente de creación (7.ª edición y Pulp) y descarga en PDF. Todo en el navegador, sin servidor. Ver [herramientas/generador/README.md](herramientas/generador/README.md).
 
 ## Estructura
@@ -28,6 +29,16 @@ Los investigadores pregenerados de las dos aventuras están en las fichas oficia
 En los dos casos el ciclo es el mismo: `git pull`, cambiar `personajes.py`, ejecutar `python generar.py` en su carpeta, revisar las vistas previas JPG y hacer push. Los README de cada carpeta lo explican paso a paso, con lo que hay que instalar, qué significa cada campo, qué otras páginas hay que cambiar a mano y qué hacer si sale un error.
 
 `herramientas/` no se sirve: el worker solo publica `public/`. Las piezas comunes de los dos generadores están en `herramientas/formulario.py`.
+
+## Licencias de lo que no es nuestro
+
+El código del repositorio es GPL 3, pero el material de Vieja Escuela conserva sus licencias, que no son la misma para todo:
+
+| Qué | Licencia |
+|---|---|
+| Manual, y lo derivado de él: `public/vieja-escuela.html`, `public/generador/datos-ve.js`; la hoja: `herramientas/fichas-ve/vieja-escuela.pdf`, `public/generador/ve*` | CC BY-SA 4.0 (el manual es también OGL 1.0a; se usa la CC) |
+| Texto de *La Bestia de Farton* y de su cuaderno (`public/vieja-escuela/la-bestia-de-farton/`, `herramientas/bestia-farton/cuerpo.html`) | **OGL 1.0a, sin CC**. Exige llevar copia de la licencia (está al final del cuaderno) y no indicar compatibilidad con marcas ajenas: en esas páginas no se nombra D&D |
+| Portada y mapas de la aventura, incluidos los modificados (`.../img/`), y el término «Vieja Escuela» | CC BY-NC-SA 4.0: el sitio tiene que seguir sin ánimo de lucro para usarlos |
 
 ## El área del Guardián
 

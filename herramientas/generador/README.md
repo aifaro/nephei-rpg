@@ -1,12 +1,13 @@
 # Generador de personajes
 
-Rellenar en el navegador una ficha oficial, con un asistente de creación paso a paso, y descargarla en PDF rellenable. Tres pestañas, cada una con su página y su estilo:
+Rellenar en el navegador una ficha oficial, con un asistente de creación paso a paso, y descargarla en PDF rellenable. Cuatro pestañas, cada una con su página y su estilo:
 
 - [/generador](https://rpg.nephei.org/generador): *La llamada de Cthulhu* 7.ª edición (años 20 o época actual, cada una con su ficha) y *Pulp Cthulhu*.
 - [/generador/delta-green](https://rpg.nephei.org/generador/delta-green): agentes de *Delta Green* (hoja de Devir en español), con aire de expediente clasificado.
 - [/generador/dnd](https://rpg.nephei.org/generador/dnd): *Dungeons & Dragons* con las reglas de 2024 (hoja oficial de 2024, en inglés), en pergamino y rojo dragón.
+- [/generador/vieja-escuela](https://rpg.nephei.org/generador/vieja-escuela): *Vieja Escuela: el juego de rol* (hoja de la edición revisada, en A5), en blanco, negro y letra gótica.
 
-**Todo pasa en el navegador.** No hay servidor detrás: los personajes se guardan en el `localStorage` del navegador de cada cual (clave `nephei-generador-v1`, compartida por las tres pestañas: cada una enseña solo los suyos y recuerda el último abierto en `actuales`; los asistentes, en `nephei-generador-asistente-v1`, `-asistente-dg-v1` y `-asistente-dnd24-v1`), y el PDF se rellena en el propio navegador con [pdf-lib](https://pdf-lib.js.org/). El worker no interviene: son assets estáticos de `public/`.
+**Todo pasa en el navegador.** No hay servidor detrás: los personajes se guardan en el `localStorage` del navegador de cada cual (clave `nephei-generador-v1`, compartida por las cuatro pestañas: cada una enseña solo los suyos y recuerda el último abierto en `actuales`; los asistentes, en `nephei-generador-asistente-v1`, `-asistente-dg-v1`, `-asistente-dnd24-v1` y `-asistente-ve-v1`), y el PDF se rellena en el propio navegador con [pdf-lib](https://pdf-lib.js.org/). El worker no interviene: son assets estáticos de `public/`.
 
 ## Archivos
 
@@ -98,3 +99,13 @@ De dónde salen los datos: no hay un PHB de 2024 en Descargas; las reglas se han
 Los personajes creados antes con la hoja española de 2014 (`fichas-dnd/dnd-5e.pdf`, ficha `dnd` en `fichas.json`) siguen en «Mis personajes» y se abren con su hoja; ya no se crean personajes nuevos con ella. En `preparar.py`, la primera ficha de cada familia es la de los personajes nuevos.
 
 Pendiente, si se quiere: niveles por encima del 1 en D&D; comprar el equipo con el oro inicial.
+
+## Vieja Escuela
+
+La ficha es `herramientas/fichas-ve/vieja-escuela.pdf`: la hoja original (`D:\Descargas\vieja_escuela_hoja_personaje_A4.pdf`) trae dos fichas en un A4 y aquí solo queda la de arriba, en un A5 apaisado de una cara (la de abajo se borra de verdad con una redacción: si solo se recorta, sigue dentro del PDF). `fichas-ve/generar.py` la saca y le pone los campos, en Times; también genera los aventureros de *La Bestia de Farton* desde `personajes.py`. La hoja no tiene sitio para las ambiciones que pide el manual: su recuadro grande se reparte entre el retrato (mitad de arriba) y un campo «Ambiciones» (mitad de abajo).
+
+El editor calcula los modificadores con la tabla propia del juego (de −2 a +2), el MOV según la raza, ATQ, INS y POD según clase y Nivel (`AVANCE_VE`, de `datos-ve.js`), los PV a Nivel 1 y la DEF base. Reconoce las formas en femenino (Elfa, Hechicera).
+
+El asistente (`asistente-ve.js`) sigue el capítulo I del manual; se puede empezar por encima de Nivel 1, aplicando «Subir de Nivel». El manual no dice cuántos objetos pequeños caben en un bulto: aquí, cinco. Cada arma lleva en sus notas el ATQ total. «Aventurero al azar» reparte los valores altos según la clase y gasta primero en armas y armadura; repite las tiradas con más de un modificador negativo o sin ningún 15.
+
+**Licencia.** `datos-ve.js`, la hoja y las páginas de `public/vieja-escuela*` no van bajo la GPL del repositorio: ver el README principal.
