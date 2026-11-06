@@ -2,7 +2,7 @@
 """Investigadores pregenerados de La maldición del Palacio de Linares (7.ª edición).
 
 Solo van las habilidades que difieren de la base; las demás las pone generar.py.
-Si cambias algo aquí, cámbialo también en aventura.html (#pregenerados) y en sinopsis.html.
+Si cambias algo aquí, cámbialo también en cuaderno/la-maldicion-de-linares.html (#pregenerados, repo privado) y en sinopsis.html.
 """
 
 PERSONAJES = [

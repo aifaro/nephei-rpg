@@ -3,7 +3,7 @@
 [rpg.nephei.org](https://rpg.nephei.org): aventuras y utilidades para juegos de rol. La portada solo enlaza a las dos secciones: `/aventuras` (`public/aventuras.html`) y `/utilidades` (`public/utilidades.html`); cada aventura o utilidad nueva es una tarjeta `article.aventura` en su página de sección.
 
 - **La Marca del Estrecho** (Pulp Cthulhu, Ceuta, 1921). En desarrollo. El material del Guardián vive en el repositorio privado `ttrpg-resources-private`.
-- **La maldición del Palacio de Linares** (La llamada de Cthulhu 7.ª ed., Madrid, 1920). Completa.
+- **La maldición del Palacio de Linares** (La llamada de Cthulhu 7.ª ed., Madrid, 1920). Adaptación de *La Casa Corbitt*. Aquí solo está lo de los jugadores (`players`, `sinopsis`, `fichas`); el texto de la aventura es privado, en `cuaderno/la-maldicion-de-linares.html` del repo `ttrpg-resources-private`, porque la política de fans de Chaosium no cubre reescribir sus aventuras.
 - **Vieja Escuela** (`/vieja-escuela`): resumen de reglas y comparación con D&D 2024, y la aventura *La Bestia de Farton*, con jugadores (`/players`) y cuaderno del máster público (`/master`, `/aventura`). El cuaderno se monta con `herramientas/bestia-farton/montar.py` desde `cuerpo.html`; `cuaderno.css` y `paginador.js` se editan directamente en `public/`. Si cambia el cuaderno, regenerar `aventura.pdf` con `python montar.py pdf` (servidor en `public/` en el puerto 8765).
 - **Generador de personajes** (`/generador`): la ficha oficial de 7.ª edición o de Pulp rellenable en el navegador, con asistente de creación (7.ª edición y Pulp) y descarga en PDF. Todo en el navegador, sin servidor. Ver [herramientas/generador/README.md](herramientas/generador/README.md).
 
@@ -53,7 +53,7 @@ Necesita, en *Settings → Variables and Secrets* del worker:
 
 ## El Cuaderno del Guardián (`/cuaderno`)
 
-Notas privadas y aventuras publicadas por otros, reescritas para uso personal (por ejemplo, *Azul miedo, rojo nival*, de *La Piel de Toro 1936*). **No se publica nunca**: vive en la carpeta `cuaderno/` del repo privado y el worker la sirve solo con sesión de Access, aunque `GUARDIAN_PUBLICO` valga `"si"`. Ni el contenido ni los mapas pasan por este repo público.
+Notas privadas y aventuras publicadas por otros, reescritas para uso personal (por ejemplo, *Azul miedo, rojo nival*, de *La Piel de Toro 1936*, o el texto de *La maldición del Palacio de Linares*). **No se publica nunca**: vive en la carpeta `cuaderno/` del repo privado y el worker la sirve solo con sesión de Access, aunque `GUARDIAN_PUBLICO` valga `"si"`. Ni el contenido ni los mapas pasan por este repo público.
 
 - `/cuaderno/` es `cuaderno/index.html` (fragmento con la cáscara del sitio); `/cuaderno/<nombre>` es `cuaderno/<nombre>.html`.
 - Cloudflare Access debe cubrir `rpg.nephei.org/cuaderno`. Lo más sencillo es añadirlo como destino a la aplicación de Access que ya protege `/keepers`. Si se crea una aplicación aparte, su AUD se añade a `ACCESS_AUD` en `wrangler.jsonc`, separada por una coma: el worker rechaza cualquier token cuya AUD no esté en esa lista.

@@ -14,7 +14,7 @@ import pymupdf
 AQUI = os.path.dirname(os.path.abspath(__file__))
 RAIZ = os.path.normpath(os.path.join(AQUI, '..', '..', 'public'))
 DEST = os.path.join(RAIZ, 'vieja-escuela', 'la-bestia-de-farton')
-LINARES = os.path.join(RAIZ, 'la-maldicion-de-linares', 'aventura.html')
+LINARES = os.path.join(RAIZ, '..', '..', 'ttrpg-resources-private', 'cuaderno', 'la-maldicion-de-linares.html')
 CHROME = r'C:\Program Files\Google\Chrome\Application\chrome.exe'
 sys.stdout.reconfigure(encoding='utf-8')
 

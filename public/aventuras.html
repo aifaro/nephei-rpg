@@ -4,18 +4,19 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Adventures · rpg.nephei.org</title>
-<meta name="description" content="Original Call of Cthulhu scenarios set in Spain in the 1920s: La Marca del Estrecho (Ceuta, 1921) and La maldición del Palacio de Linares (Madrid, 1920); and La Bestia de Farton for Vieja Escuela. Free to read, print and play.">
+<meta name="description" content="Original scenarios and adaptations, sorted by game system. La Marca del Estrecho (Pulp Cthulhu, Ceuta, 1921), an original campaign; and adaptations such as La Bestia de Farton for Vieja Escuela. Free to read, print and play.">
 <meta name="theme-color" content="#16130f">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="/style.css?v=20261016b">
 <style>
-.container main > h2.grupo{font-family:var(--f-deco);font-weight:700;font-size:1.5rem;margin:3rem 0 .4rem}
-.container main > h2.grupo.primero{position:relative;z-index:1;margin:clamp(-5.5rem,-8vw,-4rem) 0 .8rem;color:#f1e3bd}
-.container main > h2.grupo.primero::after{border-top-color:rgba(241,227,189,.4)}
+.container main > h2.grupo{font-family:var(--f-deco);font-weight:700;font-size:1.9rem;margin:3.5rem 0 .4rem}
+.container main > h2.grupo.primero{margin-top:2rem}
+.container main > h3.sistema{font-family:var(--f-rotulo);font-weight:600;font-size:.95rem;letter-spacing:.22em;text-transform:uppercase;color:var(--tinta-suave);margin:2rem 0 .9rem}
 .grupo-nota{font-family:var(--f-caja);font-size:.95rem;color:var(--tinta-suave);margin:0 0 1rem}
-.grupo.primero + .aventuras,.aventuras.siguientes{margin-top:0}
+.aventuras.siguientes{margin-top:0}
+.aventuras.sola{grid-template-columns:minmax(0,38rem);justify-content:center}
 </style>
 </head>
 <body class="sitio">
@@ -31,8 +32,9 @@
 
 <div class="container">
 <main>
-  <h2 class="grupo primero">Call of Cthulhu</h2>
-  <div class="aventuras">
+  <h2 class="grupo primero">Original scenarios</h2>
+  <h3 class="sistema">Call of Cthulhu</h3>
+  <div class="aventuras siguientes sola">
 
     <article class="aventura">
       <a class="arte" href="/la-marca-del-estrecho/players" tabindex="-1" aria-hidden="true">
@@ -73,6 +75,13 @@
         </div>
       </div>
     </article>
+
+  </div>
+
+  <h2 class="grupo">Adaptations</h2>
+  <p class="grupo-nota">Scenarios by other authors, reworked for my table.</p>
+  <h3 class="sistema">Call of Cthulhu</h3>
+  <div class="aventuras siguientes">
 
     <article class="aventura">
       <a class="arte" href="/la-maldicion-de-linares/players" tabindex="-1" aria-hidden="true">
@@ -121,12 +130,12 @@
       <div class="aventura-texto">
         <p class="sello">Call of Cthulhu · Madrid, 1920</p>
         <h2><a href="/la-maldicion-de-linares/players">La maldición del Palacio de Linares</a></h2>
-        <span class="estado listo">Ready to play</span>
+        <span class="estado listo">Player resources</span>
         <p class="gancho">Everyone in Madrid talks about the ghost of a little girl. Nobody looks in the cellar.</p>
-        <p class="resumen">The classic starter scenario <i>The Haunting (La Casa Corbitt)</i>, moved to the Linares palace on the Plaza de Cibeles in the autumn of 1920. One session of about three hours, with five pregenerated investigators.</p>
+        <p class="resumen">The classic starter scenario <i>The Haunting (La Casa Corbitt)</i>, moved to the Linares palace on the Plaza de Cibeles in the autumn of 1920. Here you'll find the players' synopsis and five pregenerated investigators; the Keeper's text is in my private notebook.</p>
         <div class="acciones">
           <a class="boton" href="/la-maldicion-de-linares/players">For players</a>
-          <a class="boton sec" href="/la-maldicion-de-linares/guardian">For the Keeper (spoilers)</a>
+          <a class="boton sec" href="/cuaderno/la-maldicion-de-linares"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><rect x="4" y="11" width="16" height="10" rx="1"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>Keeper's text</a>
         </div>
       </div>
     </article>
@@ -155,7 +164,7 @@
 
   </div>
 
-  <h2 class="grupo">Vieja Escuela</h2>
+  <h3 class="sistema">Vieja Escuela</h3>
   <p class="grupo-nota">A rules-light, open-source fantasy game in the spirit of early D&amp;D. In Spanish.</p>
   <div class="aventuras siguientes">
 

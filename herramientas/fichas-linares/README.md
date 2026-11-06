@@ -117,17 +117,17 @@ Estas páginas se escriben a mano y el generador no las toca. Si cambia un dato 
 
 | Página | Qué hay |
 |---|---|
-| `public/la-maldicion-de-linares/aventura.html`, sección `id="pregenerados"` | El resumen de cada investigador (características, habilidades, trasfondo). |
-| `public/la-maldicion-de-linares/aventura.pdf` | El PDF de la aventura. **Hay que regenerarlo después de cambiar `aventura.html`** (ver abajo). |
+| `cuaderno/la-maldicion-de-linares.html` del repo privado `ttrpg-resources-private`, sección `id="pregenerados"` | El resumen de cada investigador (características, habilidades, trasfondo). |
+| `cuaderno/la-maldicion-de-linares/aventura.pdf` del repo privado | El PDF de la aventura. **Hay que regenerarlo después de cambiar la página** (ver abajo). |
 | `public/la-maldicion-de-linares/sinopsis.html` | La presentación de cada investigador para los jugadores. |
 | `public/la-maldicion-de-linares/fichas.html` | La galería de fichas: nombre, ocupación y una frase de cada uno. |
 | `public/la-maldicion-de-linares/players.html` | Dice «los cinco investigadores»: cámbialo si cambia el número. |
 
-**Regenerar `aventura.pdf`** (necesita Google Chrome). Desde la raíz del repo, en PowerShell:
+**Regenerar `aventura.pdf`** (necesita Google Chrome). Desde la raíz del repo privado, en PowerShell:
 ```powershell
 $raiz = (Get-Location).Path -replace '\\','/'
 & "C:\Program Files\Google\Chrome\Application\chrome.exe" --headless=new --no-pdf-header-footer --virtual-time-budget=30000 `
-  --print-to-pdf="$PWD\public\la-maldicion-de-linares\aventura.pdf" "file:///$raiz/public/la-maldicion-de-linares/aventura.html?paginar"
+  --print-to-pdf="$PWD\cuaderno\la-maldicion-de-linares\aventura.pdf" "file:///$raiz/cuaderno/la-maldicion-de-linares.html?paginar"
 ```
 Tarda unos 20 segundos. Chrome escribe varias líneas `ERROR:...` que no importan; lo que cuenta es la última: `... bytes written to file ...`. El `?paginar` del final es imprescindible, porque activa la maquetación por hojas.
 
